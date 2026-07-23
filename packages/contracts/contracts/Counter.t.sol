@@ -2,9 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {Counter} from "./Counter.sol";
-import {Test} from "forge-std/Test.sol";
 
-contract CounterTest is Test {
+contract CounterTest {
   Counter counter;
 
   function setUp() public {
@@ -23,7 +22,8 @@ contract CounterTest is Test {
   }
 
   function test_IncByZero() public {
-    vm.expectRevert();
-    counter.incBy(0);
+    try counter.incBy(0) {
+      revert("incBy should revert for zero");
+    } catch {}
   }
 }
