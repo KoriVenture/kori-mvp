@@ -5,9 +5,51 @@ Kori is a demonstration platform for milestone-based startup investment and cont
 > [!IMPORTANT]
 > Kori is an early-stage MVP. It does **not** handle real funds, provide regulated investment services, or offer legal, financial, or investment advice.
 
+## Quick start
+
+Run from the repository root:
+
+```bash
+pnpm install
+pnpm --filter @kori/web dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
+Useful checks:
+
+```bash
+pnpm --filter @kori/contracts compile
+pnpm --filter @kori/contracts test
+pnpm --filter @kori/web typecheck
+```
+
 ## MVP purpose
 
 The repository explores how an investor, a startup, and a fund manager could coordinate milestone-based funding while keeping the final release decision under human and multisig control. AI is intended to support evidence review only; it must never make the final financial decision.
+
+## Buildathon scope
+
+For the buildathon, Kori is scoped as a non-production Sepolia demo:
+
+- Investor deposits MockUSDC test funds.
+- `KoriEscrow` holds funds until a milestone is approved.
+- AI reviews milestone evidence but cannot sign or release funds.
+- A human verifier makes the milestone decision.
+- Safe multisig approves and executes fund release.
+
+Out of scope for this MVP: real KYC/KYB, real SPV/legal execution, fiat on/off-ramp automation, custody, real funds, CCTP, multi-chain settlement, and production investor ownership records.
+
+```mermaid
+flowchart LR
+  Investor["Investor\nMetaMask + MockUSDC"] --> App["Kori App\nNext.js"]
+  App --> Escrow["KoriEscrow\nSepolia"]
+  Startup["Startup\nMilestone evidence"] --> AI["AI reviewer\nAdvisory only"]
+  AI --> Verifier["Human verifier\nFinal milestone decision"]
+  Verifier --> Escrow
+  Escrow --> Safe["Safe multisig\nOnly release caller"]
+  Safe --> Payout["Startup payout\nMockUSDC"]
+```
 
 ## Current scope
 
