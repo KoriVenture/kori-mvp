@@ -42,13 +42,14 @@ Out of scope for this MVP: real KYC/KYB, real SPV/legal execution, fiat on/off-r
 
 ```mermaid
 flowchart LR
-  Investor["Investor\nMetaMask + MockUSDC"] --> App["Kori App\nNext.js"]
-  App --> Escrow["KoriEscrow\nSepolia"]
+  App["Kori App\nNext.js"] --> Investor["Investor profile\nMetaMask + MockUSDC"]
+  Investor --> Deal["Default demo deal\nOne startup + one milestone"]
+  Deal --> Escrow["KoriEscrow\nSepolia"]
   Startup["Startup\nMilestone evidence"] --> AI["AI reviewer\nAdvisory only"]
   AI --> Verifier["Human verifier\nFinal milestone decision"]
   Verifier --> Escrow
-  Escrow --> Safe["Safe multisig\nOnly release caller"]
-  Safe --> Payout["Startup payout\nMockUSDC"]
+  Safe["Safe multisig\nOnly release caller"] -->|calls release| Escrow
+  Escrow --> Payout["Startup payout\nMockUSDC"]
 ```
 
 ## Current scope

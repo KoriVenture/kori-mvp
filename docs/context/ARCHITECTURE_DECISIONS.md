@@ -54,6 +54,8 @@ MetaMask is the first supported user wallet.
 
 Safe provides the controlled approval workflow.
 
+Safe is a governance caller, not a fund recipient. In the MVP flow, deposited MockUSDC remains in `KoriEscrow`; after milestone approval, Safe calls `release()` and the escrow contract transfers MockUSDC to the startup wallet.
+
 ### Authentication
 
 Supabase manages application authentication.
@@ -80,3 +82,13 @@ The following tools are intentionally deferred:
 - Husky
 - lint-staged
 - commitlint
+
+## Buildathon flow decision — 2026-07-23
+
+The buildathon demo should use one default deal, one startup, one milestone, and one full release.
+
+The user flow starts in the Kori application, then the user selects the investor profile, joins the default demo deal, deposits MockUSDC into escrow, waits for startup evidence and review, and sees payout status after Safe-controlled release.
+
+Legal structure, real KYC/KYB, fiat custody, SPV execution, on/off-ramp providers, CCTP, and production ownership records are post-MVP workstreams.
+
+The critical short-term product risk is the frontend workflow and demo narrative, not the basic escrow contract. The contract should stay intentionally small so the UI can demonstrate the complete investor-to-payout story.
