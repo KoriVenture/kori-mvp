@@ -40,6 +40,8 @@ For the buildathon, Kori is scoped as a non-production Sepolia demo:
 
 Out of scope for this MVP: real KYC/KYB, real SPV/legal execution, fiat on/off-ramp automation, custody, real funds, CCTP, multi-chain settlement, and production investor ownership records.
 
+Architecture image: [Simplified MVP architecture](docs/context/assets/kori-simplified-mvp-architecture.png)
+
 ```mermaid
 flowchart LR
   App["Kori App\nNext.js"] --> Investor["Investor profile\nMetaMask + MockUSDC"]

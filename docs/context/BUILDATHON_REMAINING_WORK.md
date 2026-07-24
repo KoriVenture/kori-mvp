@@ -12,6 +12,8 @@ The goal is not to build a production financial platform. The goal is to deliver
 
 > Investor deposits test funds, startup submits milestone evidence, AI recommends, human verifier decides, Safe approves, and the contract releases test funds.
 
+Architecture image: [Simplified MVP architecture](assets/kori-simplified-mvp-architecture.png)
+
 ## Meeting Alignment - 2026-07-23
 
 The team agreed to keep the buildathon scope deliberately narrow:
