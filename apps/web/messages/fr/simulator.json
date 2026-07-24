@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "title": "Simulateur de contrat intelligent — Kori",
+    "description": "Un simulateur pédagogique en mémoire de déblocage par jalons."
+  },
+  "demoLabel": "Démonstration uniquement — aucun contrat n’est déployé.",
+  "title": "Simulateur de contrat intelligent",
+  "subtitle": "Multi-signature · Déblocage par jalons · Piste d’audit pédagogique",
+  "back": "Retour à Kori",
+  "reset": "Réinitialiser le simulateur",
+  "summary": {
+    "fund": "Fonds total (USDC démo)",
+    "deployed": "Capital déployé",
+    "milestones": "Jalons atteints"
+  },
+  "wallets": {
+    "title": "Portefeuilles de démonstration",
+    "multisig": "Portefeuille multi-signature",
+    "multisigDetail": "KoriSPV · 2 signataires simulés sur 3",
+    "startup": "Portefeuille startup",
+    "startupDetail": "0xAdresse_startup_demo…",
+    "locked": "USDC démo verrouillés",
+    "received": "USDC démo reçus",
+    "flow": "déblocage contractuel illustratif"
+  },
+  "configuration": {
+    "title": "Tranches par jalon",
+    "fundLabel": "Fonds total de démonstration",
+    "percentageLabel": "Pourcentage de {name}",
+    "conditionLabel": "Condition de {name}",
+    "valid": "Jalons : 100 % alloués",
+    "invalid": "Jalons : {total} % alloués — le total doit être égal à 100 %."
+  },
+  "milestones": {
+    "title": "Chronologie des jalons",
+    "amount": "{percentage} % du fonds",
+    "validator": "Une confirmation humaine indépendante est requise avant tout déblocage échelonné de démonstration.",
+    "validating": "Le validateur humain a confirmé ce jalon. Exécutez la transition locale de démonstration.",
+    "releasedAt": "Débloqué localement à {time}",
+    "validate": "Soumettre la preuve de validation",
+    "release": "Exécuter le transfert démo",
+    "released": "Débloqué",
+    "locked": "Verrouillé — terminer le jalon précédent"
+  },
+  "contract": {
+    "title": "Contrat intelligent — KoriSPV.sol",
+    "notice": "Source illustrative en lecture seule. Elle n’est ni compilée, auditée, signée, ni déployée."
+  },
+  "log": {
+    "title": "Journal des événements de démonstration",
+    "empty": "Aucun événement local pour le moment."
+  },
+  "feedback": {
+    "validation": "L’état de validation a démarré localement.",
+    "release": "Le déblocage du jalon a été enregistré localement.",
+    "reset": "Le simulateur a été réinitialisé."
+  }
+}

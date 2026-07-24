@@ -1,0 +1,9 @@
+{
+  "languageLabel": "Change language",
+  "activeLabel": "Active",
+  "controlsLabel": "Display preferences",
+  "themeLabel": "Change theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark"
+}

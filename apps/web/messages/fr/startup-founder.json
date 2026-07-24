@@ -1,0 +1,178 @@
+{
+  "meta": {
+    "title": "Tableau de bord fondateur — Kori",
+    "description": "Une démonstration localisée des vues de levée et de jalons."
+  },
+  "title": "Fondateur de startup",
+  "navigation": {
+    "overview": "Tableau de bord",
+    "raise": "Ma levée",
+    "investors": "Investisseurs",
+    "milestones": "Jalons",
+    "disbursements": "Décaissements",
+    "documents": "Documents"
+  },
+  "pages": {
+    "overview": {
+      "title": "Tableau de bord",
+      "description": "Progression de la levée, activité des preuves et prochain déblocage."
+    },
+    "raise": {
+      "title": "Ma levée",
+      "description": "Le véhicule de démonstration actuel et la progression des engagements."
+    },
+    "investors": {
+      "title": "Vos investisseurs",
+      "description": "Engagements des co-investisseurs et état des accords."
+    },
+    "milestones": {
+      "title": "Jalons",
+      "description": "Soumettre des preuves à une revue humaine et suivre chaque déblocage."
+    },
+    "disbursements": {
+      "title": "Décaissements",
+      "description": "Tranches de démonstration débloquées, en attente et verrouillées."
+    },
+    "documents": {
+      "title": "Documents",
+      "description": "Fichiers locaux de démonstration et preuves de jalons."
+    }
+  },
+  "metrics": {
+    "raised": {
+      "label": "Total levé",
+      "detail": "96 % de l’objectif de 500 K$"
+    },
+    "received": {
+      "label": "Capital reçu",
+      "detail": "2 jalons débloqués"
+    },
+    "nextTranche": {
+      "label": "Prochaine tranche",
+      "detail": "Validation en attente"
+    },
+    "investors": {
+      "label": "Investisseurs",
+      "detail": "Co-investisseurs de la diaspora"
+    },
+    "totalReceived": {
+      "label": "Total reçu",
+      "detail": "Issu de 2 déblocages"
+    },
+    "pendingRelease": {
+      "label": "Déblocage en attente",
+      "detail": "Jalon 3 — en cours"
+    },
+    "locked": {
+      "label": "Verrouillé",
+      "detail": "Jalon 4 — à venir"
+    }
+  },
+  "sections": {
+    "recentActivity": "Activité récente",
+    "currentMilestone": "Jalon actuel",
+    "raiseDetails": "Détails de la levée"
+  },
+  "raise": {
+    "progress": "{committed} engagés sur {target}",
+    "instrument": "Instrument",
+    "minimum": "Ticket minimum",
+    "closeDate": "Clôture cible",
+    "lead": "Investisseur principal"
+  },
+  "actions": {
+    "submitEvidence": "Soumettre une preuve",
+    "uploadDocument": "Téléverser un document",
+    "previewUnavailable": "Aperçu indisponible pour {name} dans cette démonstration"
+  },
+  "dialogs": {
+    "evidenceTitle": "Soumettre une preuve de jalon",
+    "supportingDocuments": "Documents justificatifs",
+    "evidenceNotes": "Notes sur la preuve",
+    "uploadTitle": "Téléverser un document",
+    "documentFile": "Fichier du document",
+    "documentNotes": "Notes du document"
+  },
+  "data": {
+    "raiseSummary": "Infrastructure solaire hors réseau destinée aux communautés rurales mal desservies du Kenya.",
+    "roles": {
+      "leadInvestor": "Investisseur principal"
+    },
+    "activities": {
+      "milestoneApproved": {
+        "text": "Jalon {milestone} approuvé — {amount} marqués comme débloqués dans cette démo",
+        "time": "il y a {count, plural, one {# heure} other {# heures}}"
+      },
+      "evidenceRequested": {
+        "text": "Le validateur a demandé des preuves clients supplémentaires",
+        "time": "Revue du jalon {milestone} · il y a {count, plural, one {# heure} other {# heures}}"
+      },
+      "contractPreview": {
+        "text": "Aperçu du contrat de démonstration {contract} créé",
+        "time": "il y a {count, plural, one {# jour} other {# jours}}"
+      },
+      "firstMilestoneApproved": {
+        "text": "Jalon {milestone} approuvé — {amount} marqués comme débloqués",
+        "time": "il y a {count, plural, one {# jour} other {# jours}}"
+      }
+    },
+    "milestones": {
+      "entity": {
+        "title": "Jalon 1 — Constitution de l’entité et licences",
+        "description": "L’entité kényane est constituée et toutes les licences d’exploitation ont été obtenues."
+      },
+      "pilot": {
+        "title": "Jalon 2 — Installation pilote (50 unités)",
+        "description": "Cinquante unités solaires ont été déployées dans le comté de Nakuru."
+      },
+      "revenue": {
+        "title": "Jalon 3 — Validation des revenus",
+        "description": "Démontrer les revenus récurrents des clients pilotes. Échéance : 15 mai 2026."
+      },
+      "scale": {
+        "title": "Jalon 4 — Passage à 200 unités",
+        "description": "Étendre les opérations à trois comtés."
+      }
+    },
+    "documents": {
+      "safeAgreement": {
+        "name": "Accord SAFE — SolarGrid Kenya SPV"
+      },
+      "incorporationCertificate": {
+        "name": "Certificat de constitution"
+      },
+      "energyLicense": {
+        "name": "Licence de réglementation énergétique"
+      },
+      "investorPresentation": {
+        "name": "Présentation aux investisseurs"
+      },
+      "financialModel": {
+        "name": "Modèle financier 2025–2027"
+      },
+      "boardMinutes": {
+        "name": "Procès-verbal du conseil — T1"
+      },
+      "pilotReport": {
+        "name": "Rapport d’installation pilote"
+      },
+      "customerContracts": {
+        "name": "Contrats clients de Nakuru"
+      },
+      "revenuePack": {
+        "name": "Dossier de validation des revenus"
+      }
+    }
+  },
+  "tables": {
+    "investor": "Investisseur",
+    "location": "Localisation",
+    "committed": "Engagé",
+    "share": "Part",
+    "status": "État",
+    "date": "Date",
+    "milestone": "Jalon",
+    "amount": "Montant",
+    "hash": "Empreinte démo"
+  }
+}

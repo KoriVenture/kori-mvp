@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "title": "Kori MVP — Démonstration de séquestre par jalons",
+    "description": "Une démonstration multilingue du séquestre d’investissement privé fondé sur des jalons."
+  },
+  "hero": {
+    "eyebrow": "Séquestre d’investissement fondé sur des jalons",
+    "title": "Le capital avance lorsque <highlight>les progrès sont démontrés.</highlight>",
+    "description": "Kori montre comment le capital peut rester verrouillé jusqu’à ce que les preuves d’un jalon soient analysées, examinées par une personne et approuvées pour déblocage.",
+    "walletDeferred": "Connexion du portefeuille différée"
+  },
+  "workflow": {
+    "label": "Parcours de démonstration",
+    "lockedTitle": "Fonds verrouillés",
+    "lockedDescription": "Le capital reste sous séquestre.",
+    "reviewTitle": "Examen du jalon",
+    "reviewDescription": "L’IA conseille ; une personne prend la décision.",
+    "releaseTitle": "Approbation du déblocage",
+    "releaseDescription": "Un portefeuille multisignature approuve le déblocage.",
+    "progressLabel": "Progression illustrative du jalon"
+  }
+}

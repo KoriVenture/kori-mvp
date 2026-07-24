@@ -1,0 +1,130 @@
+{
+  "navigation": {
+    "overview": "Espace",
+    "dashboard": "Tableau de bord",
+    "capital": "Capital",
+    "network": "Réseau",
+    "invest": "Investir",
+    "track": "Suivre",
+    "fundraise": "Lever",
+    "execution": "Exécution",
+    "resources": "Ressources",
+    "tools": "Outils",
+    "simulator": "Simulateur de contrat"
+  },
+  "demoNotice": "Données de démonstration uniquement — le MVP Kori ne gère pas de fonds réels, n’exécute aucune transaction et ne fournit aucun conseil financier.",
+  "transactionNotice": "Il s’agit uniquement d’enregistrements de démonstration. Aucun fonds réel n’a été déplacé et aucune transaction blockchain n’a été exécutée.",
+  "menuOpen": "Ouvrir le menu du tableau de bord",
+  "menuClose": "Fermer le menu du tableau de bord",
+  "menuDescription": "Naviguer entre les vues adressables du tableau de bord.",
+  "navigationLabel": "Navigation du tableau de bord",
+  "backHome": "Retourner à l’accueil Kori",
+  "workspace": "Espace marchés privés",
+  "demoUser": "Profil de démonstration",
+  "preferences": "Préférences de langue et de thème",
+  "milestoneProgress": "Progression des jalons pour {name}",
+  "status": {
+    "accepted": "Accepté",
+    "active": "Actif",
+    "approved": "Approuvé",
+    "closed": "Clôturé",
+    "confirmed": "Confirmé",
+    "demo": "Démo",
+    "draft": "Brouillon",
+    "drafting": "En rédaction",
+    "executed": "Exécuté",
+    "fundraising": "En levée",
+    "in_review": "En revue",
+    "inProgress": "En cours",
+    "internal": "Interne",
+    "invited": "Invité",
+    "open": "Ouverte",
+    "pending": "En attente",
+    "released": "Débloqué",
+    "shared": "Partagé",
+    "signed": "Signé",
+    "verified": "Vérifié"
+  },
+  "amountState": {
+    "released": "débloqués",
+    "pending": "en attente",
+    "locked": "verrouillés"
+  },
+  "sectors": {
+    "agritech": "Agritech",
+    "edtech": "Edtech",
+    "energy": "Énergie",
+    "fintech": "Fintech",
+    "healthcare": "Santé",
+    "infrastructure": "Infrastructure",
+    "logistics": "Logistique"
+  },
+  "countries": {
+    "ethiopia": "Éthiopie",
+    "ghana": "Ghana",
+    "kenya": "Kenya"
+  },
+  "instruments": {
+    "convertibleNote": "Obligation convertible",
+    "equity": "Actions",
+    "safe": "SAFE"
+  },
+  "transactionTypes": {
+    "commitment": "Engagement",
+    "release": "Déblocage"
+  },
+  "documentCategories": {
+    "compliance": "Conformité",
+    "corporate": "Société",
+    "finance": "Finance",
+    "fundraising": "Levée",
+    "governance": "Gouvernance",
+    "legal": "Juridique",
+    "milestoneEvidence": "Preuve de jalon"
+  },
+  "date": {
+    "inProgress": "En cours",
+    "pending": "En attente"
+  },
+  "milestones": {
+    "solarEntity": {
+      "title": "Constitution de l’entité et licences",
+      "description": "SPV enregistré et documents juridiques signés."
+    },
+    "solarPilot": {
+      "title": "Installation pilote (50 unités)",
+      "description": "Matériel déployé dans le comté de Nakuru."
+    },
+    "solarRevenue": {
+      "title": "Validation des revenus",
+      "description": "Confirmation du validateur attendue — 3 jours restants."
+    },
+    "solarScale": {
+      "title": "Passage à 200 unités",
+      "description": "Expansion dans 3 comtés."
+    },
+    "eduPlatform": {
+      "title": "Construction de la plateforme et lancement bêta",
+      "description": "MVP actif avec 500 utilisateurs bêta."
+    },
+    "eduPartnerships": {
+      "title": "Partenariat avec 10 centres de formation",
+      "description": "7 partenariats sur 10 confirmés."
+    },
+    "eduEnrollments": {
+      "title": "1 000 inscriptions payantes",
+      "description": "Objectif de revenus pour le déblocage complet de la tranche."
+    },
+    "escrowDeposit": {
+      "title": "Dépôt sous séquestre",
+      "description": "Engagement de démonstration enregistré sous séquestre."
+    }
+  },
+  "dialogs": {
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "submit": "Enregistrer la démo",
+    "success": "L’état local de démonstration a été mis à jour.",
+    "demoNotice": "Cette action reste uniquement sur cette page. Rien n’est enregistré, envoyé, financé, signé ou déployé."
+  }
+}

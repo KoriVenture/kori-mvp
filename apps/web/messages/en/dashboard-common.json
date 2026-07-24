@@ -1,0 +1,130 @@
+{
+  "navigation": {
+    "overview": "Workspace",
+    "dashboard": "Dashboard",
+    "capital": "Capital",
+    "network": "Network",
+    "invest": "Invest",
+    "track": "Track",
+    "fundraise": "Fundraise",
+    "execution": "Execution",
+    "resources": "Resources",
+    "tools": "Tools",
+    "simulator": "Contract Simulator"
+  },
+  "demoNotice": "Demonstration data only — Kori MVP does not handle real funds, execute transactions, or provide financial advice.",
+  "transactionNotice": "These are demonstration records only. No real funds moved and no blockchain transaction was executed.",
+  "menuOpen": "Open dashboard menu",
+  "menuClose": "Close dashboard menu",
+  "menuDescription": "Navigate between the addressable dashboard views.",
+  "navigationLabel": "Dashboard navigation",
+  "backHome": "Return to Kori home",
+  "workspace": "Private market workspace",
+  "demoUser": "Demo profile",
+  "preferences": "Language and theme preferences",
+  "milestoneProgress": "Milestone progress for {name}",
+  "status": {
+    "accepted": "Accepted",
+    "active": "Active",
+    "approved": "Approved",
+    "closed": "Closed",
+    "confirmed": "Confirmed",
+    "demo": "Demo",
+    "draft": "Draft",
+    "drafting": "Drafting",
+    "executed": "Executed",
+    "fundraising": "Fundraising",
+    "in_review": "In review",
+    "inProgress": "In progress",
+    "internal": "Internal",
+    "invited": "Invited",
+    "open": "Open",
+    "pending": "Pending",
+    "released": "Released",
+    "shared": "Shared",
+    "signed": "Signed",
+    "verified": "Verified"
+  },
+  "amountState": {
+    "released": "released",
+    "pending": "pending",
+    "locked": "locked"
+  },
+  "sectors": {
+    "agritech": "Agritech",
+    "edtech": "Edtech",
+    "energy": "Energy",
+    "fintech": "Fintech",
+    "healthcare": "Healthcare",
+    "infrastructure": "Infrastructure",
+    "logistics": "Logistics"
+  },
+  "countries": {
+    "ethiopia": "Ethiopia",
+    "ghana": "Ghana",
+    "kenya": "Kenya"
+  },
+  "instruments": {
+    "convertibleNote": "Convertible note",
+    "equity": "Equity",
+    "safe": "SAFE"
+  },
+  "transactionTypes": {
+    "commitment": "Commitment",
+    "release": "Release"
+  },
+  "documentCategories": {
+    "compliance": "Compliance",
+    "corporate": "Corporate",
+    "finance": "Finance",
+    "fundraising": "Fundraising",
+    "governance": "Governance",
+    "legal": "Legal",
+    "milestoneEvidence": "Milestone evidence"
+  },
+  "date": {
+    "inProgress": "In progress",
+    "pending": "Pending"
+  },
+  "milestones": {
+    "solarEntity": {
+      "title": "Entity Formation & Licensing",
+      "description": "SPV registered and legal documents executed."
+    },
+    "solarPilot": {
+      "title": "Pilot Installation (50 units)",
+      "description": "Hardware deployed in Nakuru County."
+    },
+    "solarRevenue": {
+      "title": "Revenue Validation",
+      "description": "Awaiting validator confirmation — 3 days remaining."
+    },
+    "solarScale": {
+      "title": "Scale to 200 Units",
+      "description": "Expansion across 3 counties."
+    },
+    "eduPlatform": {
+      "title": "Platform Build & Beta Launch",
+      "description": "MVP live with 500 beta users."
+    },
+    "eduPartnerships": {
+      "title": "Partnership with 10 Training Centers",
+      "description": "7 of 10 partnerships confirmed."
+    },
+    "eduEnrollments": {
+      "title": "1,000 Paid Enrollments",
+      "description": "Revenue target for full tranche release."
+    },
+    "escrowDeposit": {
+      "title": "Escrow deposit",
+      "description": "Demonstration commitment recorded in escrow."
+    }
+  },
+  "dialogs": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "submit": "Save demo",
+    "success": "Local demonstration state updated.",
+    "demoNotice": "This action stays in this page only. Nothing is persisted, sent, funded, signed, or deployed."
+  }
+}

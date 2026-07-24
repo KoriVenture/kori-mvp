@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "title": "Simulador de contrato inteligente — Kori",
+    "description": "Un simulador pedagógico en memoria de liberación por hitos."
+  },
+  "demoLabel": "Solo demostración: no se despliega ningún contrato.",
+  "title": "Simulador de contrato inteligente",
+  "subtitle": "Multifirma · Liberación por hitos · Pista de auditoría pedagógica",
+  "back": "Volver a Kori",
+  "reset": "Restablecer simulador",
+  "summary": {
+    "fund": "Fondo total (USDC demo)",
+    "deployed": "Capital desplegado",
+    "milestones": "Hitos alcanzados"
+  },
+  "wallets": {
+    "title": "Carteras de demostración",
+    "multisig": "Cartera multifirma",
+    "multisigDetail": "KoriSPV · 2 de 3 firmantes simulados",
+    "startup": "Cartera de la startup",
+    "startupDetail": "0xDireccion_startup_demo…",
+    "locked": "USDC demo bloqueados",
+    "received": "USDC demo recibidos",
+    "flow": "liberación contractual ilustrativa"
+  },
+  "configuration": {
+    "title": "Tramos por hito",
+    "fundLabel": "Fondo total de demostración",
+    "percentageLabel": "Porcentaje de {name}",
+    "conditionLabel": "Condición de {name}",
+    "valid": "Hitos: 100 % asignado",
+    "invalid": "Hitos: {total} % asignado — el total debe ser igual a 100 %."
+  },
+  "milestones": {
+    "title": "Cronología de hitos",
+    "amount": "{percentage} % del fondo",
+    "validator": "Se requiere confirmación humana independiente antes de cualquier liberación escalonada de demostración.",
+    "validating": "El validador humano marcó este hito como confirmado. Ejecuta la transición local de demostración.",
+    "releasedAt": "Liberado localmente a las {time}",
+    "validate": "Enviar prueba de validación",
+    "release": "Ejecutar transferencia demo",
+    "released": "Liberado",
+    "locked": "Bloqueado — completa el hito anterior"
+  },
+  "contract": {
+    "title": "Contrato inteligente — KoriSPV.sol",
+    "notice": "Código ilustrativo de solo lectura. No está compilado, auditado, firmado ni desplegado."
+  },
+  "log": {
+    "title": "Registro de eventos de demostración",
+    "empty": "Aún no hay eventos locales."
+  },
+  "feedback": {
+    "validation": "El estado de validación se inició localmente.",
+    "release": "La liberación del hito se registró localmente.",
+    "reset": "El simulador volvió a su estado inicial."
+  }
+}

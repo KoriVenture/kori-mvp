@@ -1,0 +1,11 @@
+{
+  "draft": "Draft",
+  "evidenceSubmitted": "Evidence submitted",
+  "underReview": "Under review",
+  "approved": "Approved",
+  "releasePending": "Release pending",
+  "released": "Released",
+  "rejected": "Rejected",
+  "fundsLocked": "Funds locked",
+  "fundsReleased": "Funds released"
+}

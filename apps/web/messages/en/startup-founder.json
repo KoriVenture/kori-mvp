@@ -1,0 +1,178 @@
+{
+  "meta": {
+    "title": "Startup Founder Dashboard — Kori",
+    "description": "A localized demonstration of founder fundraising and milestone views."
+  },
+  "title": "Startup Founder",
+  "navigation": {
+    "overview": "Dashboard",
+    "raise": "My Raise",
+    "investors": "Investors",
+    "milestones": "Milestones",
+    "disbursements": "Disbursements",
+    "documents": "Documents"
+  },
+  "pages": {
+    "overview": {
+      "title": "Dashboard",
+      "description": "Fundraising progress, evidence activity, and the next staged release."
+    },
+    "raise": {
+      "title": "My Raise",
+      "description": "The current demonstration vehicle and commitment progress."
+    },
+    "investors": {
+      "title": "Your Investors",
+      "description": "Co-investor commitments and agreement status."
+    },
+    "milestones": {
+      "title": "Milestones",
+      "description": "Submit evidence for human review and follow each release stage."
+    },
+    "disbursements": {
+      "title": "Disbursements",
+      "description": "Released, pending, and locked demonstration tranches."
+    },
+    "documents": {
+      "title": "Documents",
+      "description": "Local demonstration files and milestone evidence."
+    }
+  },
+  "metrics": {
+    "raised": {
+      "label": "Total Raised",
+      "detail": "96% of $500K target"
+    },
+    "received": {
+      "label": "Capital Received",
+      "detail": "2 milestones released"
+    },
+    "nextTranche": {
+      "label": "Next Tranche",
+      "detail": "Pending validator approval"
+    },
+    "investors": {
+      "label": "Investors",
+      "detail": "Diaspora co-investors"
+    },
+    "totalReceived": {
+      "label": "Total Received",
+      "detail": "From 2 milestone releases"
+    },
+    "pendingRelease": {
+      "label": "Pending Release",
+      "detail": "Milestone 3 — in progress"
+    },
+    "locked": {
+      "label": "Locked",
+      "detail": "Milestone 4 — upcoming"
+    }
+  },
+  "sections": {
+    "recentActivity": "Recent Activity",
+    "currentMilestone": "Current Milestone",
+    "raiseDetails": "Raise Details"
+  },
+  "raise": {
+    "progress": "{committed} committed of {target}",
+    "instrument": "Instrument",
+    "minimum": "Minimum Ticket",
+    "closeDate": "Target Close",
+    "lead": "Lead Investor"
+  },
+  "actions": {
+    "submitEvidence": "Submit Evidence",
+    "uploadDocument": "Upload Document",
+    "previewUnavailable": "Preview unavailable for {name} in this demonstration"
+  },
+  "dialogs": {
+    "evidenceTitle": "Submit Milestone Evidence",
+    "supportingDocuments": "Supporting documents",
+    "evidenceNotes": "Evidence notes",
+    "uploadTitle": "Upload Document",
+    "documentFile": "Document file",
+    "documentNotes": "Document notes"
+  },
+  "data": {
+    "raiseSummary": "Off-grid solar infrastructure for underserved communities in rural Kenya.",
+    "roles": {
+      "leadInvestor": "Lead investor"
+    },
+    "activities": {
+      "milestoneApproved": {
+        "text": "Milestone {milestone} approved — {amount} marked released in this demo",
+        "time": "{count, plural, one {# hour ago} other {# hours ago}}"
+      },
+      "evidenceRequested": {
+        "text": "Validator requested additional customer evidence",
+        "time": "Milestone {milestone} review · {count, plural, one {# hour ago} other {# hours ago}}"
+      },
+      "contractPreview": {
+        "text": "{contract} demo contract preview created",
+        "time": "{count, plural, one {# day ago} other {# days ago}}"
+      },
+      "firstMilestoneApproved": {
+        "text": "Milestone {milestone} approved — {amount} marked released",
+        "time": "{count, plural, one {# day ago} other {# days ago}}"
+      }
+    },
+    "milestones": {
+      "entity": {
+        "title": "Milestone 1 — Entity Formation & Licensing",
+        "description": "Kenyan entity incorporated and all operating licenses obtained."
+      },
+      "pilot": {
+        "title": "Milestone 2 — Pilot Installation (50 units)",
+        "description": "Fifty solar units deployed in Nakuru County."
+      },
+      "revenue": {
+        "title": "Milestone 3 — Revenue Validation",
+        "description": "Demonstrate recurring revenue from pilot customers. Deadline: May 15, 2026."
+      },
+      "scale": {
+        "title": "Milestone 4 — Scale to 200 Units",
+        "description": "Expand operations across three counties."
+      }
+    },
+    "documents": {
+      "safeAgreement": {
+        "name": "SAFE Agreement — SolarGrid Kenya SPV"
+      },
+      "incorporationCertificate": {
+        "name": "Certificate of Incorporation"
+      },
+      "energyLicense": {
+        "name": "Energy Regulatory License"
+      },
+      "investorPresentation": {
+        "name": "Investor Presentation"
+      },
+      "financialModel": {
+        "name": "Financial Model 2025–2027"
+      },
+      "boardMinutes": {
+        "name": "Board Minutes — Q1"
+      },
+      "pilotReport": {
+        "name": "Pilot Installation Report"
+      },
+      "customerContracts": {
+        "name": "Nakuru Customer Contracts"
+      },
+      "revenuePack": {
+        "name": "Revenue Validation Pack"
+      }
+    }
+  },
+  "tables": {
+    "investor": "Investor",
+    "location": "Location",
+    "committed": "Committed",
+    "share": "Share",
+    "status": "Status",
+    "date": "Date",
+    "milestone": "Milestone",
+    "amount": "Amount",
+    "hash": "Demo Hash"
+  }
+}
