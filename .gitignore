@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 node_modules/
+/.pnpm-store/
 /.pnp
 .pnp.*
 .yarn/*
@@ -11,12 +12,16 @@ node_modules/
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
+# generated caches and test output
+.cache/
+.turbo/
+.vite/
+coverage/
+*.tsbuildinfo
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # production
 /build

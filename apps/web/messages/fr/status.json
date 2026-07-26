@@ -1,0 +1,11 @@
+{
+  "draft": "Brouillon",
+  "evidenceSubmitted": "Preuves soumises",
+  "underReview": "En cours d’examen",
+  "approved": "Approuvé",
+  "releasePending": "Déblocage en attente",
+  "released": "Débloqué",
+  "rejected": "Rejeté",
+  "fundsLocked": "Fonds verrouillés",
+  "fundsReleased": "Fonds débloqués"
+}

@@ -64,7 +64,6 @@ Not implemented:
 - Human verifier decision flow.
 - Safe transaction flow.
 - End-to-end demo state/timeline.
-- Playwright tests.
 - Environment variable examples.
 
 ## Product Boundary
@@ -162,7 +161,6 @@ Add milestone review and release controls:
 - Demo data.
 - Error states.
 - UX polish.
-- Playwright smoke test.
 - Demo runbook.
 - Fallback recording.
 - Responsible AI and compliance statement.

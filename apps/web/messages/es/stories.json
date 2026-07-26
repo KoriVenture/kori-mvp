@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "title": "Historias de éxito — Kori",
+    "description": "Tres perspectivas sobre la coinversión transparente de la diáspora."
+  },
+  "hero": {
+    "eyebrow": "Historias de éxito",
+    "title": "Personas reales. Capital real. <highlight>Impacto real.</highlight>",
+    "description": "Desde gestores que estructuran su primer SPV hasta fundadores que reciben capital por hitos, estas historias abren una nueva era de inversión africana liderada por la diáspora."
+  },
+  "panelTitle": "Impacto de un vistazo",
+  "journeyTitle": "Trayectoria",
+  "cta": {
+    "title": "Escribe tu propia <highlight>historia</highlight>",
+    "description": "Tanto si gestionas como si inviertes o construyes con capital, Kori proporciona la infraestructura.",
+    "primary": "Comenzar",
+    "secondary": "Volver al inicio"
+  },
+  "tags": {
+    "Energy": "Energía",
+    "Agritech": "Agritech",
+    "Edtech": "Edtech",
+    "Kenya": "Kenia",
+    "Ghana": "Ghana",
+    "Ethiopia": "Etiopía",
+    "Hardware": "Hardware",
+    "Pay-as-you-go": "Pago por uso",
+    "Seed Stage": "Etapa semilla",
+    "Diaspora — Toronto": "Diáspora — Toronto"
+  },
+  "fund-manager": {
+    "label": "Gestor de fondos",
+    "role": "Socio director, Sankofa Capital · Accra y Toronto",
+    "quote": "«Pasé dos años intentando incorporar a la diáspora a operaciones africanas con SPV tradicionales. Los costes legales acababan con ellas antes de empezar. Kori lo cambió todo».",
+    "paragraphs": {
+      "one": "Kofi creció en Accra, estudió finanzas en Toronto y trabajó ocho años en capital privado canadiense. Al regresar descubrió que la infraestructura necesaria no existía.",
+      "two": "Las transferencias tardaban de 5 a 7 días y costaban entre un 3 y un 4 %. Estructurar un SPV costaba de 15.000 a 25.000 dólares.",
+      "three": "Con Kori estructuró su primer SPV en menos de una semana, incorporó a 8 inversores de 4 países y desplegó 480.000 dólares en SolarGrid Kenya.",
+      "four": "Hoy gestiona 3 SPV activos y 2,4 millones de dólares en energía, agritech y edtech con transparencia completa sobre cada hito."
+    },
+    "figures": {
+      "aum": "Activos bajo gestión",
+      "spvs": "SPV activos",
+      "deployed": "Capital desplegado",
+      "investors": "Inversores gestionados",
+      "countries": "Países",
+      "setup": "Tiempo medio de creación",
+      "savings": "Ahorro de costes legales"
+    },
+    "timeline": {
+      "joined": {
+        "text": "Se unió a Kori como gestor",
+        "date": "Enero de 2026"
+      },
+      "solar": {
+        "text": "Primer SPV — SolarGrid Kenya (480.000 $)",
+        "date": "Febrero de 2026"
+      },
+      "edu": {
+        "text": "Segundo SPV — EduBridge Ethiopia (250.000 $)",
+        "date": "Marzo de 2026"
+      },
+      "agri": {
+        "text": "Ronda AgriFlow Ghana — 275.000 $ comprometidos",
+        "date": "Abril de 2026"
+      }
+    }
+  },
+  "angel-investor": {
+    "label": "Inversora ángel",
+    "role": "Directora de ingeniería de software · Toronto, Canadá",
+    "quote": "«Quería invertir en África desde hacía años. Tenía el capital y la convicción, pero ningún vehículo fiable. Kori me lo dio».",
+    "paragraphs": {
+      "one": "Amara dejó Ghana a los 19 años y desarrolló una carrera tecnológica en Toronto mientras veía a fundadores africanos resolver problemas más difíciles con mucho menos capital.",
+      "two": "Las redes locales no aceptaban a la diáspora y los fondos exigían un millón de dólares. Los canales informales no ofrecían protección ni visibilidad.",
+      "three": "Kori le dio un vehículo estructurado, transparente y on-chain. Comprometió 80.000 dólares en SolarGrid Kenya con reglas de liberación explícitas.",
+      "four": "En tres meses amplió su cartera a 185.000 dólares en 3 SPV de energía, edtech y agritech."
+    },
+    "figures": {
+      "invested": "Total invertido",
+      "spvs": "SPV activos",
+      "released": "Capital liberado",
+      "milestones": "Hitos verificados",
+      "settlement": "Liquidación",
+      "fees": "Costes de transferencia ahorrados",
+      "first": "Tiempo hasta la primera inversión"
+    },
+    "timeline": {
+      "joined": {
+        "text": "80.000 $ comprometidos en SolarGrid Kenya",
+        "date": "Febrero de 2026"
+      },
+      "release": {
+        "text": "Primer hito — 24.000 $ verificados",
+        "date": "Marzo de 2026"
+      },
+      "expanded": {
+        "text": "Amplió a EduBridge y AgriFlow",
+        "date": "Marzo–abril de 2026"
+      },
+      "portfolio": {
+        "text": "Cartera de 185.000 $, dos operaciones sanitarias",
+        "date": "Abril de 2026"
+      }
+    }
+  },
+  "startup-founder": {
+    "label": "Fundadora de startup",
+    "role": "CEO y cofundadora, SolarGrid Kenya · Nairobi",
+    "quote": "«Cada fondo de Silicon Valley me pedía explicar el mercado keniano. Los inversores de la diáspora necesitaban un vehículo, no una explicación. Kori lo construyó».",
+    "paragraphs": {
+      "one": "Wanjiku, ingeniera mecánica convertida en emprendedora, dedicó tres años a SolarGrid, una empresa solar fuera de red en la Kenia rural.",
+      "two": "Los fondos occidentales no comprendían el mercado y los préstamos locales alcanzaban el 30-50 %. Seis aceleradoras no produjeron capital.",
+      "three": "Mediante Kori, 8 coinversores de la diáspora comprometieron 480.000 dólares a través de un SAFE liquidado en stablecoins.",
+      "four": "Cuatro hitos estructuran los tramos. Completó los dos primeros antes de tiempo, desplegó 50 unidades y recibió 280.000 dólares.",
+      "five": "SolarGrid prepara 200 instalaciones en 3 condados. El tercer hito está en revisión."
+    },
+    "figures": {
+      "raised": "Total captado",
+      "received": "Capital recibido",
+      "investors": "Inversores",
+      "milestones": "Hitos completados",
+      "units": "Unidades solares desplegadas",
+      "capitalTime": "Tiempo del pitch al capital",
+      "fees": "Costes de cambio ahorrados"
+    },
+    "timeline": {
+      "applied": {
+        "text": "Solicitud y conexión con Kofi Mensah",
+        "date": "Enero de 2026"
+      },
+      "committed": {
+        "text": "480.000 $ comprometidos vía SAFE",
+        "date": "Febrero de 2026"
+      },
+      "m1": {
+        "text": "H1 completado — entidad creada, 150.000 $ liberados",
+        "date": "Marzo de 2026"
+      },
+      "m2": {
+        "text": "H2 completado — 50 unidades, 130.000 $ liberados",
+        "date": "Abril de 2026"
+      },
+      "m3": {
+        "text": "H3 en curso — validación de ingresos",
+        "date": "Mayo de 2026"
+      }
+    }
+  }
+}
