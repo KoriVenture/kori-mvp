@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "title": "Panel del gestor de fondos — Kori",
+    "description": "Una demostración localizada de las vistas de gestión de fondos."
+  },
+  "title": "Gestor de fondos",
+  "navigation": {
+    "overview": "Panel",
+    "spvs": "Vehículos SPV",
+    "pipeline": "Flujo de oportunidades",
+    "milestones": "Hitos",
+    "investors": "Inversores"
+  },
+  "pages": {
+    "overview": {
+      "title": "Panel",
+      "description": "Actividad de cartera y capital controlado de un vistazo."
+    },
+    "spvs": {
+      "title": "Vehículos SPV",
+      "description": "Vehículos, compromisos y estado de captación de demostración."
+    },
+    "pipeline": {
+      "title": "Flujo de oportunidades",
+      "description": "Oportunidades desde la prospección hasta el capital de demostración desplegado."
+    },
+    "milestones": {
+      "title": "Seguimiento de hitos",
+      "description": "Evidencias revisadas por personas y progreso de liberación por etapas."
+    },
+    "investors": {
+      "title": "Inversores",
+      "description": "La red de coinversores de demostración de los vehículos Kori."
+    }
+  },
+  "metrics": {
+    "aum": {
+      "label": "Activos gestionados",
+      "detail": "+12,3 % este trimestre"
+    },
+    "activeSpvs": {
+      "label": "SPV activos",
+      "detail": "1 cierre pendiente"
+    },
+    "investors": {
+      "label": "Inversores",
+      "detail": "+4 este mes"
+    },
+    "deployed": {
+      "label": "Capital desplegado",
+      "detail": "66,7 % de los activos"
+    }
+  },
+  "sections": {
+    "recentActivity": "Actividad reciente",
+    "topInvestors": "Principales inversores"
+  },
+  "actions": {
+    "newSpv": "+ Nuevo SPV",
+    "inviteInvestor": "Invitar a un inversor",
+    "addDeal": "+ Añadir oportunidad"
+  },
+  "dialogs": {
+    "spvTitle": "Crear un nuevo SPV",
+    "spvName": "Nombre del SPV",
+    "inviteTitle": "Invitar a un inversor",
+    "investorEmail": "Correo del inversor",
+    "dealTitle": "Añadir al flujo",
+    "companyName": "Nombre de la empresa"
+  },
+  "pipeline": {
+    "sourcing": "Prospección",
+    "diligence": "Diligencia debida",
+    "termSheet": "Term sheet",
+    "deployed": "Desplegado",
+    "amount": {
+      "ask": "{amount} solicitados",
+      "deployed": "{amount} desplegados",
+      "safe": "SAFE de {amount}"
+    }
+  },
+  "data": {
+    "activities": {
+      "milestoneApproved": {
+        "text": "Hito {milestone} aprobado para {spv}",
+        "time": "hace {count, plural, one {# hora} other {# horas}}"
+      },
+      "commitment": {
+        "text": "{investor} comprometió {amount} en {spv}",
+        "time": "hace {count, plural, one {# hora} other {# horas}}"
+      },
+      "contractCreated": {
+        "text": "Contrato inteligente de demostración creado para {spv}",
+        "time": "hace {count, plural, one {# día} other {# días}}"
+      },
+      "agreementSigned": {
+        "text": "{investor} firmó el acuerdo SAFE de demostración",
+        "time": "hace {count, plural, one {# día} other {# días}}"
+      },
+      "trancheReleased": {
+        "text": "Tramo de demostración de {amount} marcado como liberado — hito {milestone} completado",
+        "time": "hace {count, plural, one {# día} other {# días}}"
+      }
+    },
+    "pipeline": {
+      "mediTrack": {
+        "description": "Plataforma de logística sanitaria"
+      },
+      "payShift": {
+        "description": "Infraestructura de pagos móviles"
+      },
+      "cleanWater": {
+        "description": "Tecnología de purificación de agua"
+      },
+      "healthLink": {
+        "description": "Telemedicina para zonas rurales"
+      },
+      "logiChain": {
+        "description": "Optimización de la cadena de suministro"
+      },
+      "agriFlow": {
+        "description": "Plataforma de agricultura de precisión"
+      },
+      "solarGrid": {
+        "description": "Soluciones solares sin conexión a la red"
+      },
+      "eduBridge": {
+        "description": "Plataforma de formación profesional"
+      }
+    }
+  },
+  "tables": {
+    "spv": "Nombre del SPV",
+    "target": "Objetivo",
+    "committed": "Comprometido",
+    "investors": "Inversores",
+    "status": "Estado",
+    "sector": "Sector",
+    "name": "Nombre",
+    "location": "Ubicación",
+    "spvs": "SPV",
+    "joined": "Ingreso"
+  }
+}

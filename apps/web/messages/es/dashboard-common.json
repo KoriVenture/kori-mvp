@@ -1,0 +1,130 @@
+{
+  "navigation": {
+    "overview": "Espacio",
+    "dashboard": "Panel",
+    "capital": "Capital",
+    "network": "Red",
+    "invest": "Invertir",
+    "track": "Seguir",
+    "fundraise": "Captar",
+    "execution": "Ejecución",
+    "resources": "Recursos",
+    "tools": "Herramientas",
+    "simulator": "Simulador de contrato"
+  },
+  "demoNotice": "Datos de demostración únicamente: el MVP de Kori no gestiona fondos reales, no ejecuta transacciones ni ofrece asesoramiento financiero.",
+  "transactionNotice": "Estos son solo registros de demostración. No se movieron fondos reales ni se ejecutó ninguna transacción en blockchain.",
+  "menuOpen": "Abrir el menú del panel",
+  "menuClose": "Cerrar el menú del panel",
+  "menuDescription": "Navegar entre las vistas direccionables del panel.",
+  "navigationLabel": "Navegación del panel",
+  "backHome": "Volver al inicio de Kori",
+  "workspace": "Espacio de mercados privados",
+  "demoUser": "Perfil de demostración",
+  "preferences": "Preferencias de idioma y tema",
+  "milestoneProgress": "Progreso de hitos para {name}",
+  "status": {
+    "accepted": "Aceptado",
+    "active": "Activo",
+    "approved": "Aprobado",
+    "closed": "Cerrada",
+    "confirmed": "Confirmado",
+    "demo": "Demo",
+    "draft": "Borrador",
+    "drafting": "En redacción",
+    "executed": "Ejecutado",
+    "fundraising": "En captación",
+    "in_review": "En revisión",
+    "inProgress": "En curso",
+    "internal": "Interno",
+    "invited": "Invitado",
+    "open": "Abierta",
+    "pending": "Pendiente",
+    "released": "Liberado",
+    "shared": "Compartido",
+    "signed": "Firmado",
+    "verified": "Verificado"
+  },
+  "amountState": {
+    "released": "liberados",
+    "pending": "pendientes",
+    "locked": "bloqueados"
+  },
+  "sectors": {
+    "agritech": "Agritech",
+    "edtech": "Edtech",
+    "energy": "Energía",
+    "fintech": "Fintech",
+    "healthcare": "Salud",
+    "infrastructure": "Infraestructura",
+    "logistics": "Logística"
+  },
+  "countries": {
+    "ethiopia": "Etiopía",
+    "ghana": "Ghana",
+    "kenya": "Kenia"
+  },
+  "instruments": {
+    "convertibleNote": "Nota convertible",
+    "equity": "Capital",
+    "safe": "SAFE"
+  },
+  "transactionTypes": {
+    "commitment": "Compromiso",
+    "release": "Liberación"
+  },
+  "documentCategories": {
+    "compliance": "Cumplimiento",
+    "corporate": "Corporativo",
+    "finance": "Finanzas",
+    "fundraising": "Captación",
+    "governance": "Gobernanza",
+    "legal": "Legal",
+    "milestoneEvidence": "Evidencia de hito"
+  },
+  "date": {
+    "inProgress": "En curso",
+    "pending": "Pendiente"
+  },
+  "milestones": {
+    "solarEntity": {
+      "title": "Constitución de la entidad y licencias",
+      "description": "SPV registrado y documentos legales formalizados."
+    },
+    "solarPilot": {
+      "title": "Instalación piloto (50 unidades)",
+      "description": "Equipos desplegados en el condado de Nakuru."
+    },
+    "solarRevenue": {
+      "title": "Validación de ingresos",
+      "description": "Pendiente de confirmación del validador — quedan 3 días."
+    },
+    "solarScale": {
+      "title": "Escala a 200 unidades",
+      "description": "Expansión en 3 condados."
+    },
+    "eduPlatform": {
+      "title": "Desarrollo de la plataforma y lanzamiento beta",
+      "description": "MVP activo con 500 usuarios beta."
+    },
+    "eduPartnerships": {
+      "title": "Alianza con 10 centros de formación",
+      "description": "7 de 10 alianzas confirmadas."
+    },
+    "eduEnrollments": {
+      "title": "1.000 matrículas pagadas",
+      "description": "Objetivo de ingresos para liberar el tramo completo."
+    },
+    "escrowDeposit": {
+      "title": "Depósito en custodia",
+      "description": "Compromiso de demostración registrado en custodia."
+    }
+  },
+  "dialogs": {
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "submit": "Guardar demo",
+    "success": "Se actualizó el estado local de demostración.",
+    "demoNotice": "Esta acción permanece únicamente en esta página. Nada se guarda, envía, financia, firma ni despliega."
+  }
+}
