@@ -43,7 +43,7 @@ describe("localized messages", () => {
     const catalog = await loadMessages("en");
 
     expect(catalog.landing.hero.eyebrow).toBe(
-      "Diaspora Investment Infrastructure",
+      "Collective investment infrastructure",
     );
     expect(catalog.stories.hero.eyebrow).toBe("Success Stories");
     expect(catalog["capital-map"].hero.eyebrow).toBe("Capital Map");

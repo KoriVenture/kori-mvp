@@ -14,7 +14,9 @@ type DashboardShellProps = {
 
 export function DashboardShell({ children, role }: DashboardShellProps) {
   return (
-    <div className="min-h-dvh bg-background">
+    // Utility register — stands the wild marketing layer down. Dashboards are
+    // read, not experienced: no shear, no mark-bleed, no gradient numerals.
+    <div data-kori-register="utility" className="min-h-dvh bg-background">
       <DashboardDesktopNavigation role={role} />
       <div className="lg:pl-60">
         <DashboardMobileNavigation role={role} />

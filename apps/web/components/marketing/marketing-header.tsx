@@ -11,10 +11,10 @@ import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { Link } from "@/i18n/navigation";
 
 const navigationItems = [
-  { key: "solution", href: "/#solution" },
   { key: "how", href: "/#how" },
-  { key: "why", href: "/#why" },
-  { key: "investors", href: "/#investors" },
+  { key: "thesis", href: "/#thesis" },
+  { key: "opportunity", href: "/#opportunity" },
+  { key: "waitlist", href: "/#waitlist" },
   { key: "stories", href: "/stories" },
   { key: "capitalMap", href: "/capital-map" },
 ] as const;

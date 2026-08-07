@@ -1,14 +1,14 @@
 {
   "meta": {
-    "title": "Kori — Donde el capital encuentra su propósito",
-    "description": "Infraestructura de inversión para la diáspora que conecta a inversores con emprendedores africanos evaluados mediante una experiencia de demostración transparente."
+    "title": "Kori — La inteligencia colectiva mueve el capital",
+    "description": "Kori convierte la experiencia distribuida en decisiones de inversión compartidas, y esas decisiones en capital gobernado y liberado por hitos."
   },
   "navigation": {
     "label": "Navegación principal",
-    "solution": "Solución",
     "how": "Cómo funciona",
-    "why": "Por qué ahora",
-    "investors": "Inversores",
+    "thesis": "Tesis",
+    "opportunity": "Oportunidad",
+    "waitlist": "Lista de espera",
     "stories": "Historias",
     "capitalMap": "Mapa de capital",
     "openMenu": "Abrir navegación",
@@ -16,174 +16,88 @@
     "home": "Inicio de Kori"
   },
   "hero": {
-    "eyebrow": "Infraestructura de inversión para la diáspora",
-    "title": "Donde el <highlight>capital</highlight> encuentra su propósito",
-    "description": "Una plataforma de coinversión basada en blockchain que conecta a inversores de la diáspora con emprendedores africanos evaluados: visible, trazable y diseñada para perdurar.",
+    "eyebrow": "Infraestructura de inversión colectiva",
+    "title": "La inteligencia colectiva <highlight>mueve</highlight> el capital",
+    "description": "Una plataforma de coinversión que conecta a inversores de la diáspora con emprendedores africanos evaluados: visible, trazable y diseñada para perdurar.",
     "primaryAction": "Unirse a la lista",
-    "secondaryAction": "Más información",
-    "scroll": "Desplazar",
-    "walletDeferred": "Conexión de cartera aplazada"
-  },
-  "statistics": {
-    "fundingGap": {
-      "label": "Brecha de financiación",
-      "description": "Necesidades de capital no cubiertas de las startups africanas en 2024: estructurales, no cíclicas."
-    },
-    "vcDecline": {
-      "label": "Caída del capital riesgo",
-      "description": "La financiación de riesgo africana cayó un 53 % entre 2022 y 2024, no porque desaparecieran los fundadores, sino porque lo hizo el capital."
-    },
-    "remittances": {
-      "label": "Remesas de la diáspora",
-      "description": "Flujos anuales hacia África: capital paciente y alineado sin un vehículo de inversión estructurado."
-    }
-  },
-  "profiles": {
-    "eyebrow": "Comenzar",
-    "title": "Selecciona tu <highlight>perfil</highlight>",
-    "description": "Tanto si gestionas fondos como si inviertes en startups o las construyes, Kori está hecho para ti.",
-    "start": "Comenzar aquí",
-    "stories": "Conoce nuestras historias de éxito",
-    "fundManager": {
-      "title": "Gestor de fondos",
-      "description": "Estructura SPV, gestiona relaciones con inversores y despliega capital mediante infraestructura on-chain."
-    },
-    "angelInvestor": {
-      "title": "Inversor ángel",
-      "description": "Coinvierte en startups africanas evaluadas con transparencia, seguimiento de hitos y liquidación en stablecoins."
-    },
-    "startupFounder": {
-      "title": "Fundador de startup",
-      "description": "Accede al capital de la diáspora, recibe financiación por hitos y conecta con inversores que comprenden tu mercado."
-    }
-  },
-  "problem": {
-    "label": "El problema",
-    "title": "Una estructura de capital rota a ambos lados del corredor",
-    "description": "Los emprendedores africanos afrontan préstamos al 30-50 %, financiación pública inaccesible y ninguna infraestructura para llegar al capital privado internacional. Los inversores de la diáspora poseen una ventaja de conocimiento estructural que ninguna diligencia puede replicar. Ninguna plataforma los conecta.",
-    "items": {
-      "01": {
-        "title": "La deuda es irracional",
-        "description": "Los préstamos bancarios africanos tienen tipos del 30 al 50 %. Para empresas jóvenes, la deuda no es solo desaconsejable: es matemáticamente destructiva."
+    "secondaryAction": "Leer la tesis",
+    "stance": {
+      "ambition": {
+        "label": "Ambición",
+        "value": "Ve donde tu capital no llegaría solo."
       },
-      "02": {
-        "title": "El capital público es un callejón sin salida",
-        "description": "Los procesos son tan pesados que muchos fundadores se excluyen racionalmente de un sistema sin garantía de éxito."
-      },
-      "03": {
-        "title": "El capital internacional exige una red inexistente",
-        "description": "Acceder al capital privado occidental requiere relaciones que la mayoría de emprendedores africanos no tiene y ninguna infraestructura cubre esa brecha."
-      },
-      "04": {
-        "title": "El capital de la diáspora no tiene destino",
-        "description": "Profesionales con conocimiento profundo y capital disponible quedan fuera de un vehículo estructurado y fiable."
+      "promise": {
+        "label": "Promesa",
+        "value": "Invierte más allá de tu red, con <em>confianza</em>."
       }
+    }
+  },
+  "marketProof": {
+    "eyebrow": "Prueba de mercado",
+    "sources": "Fuentes — pendientes",
+    "stats": {
+      "remittances": {
+        "label": "Remesas anuales a África",
+        "note": "Capital paciente y alineado, sin un vehículo de inversión estructurado."
+      },
+      "financingGap": {
+        "label": "Brecha de financiación de las mipymes",
+        "note": "Demanda de capital no cubierta en las pequeñas empresas africanas en crecimiento."
+      },
+      "venture": {
+        "label": "Capital riesgo que llega a África",
+        "note": "Una fracción del despliegue global, concentrada en cuatro mercados."
+      }
+    }
+  },
+  "how": {
+    "eyebrow": "Cómo funciona",
+    "title": "Los mercados los entienden las <highlight>personas</highlight>.",
+    "description": "Kori convierte la experiencia distribuida en decisiones de inversión compartidas, y esas decisiones en capital gobernado y liberado por hitos.",
+    "steps": {
+      "signals": "Los expertos aportan señales y evidencia.",
+      "diligence": "Los inversores realizan una diligencia compartida.",
+      "spv": "El grupo constituye un SPV gobernado.",
+      "onboarding": "Los inversores se comprometen mediante un proceso conforme.",
+      "settlement": "El capital se liquida a través de fronteras.",
+      "milestones": "Los fondos se liberan contra hitos verificados."
+    }
+  },
+  "thesis": {
+    "eyebrow": "La tesis",
+    "title": "Por qué importa la <cool>inteligencia colectiva</cool>",
+    "description": "El conocimiento del mercado está distribuido. Ningún punto de vista por sí solo reúne lo suficiente para valorar una oportunidad de mercado frontera.",
+    "pivot": "Distintas personas poseen distintas piezas de <em>evidencia</em> relevante para invertir. Kori estructura esas contribuciones en un registro de decisión auditable.",
+    "contributors": {
+      "sectorExperts": "Expertos sectoriales",
+      "localOperators": "Operadores locales",
+      "diasporaProfessionals": "Profesionales de la diáspora",
+      "founders": "Fundadores",
+      "institutionalInvestors": "Inversores institucionales",
+      "independentVerifiers": "Verificadores independientes"
     }
   },
   "solution": {
-    "label": "La solución",
-    "title": "El capital se convierte en <highlight>arquitectura</highlight>: visible, trazable y duradera",
-    "quote": "«La plataforma que conecta a inversores de la diáspora con emprendedores africanos: estructurada, on-chain y diseñada para ambos lados del corredor».",
-    "description": "Kori permite agrupar capital y coinvertir en startups africanas mediante una infraestructura basada en contratos inteligentes y stablecoins. Cada transacción es segura, transparente y eficiente.",
-    "action": "Solicitar acceso anticipado",
-    "pillars": {
-      "transparency": {
-        "title": "Transparencia",
-        "description": "Cada proyecto, cada dólar y cada hito son visibles. La blockchain no es el producto; la visibilidad sí."
+    "eyebrow": "La solución",
+    "title": "El capital se convierte en <cool>arquitectura</cool>",
+    "description": "Los inversores de la diáspora agrupan capital y coinvierten mediante contratos inteligentes y liquidación en stablecoins. Cada transacción trazable, cada hito visible.",
+    "accent": "La prosperidad surge cuando el conocimiento fluye junto.",
+    "panel": {
+      "eyebrow": "Oportunidad destacada",
+      "title": "Los mercados que entiendes de otra manera.",
+      "description": "Descubre a fundadores que resuelven los problemas que te importan, cerca de ti y en todo el mundo.",
+      "index": {
+        "expertise": "01 Experiencia",
+        "network": "02 Red",
+        "discovery": "03 Descubrimiento"
       },
-      "purpose": {
-        "title": "Propósito",
-        "description": "Capital que construye activos reales con inversores pacientes y alineados que comprenden los mercados."
-      },
-      "access": {
-        "title": "Acceso",
-        "description": "Infraestructura reconstruida para quienes quedaron excluidos, con la diáspora como clase inversora principal."
-      },
-      "rails": {
-        "title": "Canales stablecoin",
-        "description": "La liquidación en stablecoins reduce fricción bancaria, costes de transferencias y conversiones monetarias."
-      }
-    }
-  },
-  "process": {
-    "label": "Cómo funciona",
-    "title": "Un modelo de coinversión construido para el <highlight>corredor</highlight>",
-    "description": "Un inversor líder selecciona y respalda cada operación. La diáspora participa con las mismas condiciones económicas. Los contratos inteligentes estructuran y las stablecoins liquidan el capital.",
-    "steps": {
-      "vetted": {
-        "role": "Fundador",
-        "title": "Flujo de operaciones evaluadas",
-        "description": "Las startups africanas pasan por el proceso estructurado de Kori. Un inversor líder suscribe la operación y selecciona las oportunidades que cumplen los criterios."
-      },
-      "syndicate": {
-        "role": "Inversor",
-        "title": "Coinversión sindicada",
-        "description": "Los inversores de la diáspora participan con las mismas condiciones. Carteras multifirma estructuran el capital on-chain."
-      },
-      "settlement": {
-        "role": "Infraestructura",
-        "title": "Liquidación en stablecoins",
-        "description": "El capital fluye mediante stablecoins, reduciendo riesgo de cambio, demoras y costes bancarios."
-      }
-    }
-  },
-  "whyNow": {
-    "badge": "Momento de mercado",
-    "quote": "«Las mejores operaciones africanas de la próxima década se pierden hoy, no porque falten fundadores, sino porque <highlight>los inversores no están conectados con ellos.</highlight>»",
-    "attribution": "Kori — Tesis de inversión, 2025",
-    "signals": {
-      "cycle": {
-        "title": "Mínimo del ciclo = punto de entrada",
-        "description": "El mercado africano de capital riesgo tocó fondo en 2024. Las valoraciones están comprimidas, hay fundadores de calidad y se forma la próxima ola de capital."
-      },
-      "infrastructure": {
-        "title": "La infraestructura on-chain madura",
-        "description": "Los SPV financiados con stablecoins y la infraestructura on-chain confirman la convergencia hacia este modo de liquidación."
-      },
-      "asymmetry": {
-        "title": "La asimetría informativa es la ventaja de Kori",
-        "description": "La diáspora está estructuralmente posicionada para financiar energía, salud, agritech, edtech e infraestructura."
-      },
-      "validation": {
-        "title": "El mercado ya validó la necesidad",
-        "description": "Modelos anteriores probaron la demanda, pero carecían de infraestructura. Kori se diseña en torno a la visibilidad y la estructura operativa."
-      }
-    }
-  },
-  "audience": {
-    "investors": {
-      "eyebrow": "Para inversores",
-      "tagline": "Tus raíces. Tus rendimientos.",
-      "emphasis": "Capital de la diáspora desplegado con conocimiento.",
-      "title": "Despliega capital en mercados que comprendes",
-      "description": "Tienes la red, el conocimiento y el capital. Faltaba un vehículo estructurado, fiable y on-chain diseñado para ti.",
-      "items": {
-        "one": "Coinvertir con líderes evaluados en condiciones económicas idénticas",
-        "two": "Diversificar en mercados de alto crecimiento",
-        "three": "Visibilidad completa de flujos de capital e hitos",
-        "four": "Liquidación en stablecoins sin riesgo de transferencia ni conversión",
-        "five": "Tickets de 100.000 a 500.000 dólares, por operación o cartera"
-      }
-    },
-    "founders": {
-      "eyebrow": "Para fundadores",
-      "tagline": "Tus oportunidades. Tu crecimiento.",
-      "emphasis": "Fundadores africanos respaldados por quienes comprenden.",
-      "title": "Accede a capital paciente de inversores que ven lo que tú ves",
-      "description": "Kori te conecta con inversores que conocen tu mercado desde dentro y lo respaldan con convicción.",
-      "items": {
-        "one": "Acceder a una red evaluada de coinversores en Norteamérica y Europa",
-        "two": "Obtener financiación estructurada sin préstamos bancarios al 30-50 %",
-        "three": "Recibir capital en stablecoins y reducir conversiones monetarias",
-        "four": "Desembolsar por hitos con trazabilidad completa",
-        "five": "Enfocarse de pre-seed a serie A en Etiopía, Kenia, Ghana y Sudáfrica"
-      }
+      "action": "Crea tu perfil"
     }
   },
   "waitlist": {
     "eyebrow": "Acceso anticipado",
     "title": "Construye el futuro. <highlight>Hazlo tuyo.</highlight>",
-    "description": "Únete a la lista para acceder primero a operaciones y ayudar a dar forma a la plataforma.",
+    "description": "Sé de los primeros en acceder a operaciones, dar forma a la plataforma e invertir en la África que los inversores se han estado perdiendo.",
     "emailLabel": "Correo electrónico",
     "placeholder": "tu@correo.com",
     "submit": "Unirse",
@@ -192,8 +106,8 @@
     "demoNotice": "Solo demostración: no se crea ningún registro remoto."
   },
   "footer": {
-    "tagline": "Donde el capital encuentra su propósito",
-    "copyright": "© 2025 Kori · kori.finance · Confidencial"
+    "tagline": "La inteligencia colectiva mueve el capital",
+    "copyright": "© 2025 Kori Venture · Montreal · No constituye una oferta de venta de valores."
   },
   "workflow": {
     "label": "Flujo de demostración",

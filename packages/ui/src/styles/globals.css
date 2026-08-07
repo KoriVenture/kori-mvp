@@ -71,30 +71,81 @@
   --kori-light-subtle-text: #7a7269;
   --kori-light-destructive: #b83c3c;
 
-  /* Canonical light runtime aliases. */
-  --kori-bg-primary: #f5f2ec;
-  --kori-bg-secondary: #ebe7df;
-  --kori-bg-tertiary: #e2ded6;
+  /* Kori signature palette — fills, accents, and large type only.
+     Derived from the brand logo/color/typography system. */
+  --kori-coral: #f5513e;
+  --kori-orange: #f98515;
+  --kori-cyan: #0590c6;
+  --kori-teal-brand: #049c9f;
+  /* Text-safe variants — clear 5:1 on ivory for copy under ~24px. */
+  --kori-coral-ink: #c1301f;
+  --kori-orange-ink: #9a4e00;
+  --kori-cyan-ink: #04688e;
+  --kori-teal-ink: #036f71;
+  /* Core neutrals. */
+  --kori-midnight: #030c12;
+  --kori-sand-brand: #e8e0d5;
+  --kori-white: #ffffff;
+  --kori-ivory: #f7f3ec;
+  /* Signature gradients. */
+  --kori-grad-warm: linear-gradient(100deg, #f98515 0%, #f5513e 100%);
+  --kori-grad-cool: linear-gradient(100deg, #049c9f 0%, #0590c6 100%);
+
+  /* 8pt spacing rhythm. */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 16px;
+  --s-4: 24px;
+  --s-5: 32px;
+  --s-6: 48px;
+  --s-7: 64px;
+  --s-8: 96px;
+  --s-9: 128px;
+  --s-10: 160px;
+
+  /* 12-column grid, brand geometry, motion. */
+  --grid-cols: 12;
+  --grid-gutter: var(--s-4);
+  --radius-pill: 999px;
+  --shear: -11deg;
+  --shear-inv: 11deg;
+  --shear-tan: 0.1944;
+  --wild-bleed: clamp(40px, 7vw, 120px);
+  --kori-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --kori-dur: 220ms;
+
+  /* Canonical light runtime aliases — repointed onto the coral brand. */
+  --kori-bg-primary: var(--kori-ivory);
+  --kori-bg-secondary: var(--kori-sand-brand);
+  --kori-bg-tertiary: #ded5c8;
   --kori-bg-rim: #d6d0c6;
   --kori-bg-rim-strong: #c4beb4;
-  --kori-cowrie-gold: #b07e2f;
-  --kori-growth-teal: #1d6e52;
+  --kori-cowrie-gold: var(--kori-coral-ink);
+  --kori-growth-teal: var(--kori-teal-ink);
   --kori-red: #b83c3c;
-  --kori-nav-bg: rgb(245 242 236 / 95%);
+  --kori-nav-bg: rgb(247 243 236 / 95%);
   --kori-card-bg: #ffffff;
-  --kori-section-alt: #ebe7df;
-  --kori-ring-base: 176 126 47;
-  --kori-grain-opacity: 0.15;
+  --kori-section-alt: var(--kori-sand-brand);
+  --kori-ring-base: 245 81 62;
+  --kori-grain-opacity: 0.12;
   --kori-glow-opacity: 0.1;
-  --kori-watermark-opacity: 0.06;
-  --kori-teal-border: rgb(29 110 82 / 35%);
+  --kori-watermark-opacity: 0.05;
+  --kori-teal-border: rgb(4 156 159 / 35%);
+
+  /* Brand semantic helpers consumed by the signature utilities. */
+  --kori-label: var(--kori-cyan-ink);
+  --kori-ink-faint: #8a939b;
+  --kori-rule: rgb(3 12 18 / 10%);
+  --kori-rule-strong: rgb(3 12 18 / 22%);
 
   --radius: 0.375rem;
-  --font-display: var(--font-jost), "Jost", sans-serif;
-  --font-edit: var(--font-cormorant), "Cormorant Garamond", serif;
-  --font-body: var(--font-carlito), "Carlito", sans-serif;
+  --font-display: var(--font-manrope), "Manrope", sans-serif;
+  --font-edit:
+    var(--font-fraunces), "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: var(--font-manrope), "Manrope", sans-serif;
   --font-mono:
-    "SFMono-Regular", "Cascadia Code", "Fira Code", Consolas, monospace;
+    var(--font-plex-mono), "IBM Plex Mono", ui-monospace, "SF Mono", Menlo,
+    monospace;
   --font-editorial: var(--font-edit);
   --font-interface: var(--font-display);
   --font-data: var(--font-mono);
@@ -104,13 +155,13 @@
 
   /* Light is the default; dark is selected by next-themes or the OS. */
   --background: var(--kori-bg-primary);
-  --foreground: #0d0d0b;
+  --foreground: var(--kori-midnight);
   --card: var(--kori-card-bg);
   --card-foreground: var(--kori-obsidian);
   --popover: var(--kori-card-bg);
   --popover-foreground: var(--kori-obsidian);
   --primary: var(--kori-cowrie-gold);
-  --primary-foreground: var(--kori-obsidian);
+  --primary-foreground: var(--kori-ivory);
   --secondary: var(--kori-bg-tertiary);
   --secondary-foreground: var(--kori-border-source);
   --muted: var(--kori-bg-secondary);
@@ -125,29 +176,35 @@
   --destructive-foreground: var(--kori-text-primary);
   --border: var(--kori-bg-rim-strong);
   --input: var(--kori-bg-rim);
-  --ring: var(--kori-growth-teal);
+  --ring: var(--kori-cyan);
 }
 
 [data-theme="dark"] {
-  --kori-bg-primary: #0d0d0b;
-  --kori-bg-secondary: #1a1916;
-  --kori-bg-tertiary: #222220;
-  --kori-bg-rim: #2a2824;
-  --kori-bg-rim-strong: #3a3830;
-  --kori-cowrie-gold: #c9913a;
-  --kori-growth-teal: #1d6e52;
+  --kori-bg-primary: var(--kori-midnight);
+  --kori-bg-secondary: #0a1620;
+  --kori-bg-tertiary: #0f1e29;
+  --kori-bg-rim: #16242f;
+  --kori-bg-rim-strong: #22333f;
+  --kori-cowrie-gold: var(--kori-orange);
+  --kori-growth-teal: var(--kori-teal-brand);
   --kori-red: #c04848;
-  --kori-nav-bg: rgb(13 13 11 / 95%);
-  --kori-card-bg: #0d0d0b;
-  --kori-section-alt: #1a1916;
-  --kori-ring-base: 201 145 58;
+  --kori-nav-bg: rgb(3 12 18 / 95%);
+  --kori-card-bg: #0a1620;
+  --kori-section-alt: #0a1620;
+  --kori-ring-base: 249 133 21;
   --kori-grain-opacity: 0.4;
   --kori-glow-opacity: 0.07;
   --kori-watermark-opacity: 0.04;
-  --kori-teal-border: rgb(29 110 82 / 40%);
+  --kori-teal-border: rgb(4 156 159 / 40%);
+
+  /* Brand semantic helpers — full-strength accents clear AA on midnight. */
+  --kori-label: var(--kori-teal-brand);
+  --kori-ink-faint: #67737d;
+  --kori-rule: rgb(247 243 236 / 12%);
+  --kori-rule-strong: rgb(247 243 236 / 28%);
 
   --background: var(--kori-bg-primary);
-  --foreground: #f5f2ec;
+  --foreground: var(--kori-ivory);
   --card: var(--kori-card-bg);
   --card-foreground: var(--kori-text-primary);
   --popover: var(--kori-bg-secondary);
@@ -169,7 +226,7 @@
   --destructive-foreground: var(--kori-text-primary);
   --border: var(--kori-bg-rim-strong);
   --input: var(--kori-bg-rim);
-  --ring: var(--kori-gold-light);
+  --ring: var(--kori-cyan);
 }
 
 @layer base {
@@ -547,4 +604,731 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* ============================================================
+   KORI — BRAND EXPRESSIVE LAYER
+   Signature marketing surfaces derived from the logo/color/type
+   system: sheared sections, overprint blend, mega Fraunces type.
+   Utility register (dashboards) stands this layer down; see tail.
+   ============================================================ */
+
+/* --- Per-section theming. Flip a subtree's surface + ink + accents. --- */
+.kori-light,
+[data-kori-theme="light"] {
+  --background: var(--kori-ivory);
+  --card: var(--kori-white);
+  --foreground: var(--kori-midnight);
+  --muted-foreground: #55606a;
+  --kori-ink-faint: #8a939b;
+  --kori-rule: rgb(3 12 18 / 10%);
+  --kori-rule-strong: rgb(3 12 18 / 22%);
+  --kori-label: var(--kori-cyan-ink);
+  --primary: var(--kori-coral-ink);
+  --primary-foreground: var(--kori-ivory);
+  --border: var(--kori-bg-rim-strong);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.kori-sand,
+[data-kori-theme="sand"] {
+  --background: var(--kori-sand-brand);
+  --card: var(--kori-ivory);
+  --foreground: var(--kori-midnight);
+  --muted-foreground: #4e5761;
+  --kori-ink-faint: #7c858e;
+  --kori-rule: rgb(3 12 18 / 14%);
+  --kori-rule-strong: rgb(3 12 18 / 26%);
+  --kori-label: var(--kori-cyan-ink);
+  --primary: var(--kori-coral-ink);
+  --primary-foreground: var(--kori-ivory);
+  --border: var(--kori-bg-rim-strong);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.kori-dark,
+[data-kori-theme="dark"] {
+  --background: var(--kori-midnight);
+  --card: #0a1620;
+  --foreground: var(--kori-ivory);
+  --muted-foreground: #9aa6b0;
+  --kori-ink-faint: #67737d;
+  --kori-rule: rgb(247 243 236 / 12%);
+  --kori-rule-strong: rgb(247 243 236 / 28%);
+  --kori-label: var(--kori-teal-brand);
+  --primary: var(--kori-orange);
+  --primary-foreground: var(--kori-midnight);
+  --border: #22333f;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+@layer components {
+  /* --- Mono labels --- */
+  .kori-eyebrow {
+    display: block;
+    margin-bottom: var(--s-3);
+    color: var(--kori-label);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .kori-index-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .kori-index-list > li:nth-child(3n + 1) {
+    color: var(--kori-orange);
+  }
+
+  .kori-index-list > li:nth-child(3n + 2) {
+    color: var(--kori-teal-brand);
+  }
+
+  .kori-index-list > li:nth-child(3n + 3) {
+    color: var(--kori-cyan);
+  }
+
+  /* --- Grid --- */
+  .kori-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    gap: var(--grid-gutter);
+  }
+
+  .kori-span-4 {
+    grid-column: span 4;
+  }
+  .kori-span-5 {
+    grid-column: span 5;
+  }
+  .kori-span-6 {
+    grid-column: span 6;
+  }
+  .kori-span-7 {
+    grid-column: span 7;
+  }
+
+  /* --- Mega display type --- */
+  .kori-mega {
+    margin: 0 0 var(--s-5);
+    color: var(--foreground);
+    font-family: var(--font-editorial);
+    font-variation-settings: "SOFT" 0, "WONK" 1, "opsz" 144;
+    font-size: clamp(52px, 11.8vw, 180px);
+    font-weight: 400;
+    line-height: 0.84;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+    hyphens: none;
+  }
+
+  .kori-mega em,
+  .kori-mega .accent {
+    background-image: var(--kori-grad-warm);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+
+  .kori-mega .cool {
+    background-image: var(--kori-grad-cool);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .kori-lede {
+    max-width: 62ch;
+    color: var(--foreground);
+    font-size: clamp(17px, 1.5vw, 19px);
+    line-height: 1.6;
+  }
+
+  .kori-accent {
+    color: var(--primary);
+    font-family: var(--font-editorial);
+    font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 144;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  /* --- Pill actions --- */
+  .kori-btn {
+    display: inline-flex;
+    gap: var(--s-2);
+    align-items: center;
+    justify-content: center;
+    padding: 15px var(--s-5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.005em;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform var(--kori-dur) var(--kori-ease),
+      background-color var(--kori-dur) var(--kori-ease),
+      color var(--kori-dur) var(--kori-ease),
+      border-color var(--kori-dur) var(--kori-ease);
+  }
+
+  .kori-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .kori-btn--primary {
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+
+  .kori-dark .kori-btn--primary,
+  [data-kori-theme="dark"] .kori-btn--primary {
+    background-color: var(--kori-orange);
+    color: var(--kori-midnight);
+  }
+
+  .kori-btn--ghost {
+    border-color: var(--kori-rule-strong);
+    background-color: transparent;
+    color: var(--foreground);
+  }
+
+  .kori-btn--ghost:hover {
+    border-color: var(--foreground);
+  }
+
+  .kori-btn--wild {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+
+  .kori-btn--wild::after {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: "";
+    background-image: var(--kori-grad-warm);
+    transform: translateX(-101%) skewX(var(--shear));
+    transition: transform 420ms var(--kori-ease);
+  }
+
+  .kori-btn--wild:hover {
+    color: var(--kori-white);
+  }
+
+  .kori-btn--wild:hover::after {
+    transform: translateX(0) skewX(var(--shear));
+  }
+
+  /* --- Rules --- */
+  .kori-rule--accent {
+    width: 100%;
+    height: 2px;
+    margin: var(--s-4) 0;
+    border: 0;
+    background-color: var(--kori-coral);
+  }
+
+  .kori-slash {
+    height: clamp(6px, 1vw, 12px);
+    margin-block: var(--s-7);
+    border: 0;
+    background-image: var(--kori-grad-warm);
+    transform: skewY(var(--shear));
+  }
+
+  /* --- Featured dark panel with architectural grid --- */
+  .kori-panel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: var(--s-6);
+    border-radius: var(--radius-lg);
+    background-color: var(--kori-midnight);
+  }
+
+  .kori-panel--wild::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: "";
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(
+        to right,
+        rgb(247 243 236 / 7%) 0 1px,
+        transparent 1px calc(100% / 12)
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        rgb(247 243 236 / 4%) 0 1px,
+        transparent 1px 64px
+      );
+  }
+
+  .kori-panel--wild::after {
+    position: absolute;
+    z-index: -1;
+    inset-block-start: -30%;
+    inset-inline-end: -18%;
+    width: 62%;
+    aspect-ratio: 1;
+    content: "";
+    border-radius: 50%;
+    background-image: var(--kori-grad-cool);
+    opacity: 0.38;
+    filter: blur(72px);
+  }
+
+  /* --- Stats --- */
+  .kori-stat__value {
+    display: block;
+    margin-bottom: var(--s-2);
+    color: var(--foreground);
+    font-family: var(--font-editorial);
+    font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 144;
+    font-size: clamp(38px, 4vw, 56px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .kori-stat__label {
+    color: var(--kori-label);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .kori-stat__note {
+    max-width: 34ch;
+    margin-top: var(--s-3);
+    color: var(--muted-foreground);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .kori-stat--wild .kori-stat__value {
+    background-image: var(--kori-grad-warm);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    font-size: clamp(56px, 8.5vw, 132px);
+    line-height: 0.86;
+    letter-spacing: -0.04em;
+  }
+
+  .kori-stat--wild:nth-of-type(even) .kori-stat__value {
+    background-image: var(--kori-grad-cool);
+  }
+
+  /* --- Process chain: an ordered sequence --- */
+  .kori-process {
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: kori-step;
+  }
+
+  .kori-process > li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: var(--s-4);
+    align-items: start;
+    padding-block: var(--s-4);
+    counter-increment: kori-step;
+  }
+
+  .kori-process > li::after {
+    position: absolute;
+    inset-block: calc(var(--s-4) + 26px) calc(var(--s-4) * -1);
+    inset-inline-start: 13px;
+    width: 1px;
+    content: "";
+    background-color: var(--kori-rule-strong);
+  }
+
+  .kori-process > li:last-child::after {
+    display: none;
+  }
+
+  .kori-process > li::before {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background-color: var(--foreground);
+    color: var(--background);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.9;
+    letter-spacing: 0.08em;
+    content: counter(kori-step, decimal-leading-zero);
+  }
+
+  .kori-process > li:nth-child(4n + 1)::before {
+    background-color: var(--kori-orange);
+    color: var(--kori-midnight);
+  }
+  .kori-process > li:nth-child(4n + 2)::before {
+    background-color: var(--kori-coral);
+    color: var(--kori-white);
+  }
+  .kori-process > li:nth-child(4n + 3)::before {
+    background-color: var(--kori-cyan);
+    color: var(--kori-white);
+  }
+  .kori-process > li:nth-child(4n + 4)::before {
+    background-color: var(--kori-teal-brand);
+    color: var(--kori-white);
+  }
+
+  .kori-process__text {
+    max-width: 46ch;
+    margin: 2px 0 0;
+    color: var(--foreground);
+    font-size: clamp(17px, 1.7vw, 21px);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  /* --- Contributors: an unordered set --- */
+  .kori-contributors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    border: 1px solid var(--kori-rule);
+    background-color: var(--kori-rule);
+    list-style: none;
+  }
+
+  .kori-contributors > li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    padding: var(--s-5) var(--s-4);
+    background-color: var(--background);
+  }
+
+  .kori-contributors > li::before {
+    display: block;
+    width: 30px;
+    height: 4px;
+    content: "";
+    transform: skewX(var(--shear));
+  }
+
+  .kori-contributors > li:nth-child(6n + 1)::before {
+    background-color: var(--kori-orange);
+  }
+  .kori-contributors > li:nth-child(6n + 2)::before {
+    background-color: var(--kori-coral);
+  }
+  .kori-contributors > li:nth-child(6n + 3)::before {
+    background-image: var(--kori-grad-warm);
+  }
+  .kori-contributors > li:nth-child(6n + 4)::before {
+    background-color: var(--kori-cyan);
+  }
+  .kori-contributors > li:nth-child(6n + 5)::before {
+    background-color: var(--kori-teal-brand);
+  }
+  .kori-contributors > li:nth-child(6n + 6)::before {
+    background-image: var(--kori-grad-cool);
+  }
+
+  .kori-contributors b {
+    color: var(--foreground);
+    font-family: var(--font-body);
+    font-size: clamp(16px, 1.5vw, 19px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* --- Pivot: the load-bearing claim, once per view --- */
+  .kori-pivot {
+    max-width: 30ch;
+    margin: var(--s-6) 0 0;
+    padding-inline-start: var(--s-5);
+    border-inline-start: 3px solid var(--kori-coral);
+    color: var(--foreground);
+    font-family: var(--font-editorial);
+    font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 144;
+    font-size: clamp(22px, 2.7vw, 34px);
+    font-weight: 400;
+    line-height: 1.28;
+    letter-spacing: -0.02em;
+  }
+
+  .kori-pivot em {
+    color: var(--primary);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* --- Stance: ambition / promise pair under the hero CTA --- */
+  .kori-stance {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: var(--s-5);
+    row-gap: 0;
+    align-items: baseline;
+    max-width: 46ch;
+    margin: var(--s-7) 0 0;
+    border-top: 1px solid var(--kori-rule);
+  }
+
+  .kori-stance dt {
+    padding-block: var(--s-4);
+    color: var(--kori-label);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .kori-stance dd {
+    margin: 0;
+    padding-block: var(--s-4);
+    color: var(--foreground);
+    font-family: var(--font-editorial);
+    font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 144;
+    font-size: clamp(19px, 2vw, 26px);
+    font-weight: 400;
+    line-height: 1.32;
+    letter-spacing: -0.018em;
+  }
+
+  .kori-stance dt:not(:first-of-type),
+  .kori-stance dt:not(:first-of-type) + dd {
+    border-top: 1px solid var(--kori-rule);
+  }
+
+  .kori-stance dd em {
+    color: var(--primary);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* --- The mark, rebuilt at architectural scale and bled off-canvas --- */
+  .kori-mark-bleed {
+    position: absolute;
+    z-index: 0;
+    inset-block: -10%;
+    inset-inline-end: calc(var(--wild-bleed) * -1);
+    width: min(46vw, 620px);
+    pointer-events: none;
+    isolation: isolate;
+    opacity: 0.92;
+  }
+
+  .kori-mark-bleed b {
+    position: absolute;
+    display: block;
+    transform-origin: top left;
+    mix-blend-mode: multiply;
+  }
+
+  .kori-dark .kori-mark-bleed b,
+  [data-kori-theme="dark"] .kori-mark-bleed b {
+    mix-blend-mode: screen;
+  }
+
+  .kori-mark-bleed b:nth-child(1) {
+    inset: 6% auto auto 14%;
+    width: 15%;
+    height: 44%;
+    background: var(--kori-orange);
+    transform: skewY(var(--shear-inv));
+  }
+
+  .kori-mark-bleed b:nth-child(2) {
+    inset: 4% 6% auto auto;
+    width: 46%;
+    height: 46%;
+    background: var(--kori-coral);
+    clip-path: polygon(100% 0, 100% 28%, 22% 100%, 0 100%, 0 72%, 78% 0);
+  }
+
+  .kori-mark-bleed b:nth-child(3) {
+    inset: auto 6% 6% auto;
+    width: 46%;
+    height: 46%;
+    background: var(--kori-cyan);
+    clip-path: polygon(0 0, 22% 0, 100% 72%, 100% 100%, 78% 100%, 0 28%);
+  }
+
+  .kori-mark-bleed b:nth-child(4) {
+    inset: auto auto 6% 14%;
+    width: 15%;
+    height: 44%;
+    background: var(--kori-teal-brand);
+    transform: skewY(var(--shear-inv));
+  }
+
+  /* --- Overprint: stacked colour fields that blend where they cross --- */
+  .kori-overprint {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .kori-overprint > .field {
+    position: absolute;
+    border-radius: 3px;
+    mix-blend-mode: multiply;
+    will-change: transform;
+  }
+
+  .kori-dark .kori-overprint > .field,
+  [data-kori-theme="dark"] .kori-overprint > .field {
+    mix-blend-mode: screen;
+  }
+
+  .kori-overprint > .field--orange {
+    background: var(--kori-orange);
+  }
+  .kori-overprint > .field--cyan {
+    background: var(--kori-cyan);
+  }
+  .kori-overprint > .field--teal {
+    background: var(--kori-teal-brand);
+  }
+
+  /* --- Shear: sections stop being rectangles --- */
+  .kori-shear {
+    position: relative;
+    margin-block: calc(var(--shear-tan) * -50vw);
+    padding-block: calc(var(--s-9) + var(--shear-tan) * 50vw);
+    clip-path: polygon(
+      0 calc(var(--shear-tan) * 100vw * 0.5),
+      100% 0,
+      100% calc(100% - var(--shear-tan) * 100vw * 0.5),
+      0 100%
+    );
+  }
+
+  .kori-shear--up {
+    clip-path: polygon(
+      0 0,
+      100% calc(var(--shear-tan) * 100vw * 0.5),
+      100% 100%,
+      0 calc(100% - var(--shear-tan) * 100vw * 0.5)
+    );
+  }
+}
+
+/* --- Restraint valve: below 900px the shear and bleed cost more than
+   they return. Both come off; the type stays big. --- */
+@media (max-width: 56.25rem) {
+  .kori-shear,
+  .kori-shear--up {
+    margin-block: 0;
+    padding-block: var(--s-7);
+    clip-path: none;
+  }
+
+  .kori-mark-bleed {
+    display: none;
+  }
+
+  .kori-mega {
+    font-size: clamp(40px, 11vw, 72px);
+    line-height: 0.9;
+  }
+
+  .kori-stat--wild .kori-stat__value {
+    font-size: clamp(44px, 14vw, 72px);
+  }
+
+  .kori-slash {
+    transform: none;
+  }
+
+  .kori-process > li {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: var(--s-3);
+  }
+
+  .kori-span-4,
+  .kori-span-5,
+  .kori-span-6,
+  .kori-span-7 {
+    grid-column: span 12;
+  }
+}
+
+/* Blend modes fail loudly where unsupported. */
+@supports not (mix-blend-mode: multiply) {
+  .kori-mark-bleed,
+  .kori-overprint > .field {
+    opacity: 0.5;
+  }
+}
+
+/* --- Dashboard guard: wild is a marketing register. Add
+   data-kori-register="utility" to an app shell and this layer stands
+   down — no shear, no bleed, no gradient numerals in a data table. --- */
+[data-kori-register="utility"] .kori-mega {
+  font-size: clamp(28px, 3.4vw, 44px);
+  line-height: 1.08;
+}
+
+[data-kori-register="utility"] .kori-shear,
+[data-kori-register="utility"] .kori-shear--up {
+  margin-block: 0;
+  clip-path: none;
+}
+
+[data-kori-register="utility"] .kori-mark-bleed {
+  display: none;
+}
+
+[data-kori-register="utility"] .kori-stat--wild .kori-stat__value {
+  background-image: none;
+  color: var(--foreground);
+  -webkit-text-fill-color: currentColor;
+  font-size: clamp(30px, 3vw, 42px);
+}
+
+[data-kori-register="utility"] .kori-pivot {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
 }
