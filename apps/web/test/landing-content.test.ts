@@ -1,37 +1,34 @@
 import {
-  landingRoles,
+  contributors,
   landingSectionOrder,
   landingStats,
+  processSteps,
 } from "@/content/landing";
 import { describe, expect, it } from "vitest";
 
 describe("canonical landing content", () => {
-  it("keeps the eleven historical blocks in their canonical order", () => {
+  it("keeps the redesigned section blocks in their canonical order", () => {
     expect(landingSectionOrder).toEqual([
       "navigation",
       "hero",
-      "statistics",
-      "profiles",
-      "problem",
+      "market-proof",
+      "how",
+      "thesis",
       "solution",
-      "process",
-      "why-now",
-      "audience",
       "waitlist",
       "footer",
     ]);
   });
 
-  it("keeps canonical statistics and localized role destinations centralized", () => {
+  it("centralizes the market-proof figures and the sequence lengths", () => {
     expect(landingStats.map((stat) => stat.value)).toEqual([
-      "$1.3T",
-      "53%",
-      "$100B+",
+      "$100B",
+      "$421B",
+      "$3.9B",
     ]);
-    expect(landingRoles.map((role) => [role.glyph, role.href])).toEqual([
-      ["◈", "/dashboard/fund-manager"],
-      ["◇", "/dashboard/angel-investor"],
-      ["△", "/dashboard/startup-founder"],
-    ]);
+    // How-it-works is an ordered chain of six steps; the thesis lists six
+    // equal, unordered knowledge sources.
+    expect(processSteps).toHaveLength(6);
+    expect(contributors).toHaveLength(6);
   });
 });

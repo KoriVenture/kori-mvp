@@ -101,9 +101,9 @@ describe("Kori shared styles", () => {
       (match) => match[1],
     );
     const nextFontVariables = new Set([
-      "--font-cormorant",
-      "--font-jost",
-      "--font-carlito",
+      "--font-fraunces",
+      "--font-manrope",
+      "--font-plex-mono",
     ]);
 
     expect(
