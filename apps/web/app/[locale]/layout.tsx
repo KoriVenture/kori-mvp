@@ -3,6 +3,7 @@ import {
   localeMetadata,
   supportedLocales,
 } from "@kori/i18n";
+import { Analytics } from "@vercel/analytics/next";
 import { notFound } from "next/navigation";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
@@ -44,6 +45,7 @@ export default async function LocaleLayout({
         <ApplicationProviders locale={locale} messages={messages}>
           {children}
         </ApplicationProviders>
+        <Analytics />
       </body>
     </html>
   );
