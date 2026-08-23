@@ -4,9 +4,37 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioned releases are intended to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-No versioned release has been identified. The entries below are based on the current repository state and the Git history available on this branch.
+Release entries below are based on the repository state and Git history available on this branch.
 
 ## [Unreleased]
+
+## [1.1.0] - 2026-08-23
+
+### Added
+
+- Source-faithful Investor and Founder onboarding routes with account, security, role profile, review, completion, and profile screens.
+- Supabase browser/server clients, session-refresh proxy, OAuth callback, authenticated onboarding APIs, and resumable onboarding progress.
+- Investor preference and self-declared eligibility persistence with KYC explicitly deferred and non-blocking for the MVP.
+- Founder profile, startup profile, and private startup-document upload support for pitch decks, company overviews, and supporting documents.
+- Role-aware authenticated profile rendering for Investor, Founder, and manually provisioned Admin accounts without fabricated investment activity.
+- Idempotent onboarding database, RLS, auth-user trigger, and private-storage migrations.
+- Zod validation for public roles, onboarding payloads, callback redirects, and document type, MIME, and size constraints.
+- Namespaced onboarding styles and dedicated shared/Investor asset directories.
+- Environment template for Supabase, KYC, passkey, SMS MFA, and prototype-screen feature flags.
+
+### Changed
+
+- Routed the public Investor and Founder calls to action directly to their respective onboarding flows.
+- Added Supabase SSR, Supabase JS, and Zod as the only onboarding runtime dependencies.
+- Updated the package version to `1.1.0`.
+
+### Security
+
+- Restricted public signup roles to `investor` and `founder`; Admin remains manual-only with no public onboarding route.
+- Derived user and resource ownership from authenticated sessions and enforced matching database and storage policies.
+- Allowlisted authentication callback destinations and kept Founder startup documents in private storage.
+
+## [1.0.0] - 2026-08-22
 
 ### Added
 
