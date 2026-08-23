@@ -1,0 +1,1 @@
+export function Choice({title,description,selected,onClick}:{title:string;description:string;selected:boolean;onClick:()=>void}){return <button type="button" className={`choice-card ${selected?"selected":""}`} onClick={onClick}><span><b>{title}</b><small>{description}</small></span><i/></button>}

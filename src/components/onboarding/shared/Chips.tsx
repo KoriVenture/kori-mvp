@@ -1,0 +1,1 @@
+"use client";export function Chips({items,selected,onChange}:{items:string[];selected:string[];onChange:(x:string[])=>void}){return <div className="chips">{items.map(x=><button type="button" key={x} className={selected.includes(x)?"selected":""} onClick={()=>onChange(selected.includes(x)?selected.filter(y=>y!==x):[...selected,x])}>{x}</button>)}</div>}

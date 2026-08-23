@@ -1,0 +1,13 @@
+alter table public.users enable row level security; alter table public.user_profiles enable row level security; alter table public.investor_profiles enable row level security; alter table public.founder_profiles enable row level security; alter table public.startups enable row level security; alter table public.startup_documents enable row level security; alter table public.onboarding_progress enable row level security; alter table public.agreement_acceptances enable row level security;
+create policy "user reads own user row" on public.users for select to authenticated using(id=auth.uid());
+create policy "user owns profile" on public.user_profiles for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "investor owns investor profile" on public.investor_profiles for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "founder owns founder profile" on public.founder_profiles for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "founder reads own startup" on public.startups for select to authenticated using(founder_user_id=auth.uid());
+create policy "founder creates own startup" on public.startups for insert to authenticated with check(founder_user_id=auth.uid());
+create policy "founder updates own startup" on public.startups for update to authenticated using(founder_user_id=auth.uid()) with check(founder_user_id=auth.uid());
+create policy "founder reads own documents" on public.startup_documents for select to authenticated using(uploaded_by_user_id=auth.uid());
+create policy "founder creates own documents" on public.startup_documents for insert to authenticated with check(uploaded_by_user_id=auth.uid());
+create policy "user owns onboarding progress" on public.onboarding_progress for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "user reads own agreements" on public.agreement_acceptances for select to authenticated using(user_id=auth.uid());
+create policy "user accepts own agreements" on public.agreement_acceptances for insert to authenticated with check(user_id=auth.uid());
