@@ -11,7 +11,7 @@ Core workflow:
 3. A startup submits milestone evidence.
 4. AI analyzes the evidence as decision support.
 5. A human reviews the evidence and analysis.
-6. A Safe multisig approves the decision.
+6. A Stellar release quorum approves the exact payout.
 7. Funds are released or the request is rejected.
 
 AI is consultative only and must never make the final financial decision. The MVP must never imply that it handles real funds or provides investment, legal, tax, compliance, or financial advice.
@@ -28,7 +28,8 @@ packages/
   ui/             Shared UI components and global styles
   i18n/           Framework-independent locale and formatting definitions
   domain/         Business types, schemas and rules
-  contracts/      Solidity and Hardhat project
+  contracts/      Historical Solidity and Hardhat reference
+  stellar-contracts/ Soroban reference implementation and PRD
   web3/           Viem, wagmi, Safe and contract clients
   db/             Supabase clients and repositories
   ai/             AI integrations and document analysis
@@ -37,6 +38,13 @@ packages/
 ```
 
 Run every pnpm command from the repository root. Do not create package-local lockfiles or install dependencies from an individual workspace.
+
+## Blockchain reference
+
+New blockchain work targets Stellar/Soroban. Read
+`packages/stellar-contracts/PRD.md` before changing blockchain code or client
+integration. `packages/contracts` remains a historical EVM reference; its
+Sepolia, MetaMask, and Safe choices do not define the active implementation.
 
 ## Internationalization
 
@@ -61,4 +69,4 @@ Run every pnpm command from the repository root. Do not create package-local loc
 
 The localized marketing pages, all three role-dashboard route sets, and the pedagogical simulator are implemented as local demonstrations. They use static fixtures and in-memory interactions only.
 
-Do not infer integration completion from those screens, installed dependencies, or package scaffolds. Unless a task explicitly expands scope, Supabase, authentication, wallet connection, SIWE, Safe application wiring, AI-provider wiring, real transaction execution, Storybook, and production deployment remain deferred.
+Do not infer integration completion from those screens, installed dependencies, or package scaffolds. Unless a task explicitly expands scope, Supabase, authentication, wallet connection, Stellar application wiring, release-quorum integration, AI-provider wiring, real transaction execution, Storybook, and production deployment remain deferred.

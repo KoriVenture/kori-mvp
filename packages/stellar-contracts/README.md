@@ -1,8 +1,10 @@
 # Kori Stellar Contracts
 
 Soroban prototype for one deal, one milestone and one full USDC release. It
-implements the current [Stellar architecture](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data)
-without replacing the EVM reference in `packages/contracts`.
+implements the on-chain core of the current [Stellar architecture](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data)
+while retaining `packages/contracts` only as the historical EVM reference. See
+the [Stellar/Soroban PRD](./PRD.md) for the complete target, current gaps and
+build order.
 
 ## Current flow
 
@@ -42,11 +44,18 @@ target/wasm32v1-none/release/kori_deal_escrow.wasm
 
 ## Test, local network and Testnet
 
-| Environment | Purpose | Requirements |
-| --- | --- | --- |
-| `cargo test` | In-process Soroban host tests; no blockchain node or account | Rust |
-| Quickstart local network | Full local Stellar Core, RPC, Horizon and Friendbot | Stellar CLI + Docker |
-| Public Testnet | Shared network with real G/C addresses and transactions | Stellar CLI + funded Testnet accounts |
+| Environment              | Purpose                                                      | Requirements                          |
+| ------------------------ | ------------------------------------------------------------ | ------------------------------------- |
+| `cargo test`             | In-process Soroban host tests; no blockchain node or account | Rust                                  |
+| Quickstart local network | Full local Stellar Core, RPC, Horizon and Friendbot          | Stellar CLI + Docker                  |
+| Public Testnet           | Shared network with real G/C addresses and transactions      | Stellar CLI + funded Testnet accounts |
+
+### EVM developer mental model
+
+`cargo test` runs contracts against Soroban's embedded host and a programmable
+mock ledger. It is the fast, contract-level equivalent of Foundry unit tests,
+not an Anvil/Hardhat node: there is no RPC, consensus, transaction propagation
+or persistent chain. Use Quickstart for full local-network integration.
 
 The repository currently automates only the first level. Quickstart is available
 but is not wired into Kori scripts yet:
