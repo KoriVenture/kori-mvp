@@ -1,73 +1,64 @@
 # Kori Stellar Contracts
 
-This package is the first executable step of Kori's EVM-to-Stellar migration. It
-implements the custody and governance boundaries shown in the current
-[Stellar architecture board](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data)
-without deleting the existing EVM sandbox.
+Soroban prototype for one deal, one milestone and one full USDC release. It
+implements the current [Stellar architecture](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data)
+without replacing the EVM reference in `packages/contracts`.
 
-## Current prototype
+## Current flow
 
-`KoriDealEscrow` models the current demo scope: one deal, one milestone and one
-full release.
+1. An investor authenticates `fund`; the SAC transfers assets into DealEscrow.
+2. The Fund Manager approves an off-chain evidence hash.
+3. A separate release authority authenticates `release`.
+4. DealEscrow transfers its full balance to the startup.
 
-1. An authenticated investor calls `fund`.
-2. The contract transfers the accepted asset through its Stellar Asset Contract
-   (USDC SAC for the MVP) into the escrow contract address.
-3. The Fund Manager approves the hash of the off-chain milestone evidence.
-4. A separate release authority authorizes `release`. That authority may be a
-   native Stellar multisig account.
-5. The contract transfers its full USDC balance to the immutable startup address.
+AI and evidence documents remain off-chain.
 
-The AI and evidence documents remain off-chain. AI is advisory and never signs
-or moves funds.
+## Prerequisites
 
-## Why this differs from the EVM sandbox
+- Rust and Cargo
+- `wasm32v1-none` Rust target
+- Stellar CLI and Docker only for a local network or Testnet deployment
 
-| EVM sandbox | Stellar prototype |
-| --- | --- |
-| ERC-20 token | USDC Stellar Asset Contract (SAC) |
-| `transferFrom` after ERC-20 approval | Authorized SAC transfer in the `fund` invocation |
-| Safe address calls `release` | Stellar release-authority address calls `release` |
-| Independent milestone verifier | Community-scoped Fund Manager |
-| Contract holds ERC-20 | Soroban contract address holds USDC SAC balance |
-
-## Local checks
+## Getting started
 
 ```bash
+git fetch origin
+git switch liobrasil/stellar-soroban-escrow
 cd packages/stellar-contracts
-cargo fmt --all -- --check
+
+rustup target add wasm32v1-none
 cargo test
 cargo clippy --all-targets -- -D warnings
 cargo build --target wasm32v1-none --release
 ```
 
-## Test coverage
+Expected: `7 passed; 0 failed`.
 
-| Scenario | Expected result |
-| --- | --- |
-| Complete funding, approval and release lifecycle | Full escrow balance reaches the startup and the deal becomes final |
-| Zero-value funding | Rejected without changing escrow accounting |
-| Repeated contributions by one investor | Investor attribution and aggregate funding both accumulate |
-| Release before milestone approval | Rejected even when the escrow is funded |
-| Release of an approved but empty escrow | Rejected without finalizing the deal |
-| Second release attempt | Rejected after the first terminal payout |
-| Role authorization boundaries | Funding, evidence approval and payout require the investor, Fund Manager and release authority respectively |
+Wasm output:
 
-The contract source uses Rustdoc comments as the Soroban/Rust equivalent of
-NatSpec. They document roles, authorization, effects, errors and the deliberately
-limited prototype scope.
+```text
+target/wasm32v1-none/release/kori_deal_escrow.wasm
+```
 
-The Wasm build requires Rust's `wasm32v1-none` target. Testnet deployment also
-requires the Stellar CLI. USDC SAC configuration, refunds, deadlines, signer
-rotation and production custody/legal decisions are not yet implemented.
+## Test, local network and Testnet
 
-See [ARCHITECTURE_MIGRATION.md](./ARCHITECTURE_MIGRATION.md) for the role and
-custody mapping, enforced invariants and explicit non-goals.
+| Environment | Purpose | Requirements |
+| --- | --- | --- |
+| `cargo test` | In-process Soroban host tests; no blockchain node or account | Rust |
+| Quickstart local network | Full local Stellar Core, RPC, Horizon and Friendbot | Stellar CLI + Docker |
+| Public Testnet | Shared network with real G/C addresses and transactions | Stellar CLI + funded Testnet accounts |
 
-## Status
+The repository currently automates only the first level. Quickstart is available
+but is not wired into Kori scripts yet:
 
-- Architecture migration: completed and reviewed in FigJam.
-- Soroban project scaffold: completed.
-- Deal escrow prototype: implemented with seven unit tests and a successful Wasm build.
-- Stellar Testnet deployment: not started.
-- Production-ready contract: no; security, legal/custody and failure paths remain open.
+```bash
+stellar container start local
+stellar container stop local
+```
+
+Tests verify funding, contribution accounting, role authorization, milestone
+approval, full release and failure/replay conditions.
+
+See [ARCHITECTURE_MIGRATION.md](./ARCHITECTURE_MIGRATION.md) for implemented
+invariants and deferred work. Do not deploy, generate keys or use real funds
+without explicit authorization.
