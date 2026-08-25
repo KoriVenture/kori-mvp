@@ -1,7 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+
+import {
+  emailSignupUrl,
+  googleLoginUrl,
+  linkedinLoginUrl,
+} from "@/lib/onboarding/auth-links";
+
+import { AuthAccountStep } from "./auth/AuthAccountStep";
+import {
+  AuthSecurityStep,
+  type AuthSecurityState,
+} from "./auth/AuthSecurityStep";
 import { Completion } from "./shared/Completion";
 import { Field } from "./shared/Field";
 import { SelectField } from "./shared/SelectField";
@@ -25,7 +36,10 @@ export function OnboardingController({ role }: { role: Role }) {
   const [draft, setDraft] = useState<Draft>({ accountTerms: false, newsletter: false, riskAcknowledged: false, terms: false, privacy: false, platform: false, investmentRisk: false });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [securityVerified, setSecurityVerified] = useState(false);
+  const [authState, setAuthState] = useState<AuthSecurityState>({
+    email: null,
+    emailVerified: false,
+  });
   const [startupId, setStartupId] = useState<string | null>(null);
   const [startupFile, setStartupFile] = useState<File | null>(null);
   const [documentUploaded, setDocumentUploaded] = useState(false);
@@ -34,20 +48,92 @@ export function OnboardingController({ role }: { role: Role }) {
 
   useEffect(() => {
     let active = true;
+
     async function load() {
+      let preAuth: Record<string, unknown> = {};
+
       try {
-        const supabase = createClient();
-        const { data: sessionData } = await supabase.auth.getSession();
-        if (!active || !sessionData.session) return;
-        setSecurityVerified(true);
-        const response = await fetch(`/api/onboarding/${role}`, { cache: "no-store" });
-        if (!response.ok) return;
+        const stored = sessionStorage.getItem(
+          `kori:onboarding:${role}:preauth`,
+        );
+
+        if (stored) {
+          preAuth = JSON.parse(stored);
+
+          if (active) {
+            setDraft((current) => ({
+              ...current,
+              email:
+                typeof preAuth.email === "string"
+                  ? preAuth.email
+                  : current.email ?? "",
+              country:
+                typeof preAuth.country === "string"
+                  ? preAuth.country
+                  : current.country ?? "",
+              accountTerms: preAuth.accountTerms === true,
+              newsletter: preAuth.newsletter === true,
+            }));
+          }
+        }
+
+        const query = new URLSearchParams(window.location.search);
+
+        if (query.get("auth") === "complete") {
+          const bootstrap = await fetch("/api/onboarding/bootstrap", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({ role }),
+          });
+
+          const result = await bootstrap.json().catch(() => ({}));
+
+          if (!bootstrap.ok) {
+            throw new Error(
+              result.error ?? "Unable to initialize Kori onboarding.",
+            );
+          }
+
+          if (active) {
+            setAuthState({
+              email: result.auth?.email ?? null,
+              emailVerified: result.auth?.emailVerified === true,
+            });
+          }
+
+          window.history.replaceState({}, "", `/onboarding/${role}`);
+        }
+
+        const response = await fetch(`/api/onboarding/${role}`, {
+          cache: "no-store",
+        });
+
+        if (response.status === 401) {
+          return;
+        }
+
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({}));
+          throw new Error(body.error ?? "Unable to load onboarding.");
+        }
+
         const data = await response.json();
-        if (!active) return;
+
+        if (!active) {
+          return;
+        }
+
+        setAuthState({
+          email: data.auth?.email ?? null,
+          emailVerified: data.auth?.emailVerified === true,
+        });
+
         const profile = data.profile ?? {};
         const common: Draft = {
           legalFirstName: profile.legal_first_name ?? "", legalLastName: profile.legal_last_name ?? "",
-          country: profile.country ?? "", city: profile.city ?? "", timezone: profile.timezone ?? "",
+          country: profile.country ?? (typeof preAuth.country === "string" ? preAuth.country : ""), city: profile.city ?? "", timezone: profile.timezone ?? "",
           linkedinUrl: profile.linkedin_url ?? "", professionalTitle: profile.professional_title ?? "",
           organization: profile.organization ?? "", biography: profile.biography ?? "",
           terms: accepted(data.agreements, "terms"), privacy: accepted(data.agreements, "privacy"),
@@ -74,8 +160,14 @@ export function OnboardingController({ role }: { role: Role }) {
           }));
         }
         setStep(Math.max(0, Math.min(Number(data.progress?.current_screen ?? 0), 6)));
-      } catch {
-        // New visitors remain on the Account step.
+      } catch (error) {
+        if (active) {
+          setMessage(
+            error instanceof Error
+              ? error.message
+              : "Unable to load onboarding.",
+          );
+        }
       } finally {
         if (active) setLoading(false);
       }
@@ -84,50 +176,41 @@ export function OnboardingController({ role }: { role: Role }) {
     return () => { active = false; };
   }, [role, founder]);
 
-  async function bootstrap() {
-    const response = await fetch("/api/onboarding/bootstrap", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ role }) });
-    if (!response.ok) {
-      const body = await response.json().catch(() => ({}));
-      throw new Error(body.error ?? "Unable to initialise the Kori profile.");
+  function savePreAuthState() {
+    sessionStorage.setItem(
+      `kori:onboarding:${role}:preauth`,
+      JSON.stringify({
+        email: text(draft.email),
+        country: text(draft.country),
+        accountTerms: bool(draft.accountTerms),
+        newsletter: bool(draft.newsletter),
+      }),
+    );
+  }
+
+  function beginAuth(href: string) {
+    setMessage("");
+
+    if (!bool(draft.accountTerms)) {
+      setMessage(
+        "Accept the Terms of Use and Privacy Policy before continuing.",
+      );
+      return;
     }
+
+    savePreAuthState();
+    window.location.assign(href);
   }
 
-  async function account() {
-    setMessage("");
-    if (!bool(draft.accountTerms)) return setMessage("You must accept the Terms of Use and Privacy Policy.");
+  function beginEmailSignup() {
     const email = text(draft.email).trim();
-    const password = text(draft.password);
-    if (!email || !password) return setMessage("Email and password are required.");
-    try {
-      const { data, error } = await createClient().auth.signUp({ email, password, options: { data: { role }, emailRedirectTo: `${location.origin}/auth/callback?next=/onboarding/${role}` } });
-      if (error) throw error;
-      if (data.session) { await bootstrap(); setSecurityVerified(true); }
-      setStep(1);
-      setMessage(data.session ? "Account created. Continue with the security step." : "Check your email for the verification code or confirmation link.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Authentication is unavailable."); }
-  }
 
-  async function oauth(provider: "google" | "linkedin_oidc") {
-    setMessage("");
-    if (!bool(draft.accountTerms)) return setMessage("Accept the Terms of Use and Privacy Policy before continuing.");
-    try {
-      const { error } = await createClient().auth.signInWithOAuth({ provider, options: { redirectTo: `${location.origin}/auth/callback?next=/onboarding/${role}` } });
-      if (error) throw error;
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Authentication is unavailable."); }
-  }
+    if (!email) {
+      setMessage("Email is required.");
+      return;
+    }
 
-  async function verifyCode() {
-    setMessage("");
-    const email = text(draft.email).trim();
-    const token = text(draft.otp).trim();
-    if (!email || !token) return setMessage("Enter the email address and verification code.");
-    try {
-      const { error } = await createClient().auth.verifyOtp({ email, token, type: "signup" });
-      if (error) throw error;
-      await bootstrap();
-      setSecurityVerified(true);
-      setMessage("Email verified. You can continue.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Verification failed."); }
+    beginAuth(emailSignupUrl(role, email));
   }
 
   function payload(nextStep = step) {
@@ -167,8 +250,20 @@ export function OnboardingController({ role }: { role: Role }) {
   }
 
   async function save(next = false) {
-    if (step === 0) { if (next) await account(); return; }
-    if (step === 1 && next && !securityVerified) return setMessage("Verify your email before continuing.");
+    setMessage("");
+
+    if (step === 0) {
+      if (next) {
+        beginEmailSignup();
+      }
+      return;
+    }
+
+    if (step === 1 && next && !authState.emailVerified) {
+      setMessage("Verify your email through Auth0 before continuing.");
+      return;
+    }
+
     const target = next ? Math.min(step + 1, 6) : step;
     const response = await fetch(`/api/onboarding/${role}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(payload(target)) });
     if (!response.ok) { const body = await response.json().catch(() => ({})); return setMessage(body.error ?? "Unable to save."); }
@@ -194,8 +289,8 @@ export function OnboardingController({ role }: { role: Role }) {
   if (step === 6) return <Completion founder={founder} />;
 
   let body;
-  if (step === 0) body = <><div className="role-banner">Joining as: <b>{founder ? "Founder" : "Investor"}</b></div><div className="social-row"><button type="button" onClick={() => oauth("google")}><img src="/assets/onboarding/shared/google.svg" alt="" />Google</button><button type="button" onClick={() => oauth("linkedin_oidc")}><img src="/assets/onboarding/shared/linkedin.svg" alt="" />LinkedIn</button></div><Field label="Email" type="email" required defaultValue={text(draft.email)} onChange={(e) => set("email", e.target.value)} /><Field label="Password" type="password" required minLength={8} onChange={(e) => set("password", e.target.value)} /><SelectField label="Country" name="country" options={["Canada", "France", "Spain", "United Kingdom", "United States", "Other"]} value={text(draft.country)} onChange={(value) => set("country", value)} /><div className="consents"><label><input type="checkbox" required checked={bool(draft.accountTerms)} onChange={(e) => set("accountTerms", e.target.checked)} />I accept the Terms of Use and Privacy Policy.</label><label><input type="checkbox" checked={bool(draft.newsletter)} onChange={(e) => set("newsletter", e.target.checked)} />Send me occasional Kori updates.</label></div></>;
-  else if (step === 1) body = <><section className="form-section"><h3>Email one-time code</h3><p>Enter the verification code sent to your email.</p><Field label="Email" type="email" defaultValue={text(draft.email)} onChange={(e) => set("email", e.target.value)} /><Field label="Verification code" inputMode="numeric" onChange={(e) => set("otp", e.target.value)} /><button type="button" className="secondary-button full" onClick={verifyCode}>Verify code</button>{securityVerified && <p>Email verified.</p>}</section><section className="form-section"><h3>Passkey</h3><p>Passkeys are coming later and are disabled for this MVP.</p><button type="button" className="secondary-button full" disabled>Add a passkey</button></section></>;
+  if (step === 0) body = <AuthAccountStep role={role} email={text(draft.email)} country={text(draft.country)} accountTerms={bool(draft.accountTerms)} newsletter={bool(draft.newsletter)} onEmail={(value) => set("email", value)} onCountry={(value) => set("country", value)} onTerms={(value) => set("accountTerms", value)} onNewsletter={(value) => set("newsletter", value)} onGoogle={() => beginAuth(googleLoginUrl(role))} onLinkedIn={() => beginAuth(linkedinLoginUrl(role))} />;
+  else if (step === 1) body = <AuthSecurityStep role={role} auth={authState} />;
   else if (step === 2) body = <section className="form-section"><div className="two-columns"><Field label="Legal first name" required defaultValue={text(draft.legalFirstName)} onChange={(e) => set("legalFirstName", e.target.value)} /><Field label="Legal last name" required defaultValue={text(draft.legalLastName)} onChange={(e) => set("legalLastName", e.target.value)} /></div><Field label="Location" defaultValue={text(draft.city)} onChange={(e) => set("city", e.target.value)} /><Field label="LinkedIn" type="url" defaultValue={text(draft.linkedinUrl)} onChange={(e) => set("linkedinUrl", e.target.value)} /><Field label="Professional title" defaultValue={text(draft.professionalTitle)} onChange={(e) => set("professionalTitle", e.target.value)} />{!founder && <Field label="Organization" defaultValue={text(draft.organization)} onChange={(e) => set("organization", e.target.value)} />}<Field label="Professional biography" multiline defaultValue={text(draft.biography)} onChange={(e) => set("biography", e.target.value)} /></section>;
   else if (!founder && step === 3) body = <section className="form-section"><SelectField label="Investor type" name="investorType" options={["Individual investor", "Fund manager"]} value={text(draft.investorType)} onChange={(value) => set("investorType", value)} /><Field label="Ask me about" multiline defaultValue={text(draft.askMeAbout)} onChange={(e) => set("askMeAbout", e.target.value)} /><Field label="Preferred ticket size" defaultValue={text(draft.ticket)} onChange={(e) => set("ticket", e.target.value)} /><Field label="Investment horizon" defaultValue={text(draft.horizon)} onChange={(e) => set("horizon", e.target.value)} /><Field label="Investment thesis" multiline defaultValue={text(draft.thesis)} onChange={(e) => set("thesis", e.target.value)} /></section>;
   else if (!founder && step === 4) body = <><section className="form-section"><SelectField label="Investor classification" name="classification" options={["Self-declared individual", "Professional investor", "Institutional investor"]} value={text(draft.classification)} onChange={(value) => set("classification", value)} /><Field label="Investment experience" multiline defaultValue={text(draft.experience)} onChange={(e) => set("experience", e.target.value)} /><Field label="Private-company experience" multiline defaultValue={text(draft.privateExperience)} onChange={(e) => set("privateExperience", e.target.value)} /><SelectField label="Source of funds" name="sourceFunds" options={["Employment income", "Business income", "Investments", "Other lawful source"]} value={text(draft.sourceFunds)} onChange={(value) => set("sourceFunds", value)} /><label><input type="checkbox" required checked={bool(draft.riskAcknowledged)} onChange={(e) => set("riskAcknowledged", e.target.checked)} />I understand private-market investments are high risk and illiquid.</label></section><section className="form-section"><h3>Identity verification (KYC)</h3><div className="notice"><b>Identity verification is deferred for the MVP.</b><p>You can complete your investor profile now.</p></div></section></>;
