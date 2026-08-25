@@ -10,7 +10,7 @@ type BootstrapRpcClient = {
     args: {
       p_role: PublicSignupRole;
     },
-  ): Promise<{
+  ): PromiseLike<{
     data: unknown;
     error: RpcError | null;
   }>;

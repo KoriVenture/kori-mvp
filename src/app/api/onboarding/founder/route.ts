@@ -5,7 +5,7 @@ import { founderPatchSchema } from "@/lib/validation/founder-onboarding";
 export async function GET() {
   const auth = await requireRole("founder");
   if (auth.error) return auth.error;
-  const { supabase, userId } = auth;
+  const { supabase, userId, auth0User } = auth;
   const [profile, founder, startup, documents, progress, agreements] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", userId).single(),
     supabase.from("founder_profiles").select("*").eq("user_id", userId).single(),
@@ -14,7 +14,20 @@ export async function GET() {
     supabase.from("onboarding_progress").select("*").eq("user_id", userId).eq("role", "founder").maybeSingle(),
     supabase.from("agreement_acceptances").select("*").eq("user_id", userId).eq("role", "founder"),
   ]);
-  return NextResponse.json({ profile: profile.data, founder: founder.data, startup: startup.data, documents: documents.data ?? [], progress: progress.data, agreements: agreements.data ?? [] });
+  return NextResponse.json({
+    auth: {
+      email: auth0User.email ?? profile.data?.email ?? null,
+      emailVerified:
+        auth0User.email_verified === true ||
+        profile.data?.email_verified === true,
+    },
+    profile: profile.data,
+    founder: founder.data,
+    startup: startup.data,
+    documents: documents.data ?? [],
+    progress: progress.data,
+    agreements: agreements.data ?? [],
+  });
 }
 
 export async function PATCH(request: Request) {

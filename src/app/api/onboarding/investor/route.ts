@@ -5,15 +5,31 @@ import { investorPatchSchema } from "@/lib/validation/investor-onboarding";
 export async function GET() {
   const auth = await requireRole("investor");
   if (auth.error) return auth.error;
-  const { supabase, userId, user } = auth;
+  const { supabase, userId, auth0User } = auth;
   const [profile, investor, progress, agreements] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", userId).single(),
     supabase.from("investor_profiles").select("*").eq("user_id", userId).single(),
     supabase.from("onboarding_progress").select("*").eq("user_id", userId).eq("role", "investor").maybeSingle(),
     supabase.from("agreement_acceptances").select("*").eq("user_id", userId).eq("role", "investor"),
   ]);
+
+  const email = auth0User.email ?? profile.data?.email ?? null;
+  const emailVerified =
+    auth0User.email_verified === true ||
+    profile.data?.email_verified === true;
+
   return NextResponse.json({
-    user: { email: user.email, roles: profile.data?.roles ?? [], verificationStatus: profile.data?.verification_status ?? "deferred" },
+    auth: {
+      email,
+      emailVerified,
+    },
+    user: {
+      email,
+      roles: profile.data?.roles ?? [],
+      verificationStatus:
+        profile.data?.verification_status ?? "deferred",
+      emailVerified,
+    },
     profile: profile.data,
     investor: investor.data,
     progress: progress.data,
