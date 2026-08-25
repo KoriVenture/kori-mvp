@@ -104,7 +104,7 @@ The founder document route keeps its existing business behavior and inherits the
 
 ## Database Migration and RLS
 
-The supplied `Kori-auth-supabase.sql` will be copied unchanged to `supabase/migrations/004_auth0_identity.sql` so repository history matches the SQL intended for execution.
+The supplied `Kori-auth-supabase.sql` is the migration baseline for `supabase/migrations/004_auth0_identity.sql`. Final review found that the companion SQL did not remove the known legacy Storage policy names and omitted the stated `profile-photos` Auth0 policies. The repository migration therefore hardens that baseline so the executable migration fulfills the attachment's stated RLS and Storage guarantees. Operators must execute the repository migration, not the uncorrected Downloads copy.
 
 The migration will:
 
@@ -117,6 +117,8 @@ The migration will:
 - replace onboarding and Storage policies that depend on `auth.uid()`;
 - preserve public read for profile photos and private access for the startup data room; and
 - include post-migration validation checks.
+
+The post-checks fail the transaction if a targeted legacy `auth.uid()` policy remains, either Storage bucket has the wrong visibility, or the required Auth0 Storage insert policies are absent.
 
 Automatic account linking by email is explicitly excluded because equal email strings are not sufficient proof that two identities belong to the same person.
 
@@ -162,7 +164,7 @@ The local repository implementation is complete when:
 - authenticated Supabase requests use the Auth0 ID token;
 - Kori domain operations continue to use `profiles.id` UUIDs;
 - public bootstrap accepts investor and founder but not Admin;
-- the supplied migration exists at `supabase/migrations/004_auth0_identity.sql`;
+- the reviewed and hardened migration exists at `supabase/migrations/004_auth0_identity.sql`;
 - existing investor and founder persistence logic is preserved;
 - the local lint, typecheck, test, and build commands pass; and
 - any remaining live configuration and acceptance checks are reported accurately as operator work.

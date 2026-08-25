@@ -376,10 +376,7 @@ BEGIN
         ) AS role_values(role_value)
       ),
       email = COALESCE(v_email, p.email),
-      email_verified = CASE
-        WHEN v_email_verified THEN true
-        ELSE p.email_verified
-      END,
+      email_verified = v_email_verified,
       display_name = COALESCE(p.display_name, v_name),
       auth_last_seen_at = now(),
       updated_at = now()
@@ -515,6 +512,58 @@ ALTER TABLE public.startups ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.startup_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.organization_memberships ENABLE ROW LEVEL SECURITY;
+
+-- Remove legacy policies that resolve ownership through auth.uid(). Auth0
+-- subjects are strings, so those expressions are invalid for Kori UUID keys.
+-- Policy names from migrations executed before this repository snapshot are
+-- not assumed; only policies whose expressions actually call auth.uid() are
+-- removed.
+DO $$
+DECLARE
+  policy_record record;
+BEGIN
+  FOR policy_record IN
+    SELECT
+      n.nspname AS schema_name,
+      c.relname AS table_name,
+      p.polname AS policy_name
+    FROM pg_policy p
+    JOIN pg_class c ON c.oid = p.polrelid
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE (n.nspname, c.relname) IN (
+      ('public', 'profiles'),
+      ('public', 'investor_profiles'),
+      ('public', 'founder_profiles'),
+      ('public', 'onboarding_progress'),
+      ('public', 'agreement_acceptances'),
+      ('public', 'startups'),
+      ('public', 'startup_documents'),
+      ('storage', 'objects')
+    )
+      AND (
+        position(
+          'auth.uid()' IN COALESCE(
+            pg_get_expr(p.polqual, p.polrelid),
+            ''
+          )
+        ) > 0
+        OR position(
+          'auth.uid()' IN COALESCE(
+            pg_get_expr(p.polwithcheck, p.polrelid),
+            ''
+          )
+        ) > 0
+      )
+  LOOP
+    EXECUTE format(
+      'DROP POLICY %I ON %I.%I',
+      policy_record.policy_name,
+      policy_record.schema_name,
+      policy_record.table_name
+    );
+  END LOOP;
+END
+$$;
 
 DROP POLICY IF EXISTS "kori_identity_profile_select" ON public.profiles;
 CREATE POLICY "kori_identity_profile_select"
@@ -701,7 +750,59 @@ TO authenticated
 USING (user_id = public.current_profile_id());
 
 -- ============================================================================
--- 6. FOUNDER STORAGE
+-- 6. PROFILE PHOTO STORAGE
+-- ============================================================================
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('profile-photos', 'profile-photos', true)
+ON CONFLICT (id) DO UPDATE
+SET public = true;
+
+DROP POLICY IF EXISTS "users upload own profile photo" ON storage.objects;
+DROP POLICY IF EXISTS "profile photos are readable" ON storage.objects;
+DROP POLICY IF EXISTS "kori_auth0_profile_photos_public_select" ON storage.objects;
+CREATE POLICY "kori_auth0_profile_photos_public_select"
+ON storage.objects
+FOR SELECT
+TO public
+USING (bucket_id = 'profile-photos');
+
+DROP POLICY IF EXISTS "kori_auth0_profile_photos_insert" ON storage.objects;
+CREATE POLICY "kori_auth0_profile_photos_insert"
+ON storage.objects
+FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'profile-photos'
+  AND (storage.foldername(name))[1] = public.current_profile_id()::text
+);
+
+DROP POLICY IF EXISTS "kori_auth0_profile_photos_update" ON storage.objects;
+CREATE POLICY "kori_auth0_profile_photos_update"
+ON storage.objects
+FOR UPDATE
+TO authenticated
+USING (
+  bucket_id = 'profile-photos'
+  AND (storage.foldername(name))[1] = public.current_profile_id()::text
+)
+WITH CHECK (
+  bucket_id = 'profile-photos'
+  AND (storage.foldername(name))[1] = public.current_profile_id()::text
+);
+
+DROP POLICY IF EXISTS "kori_auth0_profile_photos_delete" ON storage.objects;
+CREATE POLICY "kori_auth0_profile_photos_delete"
+ON storage.objects
+FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'profile-photos'
+  AND (storage.foldername(name))[1] = public.current_profile_id()::text
+);
+
+-- ============================================================================
+-- 7. FOUNDER STORAGE
 -- ============================================================================
 
 INSERT INTO storage.buckets (id, name, public)
@@ -709,6 +810,8 @@ VALUES ('startup-data-room', 'startup-data-room', false)
 ON CONFLICT (id) DO UPDATE
 SET public = false;
 
+DROP POLICY IF EXISTS "founders read own data room" ON storage.objects;
+DROP POLICY IF EXISTS "founders upload own data room" ON storage.objects;
 DROP POLICY IF EXISTS "kori_auth0_data_room_select" ON storage.objects;
 CREATE POLICY "kori_auth0_data_room_select"
 ON storage.objects
@@ -754,7 +857,7 @@ USING (
 );
 
 -- ============================================================================
--- 7. GRANTS
+-- 8. GRANTS
 -- ============================================================================
 
 GRANT SELECT, UPDATE ON public.profiles TO authenticated;
@@ -774,7 +877,7 @@ COMMENT ON FUNCTION public.current_profile_id() IS
   'Returns the Kori internal UUID for the current Auth0 or legacy Supabase Auth JWT.';
 
 -- ============================================================================
--- 8. POST-CHECKS
+-- 9. POST-CHECKS
 -- ============================================================================
 
 DO $$
@@ -795,6 +898,77 @@ BEGIN
 
   IF to_regprocedure('public.bootstrap_kori_identity(text)') IS NULL THEN
     RAISE EXCEPTION 'Migration validation failed: bootstrap_kori_identity(text) missing.';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON c.oid = p.polrelid
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE (n.nspname, c.relname) IN (
+      ('public', 'profiles'),
+      ('public', 'investor_profiles'),
+      ('public', 'founder_profiles'),
+      ('public', 'onboarding_progress'),
+      ('public', 'agreement_acceptances'),
+      ('public', 'startups'),
+      ('public', 'startup_documents'),
+      ('storage', 'objects')
+    )
+      AND (
+        position(
+          'auth.uid()' IN COALESCE(
+            pg_get_expr(p.polqual, p.polrelid),
+            ''
+          )
+        ) > 0
+        OR position(
+          'auth.uid()' IN COALESCE(
+            pg_get_expr(p.polwithcheck, p.polrelid),
+            ''
+          )
+        ) > 0
+      )
+  ) THEN
+    RAISE EXCEPTION 'Migration validation failed: legacy auth.uid() policy remains.';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM storage.buckets
+    WHERE id = 'profile-photos'
+      AND public = true
+  ) THEN
+    RAISE EXCEPTION 'Migration validation failed: profile-photos must be public-read.';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM storage.buckets
+    WHERE id = 'startup-data-room'
+      AND public = false
+  ) THEN
+    RAISE EXCEPTION 'Migration validation failed: startup-data-room must be private.';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'storage'
+      AND tablename = 'objects'
+      AND policyname = 'kori_auth0_profile_photos_insert'
+  ) THEN
+    RAISE EXCEPTION 'Migration validation failed: profile photo Auth0 insert policy missing.';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'storage'
+      AND tablename = 'objects'
+      AND policyname = 'kori_auth0_data_room_insert'
+  ) THEN
+    RAISE EXCEPTION 'Migration validation failed: data room Auth0 insert policy missing.';
   END IF;
 END
 $$;
@@ -825,3 +999,18 @@ COMMIT;
 --   AND c.conrelid = 'public.profiles'::regclass
 --   AND c.confrelid = 'auth.users'::regclass;
 -- Expected: 0 rows.
+--
+-- SELECT schemaname, tablename, policyname, qual, with_check
+-- FROM pg_policies
+-- WHERE (schemaname, tablename) IN (
+--   ('public', 'profiles'),
+--   ('public', 'investor_profiles'),
+--   ('public', 'founder_profiles'),
+--   ('public', 'onboarding_progress'),
+--   ('public', 'agreement_acceptances'),
+--   ('public', 'startups'),
+--   ('public', 'startup_documents'),
+--   ('storage', 'objects')
+-- )
+-- ORDER BY schemaname, tablename, policyname;
+-- Expected: no qual or with_check expression contains auth.uid().

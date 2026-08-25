@@ -20,7 +20,7 @@
 - Never collect or store passwords, OTPs, TOTP seeds, SMS secrets, or recovery codes in Kori or Supabase.
 - Preserve the existing investor and founder `PATCH` persistence logic and all onboarding screens after Account and Security.
 - Keep KYC `verification_status` deferred.
-- Copy the supplied SQL migration unchanged; do not claim it was executed against a live Supabase project.
+- Use the supplied SQL migration as the baseline, then ensure it removes legacy `auth.uid()` policies and includes Auth0 policies for both Storage buckets; do not claim it was executed against a live Supabase project.
 - Use npm from the repository root because this validated branch contains `package-lock.json` and npm-based scripts.
 - Do not modify the stale `AGENTS.md` description as part of this cutover.
 
@@ -676,7 +676,7 @@ git commit -m "feat: map Auth0 sessions to Kori profiles"
 
 ---
 
-### Task 8: Record the Auth0 Identity and RLS Migration
+### Task 8: Record and Harden the Auth0 Identity and RLS Migration
 
 **Files:**
 - Create: `supabase/migrations/004_auth0_identity.sql`
@@ -688,19 +688,19 @@ git commit -m "feat: map Auth0 sessions to Kori profiles"
 - Produces database RPC: `bootstrap_kori_identity(p_role text) RETURNS uuid`
 - Produces RLS policies based on Kori UUID mapping for onboarding and both Storage buckets
 
-- [ ] **Step 1: Copy the supplied migration byte-for-byte**
+- [ ] **Step 1: Import the supplied migration baseline**
 
 Source: `/Users/whererubeen/Downloads/Kori-auth-supabase.sql`
 
 Destination: `supabase/migrations/004_auth0_identity.sql`
 
-Use `apply_patch` for the repository write. Do not edit SQL semantics during the copy.
+Use `apply_patch` for the repository write. Review later identified two defects in the supplied baseline: it did not remove known legacy Storage policies, and it omitted the required `profile-photos` Auth0 policies. The repository migration is the corrected execution artifact.
 
-- [ ] **Step 2: Verify source and destination are identical**
+- [ ] **Step 2: Harden legacy-policy cleanup and both Storage buckets**
 
-Run: `cmp /Users/whererubeen/Downloads/Kori-auth-supabase.sql supabase/migrations/004_auth0_identity.sql`
+Remove policies on Kori onboarding tables and `storage.objects` whose expressions use `auth.uid()`, including the known policies from `003_onboarding_storage.sql`. Add public-read plus authenticated insert/update/delete policies for `profile-photos`, and authenticated select/insert/update/delete policies for the private `startup-data-room`, all ownership-scoped through `current_profile_id()`.
 
-Expected: exit code 0 and no output.
+Add transactional post-checks that reject any remaining targeted `auth.uid()` policy, incorrect bucket visibility, or missing Auth0 Storage insert policy.
 
 - [ ] **Step 3: Statistically verify the security invariants**
 
