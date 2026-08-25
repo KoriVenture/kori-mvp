@@ -201,7 +201,7 @@ export default function FoundersPage() {
             <p>Raise from investors who bring more than capital.</p>
           </div>
           <div className="acts anim-text-up d2">
-            <a className="btn bold" href="/join#network-form">
+            <a className="btn bold" href="/onboarding/founder">
               Raise on Kori
             </a>
             <a className="textlink" href="/how-kori-works">

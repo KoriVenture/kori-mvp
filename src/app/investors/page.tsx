@@ -199,7 +199,7 @@ export default function InvestorsPage() {
             <p>Bring a wider investment universe into view.</p>
           </div>
           <div className="acts anim-text-up d2">
-            <a className="btn bold" href="/join#network-form">
+            <a className="btn bold" href="/onboarding/investor">
               Join as an investor
             </a>
             <a className="textlink" href="/how-kori-works">
