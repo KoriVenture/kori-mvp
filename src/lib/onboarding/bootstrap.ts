@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import type { PublicSignupRole } from "./contracts";
 
 type RpcError = {
@@ -41,7 +43,9 @@ export async function bootstrapOnboardingIdentity(
     };
   }
 
-  if (typeof result.data !== "string" || !result.data) {
+  const profileId = z.uuid().safeParse(result.data);
+
+  if (!profileId.success) {
     return {
       ok: false,
       error: "Kori identity bootstrap did not return a profile id.",
@@ -50,6 +54,6 @@ export async function bootstrapOnboardingIdentity(
 
   return {
     ok: true,
-    profileId: result.data,
+    profileId: profileId.data,
   };
 }

@@ -3,7 +3,13 @@ import { NextResponse } from "next/server";
 import { auth0 } from "@/lib/auth0";
 import { createClient } from "@/lib/supabase/server";
 
-export type RequiredRole = "investor" | "founder";
+import {
+  authorizeProfileRole,
+  resolveCurrentProfileId,
+  type RequiredRole,
+} from "./role-access";
+
+export type { RequiredRole } from "./role-access";
 
 export async function requireRole(role: RequiredRole) {
   const session = await auth0.getSession();
@@ -42,16 +48,16 @@ export async function requireRole(role: RequiredRole) {
   }
 
   const profileIdResult = await supabase.rpc("current_profile_id");
-  const profileId = profileIdResult.data as string | null;
+  const profileMapping = resolveCurrentProfileId(profileIdResult);
 
-  if (profileIdResult.error || !profileId) {
+  if (!profileMapping.ok) {
     return {
       error: NextResponse.json(
         {
-          error: "Kori profile does not exist. Bootstrap onboarding first.",
+          error: profileMapping.error,
         },
         {
-          status: 409,
+          status: profileMapping.status,
         },
       ),
     };
@@ -62,34 +68,18 @@ export async function requireRole(role: RequiredRole) {
     .select(
       "id,roles,verification_status,email,email_verified,auth0_user_id",
     )
-    .eq("id", profileId)
+    .eq("id", profileMapping.profileId)
     .single();
+  const authorization = authorizeProfileRole(role, profileResult);
 
-  if (profileResult.error || !profileResult.data) {
+  if (!authorization.ok) {
     return {
       error: NextResponse.json(
         {
-          error: "Unable to read Kori profile.",
+          error: authorization.error,
         },
         {
-          status: 500,
-        },
-      ),
-    };
-  }
-
-  const roles = Array.isArray(profileResult.data.roles)
-    ? profileResult.data.roles
-    : [];
-
-  if (!roles.includes(role)) {
-    return {
-      error: NextResponse.json(
-        {
-          error: "Role not permitted.",
-        },
-        {
-          status: 403,
+          status: authorization.status,
         },
       ),
     };
@@ -97,9 +87,9 @@ export async function requireRole(role: RequiredRole) {
 
   return {
     supabase,
-    userId: profileResult.data.id as string,
+    userId: authorization.profile.id,
     auth0User: session.user,
-    profile: profileResult.data,
+    profile: authorization.profile,
   };
 }
 

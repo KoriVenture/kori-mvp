@@ -125,6 +125,8 @@ export function OnboardingController({ role }: { role: Role }) {
           return;
         }
 
+        sessionStorage.removeItem(`kori:onboarding:${role}:preauth`);
+
         setAuthState({
           email: data.auth?.email ?? null,
           emailVerified: data.auth?.emailVerified === true,

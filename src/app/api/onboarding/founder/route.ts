@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { resolveEmailVerified } from "@/lib/onboarding/auth-state";
 import { invalid, requireRole } from "@/lib/onboarding/http";
 import { founderPatchSchema } from "@/lib/validation/founder-onboarding";
 
@@ -17,9 +18,10 @@ export async function GET() {
   return NextResponse.json({
     auth: {
       email: auth0User.email ?? profile.data?.email ?? null,
-      emailVerified:
-        auth0User.email_verified === true ||
-        profile.data?.email_verified === true,
+      emailVerified: resolveEmailVerified(
+        auth0User.email_verified,
+        profile.data?.email_verified,
+      ),
     },
     profile: profile.data,
     founder: founder.data,

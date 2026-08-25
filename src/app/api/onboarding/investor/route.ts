@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { resolveEmailVerified } from "@/lib/onboarding/auth-state";
 import { invalid, requireRole } from "@/lib/onboarding/http";
 import { investorPatchSchema } from "@/lib/validation/investor-onboarding";
 
@@ -14,9 +15,10 @@ export async function GET() {
   ]);
 
   const email = auth0User.email ?? profile.data?.email ?? null;
-  const emailVerified =
-    auth0User.email_verified === true ||
-    profile.data?.email_verified === true;
+  const emailVerified = resolveEmailVerified(
+    auth0User.email_verified,
+    profile.data?.email_verified,
+  );
 
   return NextResponse.json({
     auth: {

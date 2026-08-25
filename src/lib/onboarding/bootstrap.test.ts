@@ -54,7 +54,7 @@ test("bootstrap surfaces database RPC errors", async () => {
 });
 
 test("bootstrap rejects an invalid RPC profile id", async () => {
-  for (const data of [null, "", { id: "profile-id" }]) {
+  for (const data of [null, "", "not-a-uuid", { id: "profile-id" }]) {
     const client = {
       async rpc() {
         return { data, error: null };
