@@ -1,81 +1,74 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-type Insert = {
-  table: string;
-  values: Record<string, unknown>;
-};
+import { bootstrapOnboardingIdentity } from "./bootstrap.ts";
 
-function onboardingClient() {
-  const inserts: Insert[] = [];
-
-  return {
-    inserts,
-    client: {
-      from(table: string) {
-        const query = {
-          select() {
-            return query;
-          },
-          eq() {
-            return query;
-          },
-          maybeSingle() {
-            return Promise.resolve({ data: null, error: null });
-          },
-          insert(values: Record<string, unknown>) {
-            inserts.push({ table, values });
-            return Promise.resolve({ error: null });
-          },
-        };
-
-        return query;
-      },
+test("bootstrap delegates investor identity creation to the database RPC", async () => {
+  const calls: unknown[] = [];
+  const client = {
+    async rpc(
+      name: "bootstrap_kori_identity",
+      args: { p_role: "investor" | "founder" },
+    ) {
+      calls.push({ name, args });
+      return {
+        data: "3fda0d51-35f9-4ccc-89dd-3a0000000001",
+        error: null,
+      };
     },
   };
-}
 
-test("bootstrap creates the Kori investor records for an authenticated user", async () => {
-  const modulePath = "./bootstrap.ts";
-  const bootstrapModule = await import(modulePath).catch(() => null);
+  const result = await bootstrapOnboardingIdentity(client, "investor");
 
-  assert.ok(bootstrapModule, "onboarding bootstrap module should exist");
-
-  const { client, inserts } = onboardingClient();
-  const result = await bootstrapModule.bootstrapOnboardingUser(
-    client,
-    { id: "user-123" },
-    "investor",
-    1,
-  );
-
-  assert.deepEqual(result, { ok: true });
-  assert.deepEqual(inserts, [
+  assert.deepEqual(result, {
+    ok: true,
+    profileId: "3fda0d51-35f9-4ccc-89dd-3a0000000001",
+  });
+  assert.deepEqual(calls, [
     {
-      table: "profiles",
-      values: {
-        id: "user-123",
-        roles: ["investor"],
-        verification_status: "deferred",
-      },
-    },
-    {
-      table: "investor_profiles",
-      values: {
-        user_id: "user-123",
-        onboarding_status: "in_progress",
-      },
-    },
-    {
-      table: "onboarding_progress",
-      values: {
-        user_id: "user-123",
-        role: "investor",
-        current_screen: 1,
-        completed_screens: [0],
-        last_saved_at: inserts[2]?.values.last_saved_at,
-      },
+      name: "bootstrap_kori_identity",
+      args: { p_role: "investor" },
     },
   ]);
-  assert.match(String(inserts[2]?.values.last_saved_at), /^\d{4}-\d{2}-\d{2}T/);
+});
+
+test("bootstrap surfaces database RPC errors", async () => {
+  const client = {
+    async rpc() {
+      return {
+        data: null,
+        error: { message: "Authenticated JWT required." },
+      };
+    },
+  };
+
+  const result = await bootstrapOnboardingIdentity(
+    client as never,
+    "founder",
+  );
+
+  assert.deepEqual(result, {
+    ok: false,
+    error: "Authenticated JWT required.",
+  });
+});
+
+test("bootstrap rejects an invalid RPC profile id", async () => {
+  for (const data of [null, "", { id: "profile-id" }]) {
+    const client = {
+      async rpc() {
+        return { data, error: null };
+      },
+    };
+
+    const result = await bootstrapOnboardingIdentity(
+      client as never,
+      "investor",
+    );
+
+    assert.deepEqual(result, {
+      ok: false,
+      error: "Kori identity bootstrap did not return a profile id.",
+    });
+  }
 });
