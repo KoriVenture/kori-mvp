@@ -10,7 +10,8 @@
 //!    milestone evidence package; and
 //! 2. a distinct release authority authorizes the final payout.
 //!
-//! Investors fund the contract through the configured Stellar Asset Contract.
+//! Investors fund the contract through the official Testnet USDC Stellar Asset
+//! Contract pinned in this Wasm build.
 //! After both governance conditions are satisfied, the entire escrow balance is
 //! transferred atomically to the immutable startup address.
 //!
@@ -19,14 +20,28 @@
 //! upgrades or production custody controls.
 
 use soroban_sdk::{
-    contract, contracterror, contractevent, contractimpl, contracttype, token, Address, BytesN, Env,
+    contract, contracterror, contractevent, contractimpl, contracttype, panic_with_error, token,
+    Address, BytesN, Env,
 };
+
+/// Official Circle USDC SEP-41/SAC address on Stellar Testnet.
+///
+/// This V1 artifact is intentionally Testnet-only. Mainnet requires a separate,
+/// reviewed build with the Mainnet network identifier and USDC SAC address.
+pub const TESTNET_USDC_SAC_ADDRESS: &str =
+    "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA";
+
+/// SHA-256(`Test SDF Network ; September 2015`).
+pub const TESTNET_NETWORK_ID: [u8; 32] = [
+    0xce, 0xe0, 0x30, 0x2d, 0x59, 0x84, 0x4d, 0x32, 0xbd, 0xca, 0x91, 0x5c, 0x82, 0x03, 0xdd, 0x44,
+    0xb3, 0x3f, 0xbb, 0x7e, 0xdc, 0x19, 0x05, 0x1e, 0xa3, 0x7a, 0xbe, 0xdf, 0x28, 0xec, 0xd4, 0x72,
+];
 
 #[contracttype]
 #[derive(Clone)]
 /// Immutable role and asset configuration for one Kori deal escrow.
 pub struct Config {
-    /// Stellar Asset Contract address for the accepted asset (USDC in the MVP).
+    /// Pinned official Testnet USDC Stellar Asset Contract address.
     pub asset: Address,
     /// Immutable payout destination for the funded startup.
     pub startup: Address,
@@ -70,6 +85,8 @@ pub enum Error {
     MilestoneNotApproved = 3,
     /// The escrow has no asset balance to release.
     NoFunds = 4,
+    /// This Testnet-only Wasm was deployed on a different Stellar network.
+    UnsupportedNetwork = 5,
 }
 
 #[contractevent]
@@ -109,19 +126,21 @@ impl KoriDealEscrow {
     ///
     /// # Parameters
     ///
-    /// - `asset`: accepted Stellar Asset Contract address; intended to be the
-    ///   verified USDC SAC for the selected network.
     /// - `startup`: immutable payout destination.
     /// - `fund_manager`: address authorized to approve milestone evidence.
     /// - `release_authority`: address authorized to execute the payout; it may
     ///   be a native Stellar multisig account.
     pub fn __constructor(
         env: Env,
-        asset: Address,
         startup: Address,
         fund_manager: Address,
         release_authority: Address,
     ) {
+        if env.ledger().network_id() != BytesN::from_array(&env, &TESTNET_NETWORK_ID) {
+            panic_with_error!(&env, Error::UnsupportedNetwork);
+        }
+
+        let asset = Address::from_str(&env, TESTNET_USDC_SAC_ADDRESS);
         env.storage().instance().set(
             &DataKey::Config,
             &Config {

@@ -47,6 +47,14 @@ account holds the funds and human signers manually send each payout.
 - The release transfers the full escrow balance to the configured startup.
 - A deal cannot be released twice.
 
+## Decided refund target
+
+If the deal remains unreleased after its immutable release deadline, anyone may
+call `claim_refund(investor)`. The contract must return only that investor's
+recorded unreleased contribution to the original funding address. The caller
+cannot choose a destination or receive the funds. Claims are processed one
+investor at a time; this permissionless path is not implemented yet.
+
 ## Verification performed
 
 - `cargo fmt --all -- --check`
@@ -56,9 +64,10 @@ account holds the funds and human signers manually send each payout.
 
 ## Explicitly deferred
 
-- Testnet deployment and verified USDC SAC configuration
-- Funding target and deadline
-- Cancellation and pro-rata investor refunds
+- Testnet contract deployment and end-to-end execution (the verified USDC SAC
+  is now pinned and the required Testnet identities exist)
+- Funding target and exact funding/release deadlines
+- Permissionless refund implementation and non-timeout cancellation/disputes
 - Multiple milestones or partial releases
 - Pausing, signer rotation and upgrade governance
 - Storage TTL maintenance and event ingestion

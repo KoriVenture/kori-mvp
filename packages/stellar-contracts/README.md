@@ -8,10 +8,13 @@ build order.
 
 ## Current flow
 
-1. An investor authenticates `fund`; the SAC transfers assets into DealEscrow.
+1. An investor authenticates `fund`; the pinned official Testnet USDC SAC
+   transfers assets into DealEscrow.
 2. The Fund Manager approves an off-chain evidence hash.
 3. A separate release authority authenticates `release`.
 4. DealEscrow transfers its full balance to the startup.
+5. Target design: if no release occurs before the release deadline, anyone may
+   trigger a refund to an original investor; the caller cannot redirect funds.
 
 AI and evidence documents remain off-chain.
 
@@ -19,7 +22,8 @@ AI and evidence documents remain off-chain.
 
 - Rust and Cargo
 - `wasm32v1-none` Rust target
-- Stellar CLI and Docker only for a local network or Testnet deployment
+- Stellar CLI for Testnet deployment
+- Docker only for a full local Quickstart network
 
 ## Getting started
 
@@ -34,7 +38,7 @@ cargo clippy --all-targets -- -D warnings
 cargo build --target wasm32v1-none --release
 ```
 
-Expected: `7 passed; 0 failed`.
+Expected: `8 passed; 0 failed`.
 
 Wasm output:
 
@@ -68,6 +72,40 @@ stellar container stop local
 Tests verify funding, contribution accounting, role authorization, milestone
 approval, full release and failure/replay conditions.
 
+## V1 Testnet bootstrap status
+
+- Official Testnet USDC SAC is pinned in the contract; deployment on a network
+  other than Stellar Testnet is rejected.
+- Deployer, two investors, startup, Fund Manager, release authority and three
+  release signers exist and are funded with Testnet XLM.
+- Investor and startup USDC trustlines exist; their USDC balances are still
+  zero pending the Circle faucet.
+- Release authority is a real 2-of-3 account: three signers have weight 1,
+  thresholds are 2, and the master key has weight 0.
+- The shared identities and their secrets are intentionally public Testnet
+  fixtures. This proves protocol behavior, not separation of control.
+- No escrow contract has been deployed yet.
+
+Public identifiers and verified bootstrap state are recorded in
+[`deployments/testnet-v1.json`](./deployments/testnet-v1.json). Team fixture
+secrets are in
+[`deployments/PUBLIC_TESTNET_TEAM_KEYS.json`](./deployments/PUBLIC_TESTNET_TEAM_KEYS.json).
+Import all fixtures into Stellar CLI with:
+
+```bash
+jq -r '.accounts[] | [.identityAlias, .secretKey] | @tsv' \
+  deployments/PUBLIC_TESTNET_TEAM_KEYS.json \
+  | while IFS=$'\t' read -r alias secret; do
+      printf '%s\n' "$secret" \
+        | stellar keys add "$alias" --secret-key --overwrite
+    done
+```
+
+These keys are **public and compromised by design**. Never use them in
+production, never use them on Mainnet, and never send Mainnet assets to their
+addresses. Stellar keys are not cryptographically restricted to one network.
+Never commit any private key other than this explicitly labelled fixture set.
+
 See [ARCHITECTURE_MIGRATION.md](./ARCHITECTURE_MIGRATION.md) for implemented
-invariants and deferred work. Do not deploy, generate keys or use real funds
-without explicit authorization.
+invariants and deferred work. Testnet identities were generated after explicit
+authorization; do not use real funds or deploy to Mainnet from this branch.

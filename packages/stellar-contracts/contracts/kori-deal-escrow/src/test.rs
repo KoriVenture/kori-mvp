@@ -1,7 +1,37 @@
 extern crate std;
 
 use super::*;
-use soroban_sdk::{testutils::Address as _, token, Address, BytesN, Env};
+use soroban_sdk::{
+    contract, contractimpl,
+    testutils::{Address as _, Ledger as _},
+    token, Address, BytesN, Env,
+};
+
+#[contract]
+struct MockUsdc;
+
+#[contractimpl]
+impl MockUsdc {
+    pub fn mint(env: Env, to: Address, amount: i128) {
+        let balance = Self::balance(env.clone(), to.clone());
+        env.storage().persistent().set(&to, &(balance + amount));
+    }
+
+    pub fn transfer(env: Env, from: Address, to: Address, amount: i128) {
+        from.require_auth();
+        let from_balance = Self::balance(env.clone(), from.clone());
+        assert!(amount >= 0 && from_balance >= amount);
+        let to_balance = Self::balance(env.clone(), to.clone());
+        env.storage()
+            .persistent()
+            .set(&from, &(from_balance - amount));
+        env.storage().persistent().set(&to, &(to_balance + amount));
+    }
+
+    pub fn balance(env: Env, id: Address) -> i128 {
+        env.storage().persistent().get(&id).unwrap_or(0)
+    }
+}
 
 struct Fixture {
     env: Env,
@@ -16,21 +46,20 @@ struct Fixture {
 fn fixture() -> Fixture {
     let env = Env::default();
     env.mock_all_auths();
+    env.ledger().set_network_id(TESTNET_NETWORK_ID);
 
-    let asset_admin = Address::generate(&env);
-    let asset_contract = env.register_stellar_asset_contract_v2(asset_admin.clone());
-    let asset = asset_contract.address();
+    let asset = Address::from_str(&env, TESTNET_USDC_SAC_ADDRESS);
+    env.register_at(&asset, MockUsdc, ());
     let investor = Address::generate(&env);
     let startup = Address::generate(&env);
     let fund_manager = Address::generate(&env);
     let release_authority = Address::generate(&env);
 
-    token::StellarAssetClient::new(&env, &asset).mint(&investor, &1_000);
+    MockUsdcClient::new(&env, &asset).mint(&investor, &1_000);
 
     let contract_id = env.register(
         KoriDealEscrow,
         (
-            asset.clone(),
             startup.clone(),
             fund_manager.clone(),
             release_authority.clone(),
@@ -47,6 +76,20 @@ fn fixture() -> Fixture {
         release_authority,
         client,
     }
+}
+
+#[test]
+#[should_panic]
+fn deployment_rejects_a_non_testnet_network() {
+    let env = Env::default();
+    env.register(
+        KoriDealEscrow,
+        (
+            Address::generate(&env),
+            Address::generate(&env),
+            Address::generate(&env),
+        ),
+    );
 }
 
 #[test]

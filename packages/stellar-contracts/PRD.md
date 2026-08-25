@@ -94,7 +94,7 @@ mislabelled as funded capital.
 | AD-010 | **DECIDED**  | A legal SPV and a smart contract are distinct objects linked to the same deal. A contract is not a legal vehicle.             |
 | AD-011 | **PROPOSED** | Direct-deploy one escrow for the demo; add a factory only when multiple live deals justify it.                                |
 | AD-012 | **OPEN**     | Exact release signers, value of N, signer weights, rotation, and emergency procedure. The board currently illustrates 2-of-N. |
-| AD-013 | **OPEN**     | Funding target, deadline, overfunding policy, cancellation triggers, and refund policy.                                       |
+| AD-013 | **PARTIAL**  | Permissionless per-investor refund to the original funding address after the release deadline is decided. Exact deadline values, funding-close/underfunding behavior, and dispute/cancellation rules remain open. |
 | AD-014 | **OPEN**     | Whether founder evidence submission must be separately signed on-chain or only authenticated off-chain.                       |
 | AD-015 | **OPEN**     | Upgrade policy. Recommendation: immutable after first funding, or governed upgrade with notice and investor exit.             |
 | AD-016 | **OPEN**     | Community voting/quorum for selecting a deal. It cannot replace each investor's authorization of an exact funded amount.      |
@@ -278,20 +278,38 @@ high-priority contract change.
 
 ### 8.5 Refund/cancellation
 
-**OPEN:** exact triggers and deadlines require product/legal approval.
+**PARTIALLY DECIDED:** exact deadline values and non-timeout cancellation or
+dispute rules still require product/legal approval. The liveness fallback is
+decided: once the release deadline has elapsed and the deal has not been
+released, any address may call `claim_refund(investor)`.
 
-If included, the safe implementation is a pull refund:
+The target implementation is a permissionless, per-investor pull refund:
 
-1. A deterministic deadline or authorized cancellation enters `Refundable`.
-2. Release becomes impossible.
-3. Each investor calls `claim_refund` for their own remaining contribution.
-4. The contract authenticates the investor, zeroes their refundable amount, and
-   transfers atomically.
-5. The contract never loops over every investor.
+1. `claim_refund(investor)` checks the immutable release deadline and terminal
+   state; caller authentication is not required.
+2. The first eligible claim atomically makes the unreleased deal `Refundable`;
+   release becomes impossible, including when evidence was already approved.
+3. The destination is always the supplied investor's original recorded funding
+   address. The caller cannot redirect or receive the refund.
+4. The contract zeroes that investor's refundable amount before transferring
+   the exact unreleased contribution; failure rolls state and transfer back.
+5. One investor is processed per call. The contract never loops over all
+   investors, so any user, relayer, or operator may make progress safely.
+
+Soroban contracts do not execute automatically when time passes. An external
+transaction is still required, but no privileged actor can block the refund.
+
+Provenance: the 5 July product vision already required unreleased capital to
+return to investors after startup failure or a time limit. The 23 July MVP
+scope deferred automated refunds. The 24 August blockchain decision restores
+the minimal permissionless timeout path for V1 while leaving exact timing and
+non-timeout disputes to product/legal confirmation.
 
 ## 9. Target state machine
 
-This is **PROPOSED** until AD-013 is resolved.
+The release-timeout refund branch is decided. Other cancellation and
+underfunding branches remain proposed until the remaining AD-013 inputs are
+resolved.
 
 ```mermaid
 stateDiagram-v2
@@ -302,6 +320,9 @@ stateDiagram-v2
   EvidenceSubmitted --> Funded: rejected or resubmission requested
   EvidenceSubmitted --> Approved: Fund Manager approval
   Approved --> Released: release quorum authorization
+  Funded --> Refundable: release deadline elapsed
+  EvidenceSubmitted --> Refundable: release deadline elapsed
+  Approved --> Refundable: release deadline elapsed
   Funded --> Refundable: approved cancellation
   Refundable --> Refunded: all claims settled
   Released --> [*]
@@ -325,7 +346,7 @@ Terminal states cannot reopen. AI output causes no state transition by itself.
 | FR-009 | P0       | Release requires separate authority and is terminal/atomic.                                          | **IMPLEMENTED** for one address                       |
 | FR-010 | P0       | Exercise a real 2-of-N G-account threshold in integration tests.                                     | **MISSING**                                           |
 | FR-011 | P0       | Implement explicit deal state transitions rather than optional approval plus `released` boolean.     | **MISSING**                                           |
-| FR-012 | P1       | Cancellation and per-investor pull refunds follow approved policy.                                   | **MISSING / OPEN**                                    |
+| FR-012 | P0       | After the release deadline, anyone can trigger one investor's refund; payment goes only to that investor's original address. | **DESIGN DECIDED / NOT IMPLEMENTED**                  |
 | FR-013 | P0       | Amount released/refunded never exceeds accounted accepted funding.                                   | **PARTIAL**; release currently sends full SAC balance |
 | FR-014 | P0       | Define treatment of direct/unattributed SAC transfers to the C-address.                              | **OPEN**                                              |
 | FR-015 | P1       | Extend or operationally maintain TTL for instance, persistent contribution, and Wasm entries.        | **MISSING**                                           |
@@ -340,7 +361,8 @@ Terminal states cannot reopen. AI output causes no state transition by itself.
   funding begins.
 - Every recorded contribution corresponds to a successful SAC transfer.
 - `total_released + total_refunded <= total_accepted_funding` always.
-- An investor cannot withdraw another investor's refundable balance.
+- A caller may trigger another investor's refund but cannot redirect or receive
+  it; only the original funding address receives that recorded contribution.
 - No release before the exact milestone evidence is approved.
 - Founder and AI cannot approve or release.
 - Community administration does not automatically grant release authority.
@@ -423,12 +445,15 @@ configured token's `decimals()` value in client and integration tests.
 - Workspace SDK: `soroban-sdk = "27.0.6"`.
 - Contract: [`KoriDealEscrow`](./contracts/kori-deal-escrow/src/lib.rs).
 - Build artifact: `target/wasm32v1-none/release/kori_deal_escrow.wasm`.
-- No contract ID, deployment transaction, Testnet account, or Testnet end-to-end
-  run is recorded in the repository.
+- Named Testnet accounts, USDC trustlines, and a verified 2-of-3 release account
+  are recorded in [`deployments/testnet-v1.json`](./deployments/testnet-v1.json).
+- No contract ID, deployment transaction, funded Testnet USDC balance, or
+  Testnet end-to-end run is recorded yet.
 
 ### Implemented API
 
-- `__constructor(asset, startup, fund_manager, release_authority)`
+- `__constructor(startup, fund_manager, release_authority)`; the build rejects
+  non-Testnet deployment and pins the official Testnet USDC SAC.
 - `fund(investor, amount)`
 - `approve_milestone(evidence_hash)`
 - `release()`
@@ -472,8 +497,8 @@ account works end-to-end.
 | ---------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------- |
 | Selected custody/authority design for the demo | 8/10  | Simple and Stellar-native; key policy details remain open.                                                              |
 | Current code coverage of the FigJam target     | 5/10  | Core funding/approval/release exists; evidence submission, refund, state machine, indexer, and real quorum are missing. |
-| Raw Testnet deployment readiness               | 7/10  | Wasm builds, but no deployment/configuration runbook has been exercised.                                                |
-| Complete Testnet demo readiness                | 4/10  | No account/trustline setup, real USDC flow, multisig integration, app client, or event projection.                      |
+| Raw Testnet deployment readiness               | 8/10  | Wasm builds and USDC/network identity is pinned, but deployment has not been exercised.                                 |
+| Complete Testnet demo readiness                | 6/10  | Accounts, trustlines, and 2-of-3 exist; USDC funding, deployment, E2E execution, client, and event projection remain.    |
 | Production readiness                           | 2/10  | Legal model, refund rules, audit, operations, incident controls, and production integration are unresolved.             |
 
 ## 15. Required test strategy
@@ -556,7 +581,9 @@ stellar container stop local
 Owners: product, blockchain, and legal/compliance.
 
 - Confirm release signer identities, N, weights, rotation, and recovery.
-- Confirm target, funding deadline, overfunding, cancellation, and refund rules.
+- Confirm target, exact funding/release deadlines, overfunding, underfunding,
+  and non-timeout cancellation/dispute rules. Permissionless timeout refunds
+  to original funding addresses are already decided.
 - Confirm founder on-chain evidence authorization.
 - Confirm release amount and whether a full release means target, accepted total,
   or actual contract balance.
@@ -569,7 +596,7 @@ Owners: product, blockchain, and legal/compliance.
 - Add explicit state machine and missing immutable deal configuration.
 - Bind approval/release to evidence, amount, and recipient.
 - Add target/close/deadline controls.
-- Implement pull refunds if approved.
+- Implement permissionless per-investor refunds after the release deadline.
 - Define direct-transfer/excess behavior.
 - Add versioned events and TTL strategy.
 - Expand unit and invariant tests.
@@ -589,9 +616,10 @@ build; no unexplained deviation from this PRD.
 ### Gate D: Testnet deployment
 
 - Re-verify current network/software versions and USDC identifiers.
-- Create named Testnet-only accounts and fund network fees through Friendbot.
-- Establish/verify necessary USDC trustlines and obtain test asset.
-- Configure the native multisig release account.
+- **DONE:** Create named Testnet-only accounts and fund network fees through
+  Friendbot.
+- **PARTIAL:** USDC trustlines exist; obtain Testnet USDC from Circle.
+- **DONE:** Configure and verify the native 2-of-3 release account.
 - Deploy reviewed Wasm and record the deployment manifest.
 - Execute and independently verify one complete deal lifecycle.
 
@@ -639,13 +667,15 @@ and history; deployment must be reproducible.
 After explicit deployment authorization, the standard account bootstrap is:
 
 ```bash
-stellar keys generate <test-identity> --network testnet --fund
-stellar keys address <test-identity>
+stellar keys generate <test-identity> --secure-store --network testnet --fund
+stellar keys public-key <test-identity>
 ```
 
-Never commit secret keys. Add an audited deployment script/runbook before using
-constructor commands in team workflows rather than relying on copied terminal
-history.
+The keys in `deployments/PUBLIC_TESTNET_TEAM_KEYS.json` are the only intentional
+exception to the normal no-secrets rule. They are public, compromised Testnet
+fixtures. Never reuse them on Mainnet or production, never fund their addresses
+with Mainnet assets, and never commit any other private key. Add an audited
+deployment script/runbook before relying on copied terminal history.
 
 ## 19. Security, custody, and legal constraints
 
@@ -669,7 +699,7 @@ history.
 | ----------------------------------------------------------------- | ----------------------- | ---------------------------------- |
 | Exact 2-of-N signers, weights, rotation, and recovery             | Product + Blockchain    | Local multisig and Testnet E2E     |
 | Funding target/close/deadline and overfunding                     | Product                 | State machine and hardened funding |
-| Cancellation/refund triggers and dispute treatment                | Product + Legal         | Refund implementation              |
+| Exact release deadline and non-timeout cancellation/dispute rules | Product + Legal         | Complete refund state machine       |
 | Founder on-chain evidence signature                               | Product + Blockchain    | Final evidence flow/API            |
 | Evidence canonicalization and retention                           | Product + Backend/Legal | Stable approval hash               |
 | Full-release amount definition                                    | Product + Blockchain    | Bound release API                  |
@@ -720,6 +750,8 @@ proof of application integration or production readiness.
 ### Kori sources
 
 - [Current Stellar custody, governance, and data FigJam](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data?node-id=0-1)
+- [MVP user-flow meeting — 2026-07-23](https://app.fireflies.ai/view/01KY2H5EJH7N7FPRT1NXSVTJMZ)
+- [Kori team meeting — 2026-08-15](https://app.fireflies.ai/view/01M03GVGWMKS5693AV2HQ0QJR2)
 - [Kori Standup — 2026-08-17](https://app.fireflies.ai/view/01M08XMKEP2EPQ9GVX48FXZY61)
 - [Smart contract meeting — 2026-08-19](https://app.fireflies.ai/view/01M0E54WP3C6NE0XWRHQVPGCQH)
 - [Allocation/transaction worksheet](https://docs.google.com/spreadsheets/d/1RMGdhWMD8l1NyNhiEonpSnoI0LrQFO2rLUqFsrwbMVo/edit?gid=0#gid=0) — access-controlled supplemental context; not used as an authoritative live source in this verification pass.

@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "environment": "stellar-testnet",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "networkId": "cee0302d59844d32bdca915c8203dd44b33fbb7edc19051ea37abedf28ecd472",
+  "protocolVersion": 27,
+  "stellarCliVersion": "27.1.0",
+  "verifiedAtLedger": 4319575,
+  "generatedOn": "2026-08-24",
+  "asset": {
+    "code": "USDC",
+    "issuer": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5",
+    "sacAddress": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+    "pinnedInContract": true
+  },
+  "secrets": {
+    "storage": "Intentionally committed public Testnet fixture",
+    "fixtureFile": "PUBLIC_TESTNET_TEAM_KEYS.json",
+    "committedToRepository": true,
+    "securityClassification": "PUBLIC_TEST_FIXTURE_COMPROMISED_BY_DESIGN",
+    "demoOnlyWarning": "Anyone can control these accounts. Never use or fund these keys on Mainnet. The account proves 2-of-3 protocol behavior, not organizational separation of control."
+  },
+  "accounts": {
+    "deployer": {
+      "identityAlias": "kori-v1-public-deployer",
+      "publicKey": "GBVZOKTZ37KWMW5ODEKUZNJ46OMQQ74RJ7SEMYPRL5P6CO3TI4N6CAYZ",
+      "testnetXlmFunded": true
+    },
+    "investorA": {
+      "identityAlias": "kori-v1-public-investor-a",
+      "publicKey": "GCKRSXJSPNBLMO3RBESRQSNVQPOLA5NNGJKX2575NSCDNV2RVRJ4CCN4",
+      "testnetXlmFunded": true,
+      "usdcTrustline": true,
+      "verifiedUsdcBalance": "0.0000000"
+    },
+    "investorB": {
+      "identityAlias": "kori-v1-public-investor-b",
+      "publicKey": "GBLUTCNB4EQ4IJGJEYD2EQ6ZNO2FMV76T25BVRT6E2PDYSDBPSQGE6BR",
+      "testnetXlmFunded": true,
+      "usdcTrustline": true,
+      "verifiedUsdcBalance": "0.0000000"
+    },
+    "startup": {
+      "identityAlias": "kori-v1-public-startup",
+      "publicKey": "GDMLXU2DQF4S5KOWZOIEAQJRWZCUX5A6KGBZ3AGT56TFAJM2Q732OLVO",
+      "testnetXlmFunded": true,
+      "usdcTrustline": true,
+      "verifiedUsdcBalance": "0.0000000"
+    },
+    "fundManager": {
+      "identityAlias": "kori-v1-public-fund-manager",
+      "publicKey": "GD4OUQGFGK4GJKPKK77OILH2ETNPXO7MBDOJ7DTWWEACVK3E2WQA2QF4",
+      "testnetXlmFunded": true
+    },
+    "releaseAuthority": {
+      "identityAlias": "kori-v1-public-release-authority",
+      "publicKey": "GBY72ML34XTWHABB3SHZ5FULQYSC35HZMJ2IZL3HQRMPNKT6JMENLQCJ",
+      "testnetXlmFunded": true,
+      "masterWeight": 0,
+      "thresholds": {
+        "low": 2,
+        "medium": 2,
+        "high": 2
+      },
+      "signers": [
+        {
+          "identityAlias": "kori-v1-public-release-signer-1",
+          "publicKey": "GDJOHEO52H5Q26OKOFLOQNEHMVK5CLY4VNZHH7W32NAFL7R64LFQ3LOS",
+          "weight": 1
+        },
+        {
+          "identityAlias": "kori-v1-public-release-signer-2",
+          "publicKey": "GDT24EGU4EMQ7WRJT3OMJSQ4KNM7JBS5UXGPNXCDWPIUGGZKEVUHN2CC",
+          "weight": 1
+        },
+        {
+          "identityAlias": "kori-v1-public-release-signer-3",
+          "publicKey": "GB7T7V3QX4GPRT3XXLYT4WAFJLFPXLRGJQ4YOIA4DYBDU4A3EU7LID4M",
+          "weight": 1
+        }
+      ]
+    }
+  },
+  "verifiedBootstrapTransactions": {
+    "investorATrustline": "8fc2721f9d1129b04e8b468109cdee6919f31667e51a8a44d88089d5fa8c75b6",
+    "investorBTrustline": "1723991e028337101c6eec4b016b95cc053b73899e2f9130caa2976bbbf51b61",
+    "startupTrustline": "8a42b771c493b6db6cb11db7c758d8836ed976c6397cc7f81444c55481bebec9",
+    "addReleaseSigner1": "978337bb7be6156c2ac4bde6af00ca5f9c27936e2c94b1b3344d62e431b56b7f",
+    "addReleaseSigner2": "24e2fa2af13e2941146c61cbc58888f74b3f0d3b663302723fe122ea75c764ae",
+    "addReleaseSigner3": "68b301674cbdb3f3f5677e74b0ad533a4eb894057e27a2b608a59f9024501067",
+    "setTwoOfThreeThreshold": "128f0b68ccc6d3d1e7ac3005b10702d7dfffe404e56ffcb2ef6bd124a611c373"
+  },
+  "deployment": {
+    "status": "built-not-deployed",
+    "contractId": null,
+    "wasmSha256": "27e86bd07ed20cefe3a34193e0d8dd70608dadbb25e112d551ebc52bb8c4a227",
+    "deploymentTransaction": null
+  }
+}
