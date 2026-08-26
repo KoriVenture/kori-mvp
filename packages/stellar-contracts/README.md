@@ -82,23 +82,29 @@ when the SAC rejects a payout or refund.
 - A fresh deployer, two investors, startup, Lead/Fund Manager, Investor
   Representative, Kori Release Officer, and release authority are funded with
   Testnet XLM.
-- Investor and startup USDC trustlines exist; their USDC balances are still
-  zero pending the Circle faucet.
+- Investor and startup USDC trustlines exist and Circle Testnet USDC funded the
+  live assurance campaign.
 - Release authority is live-verified: Lead `1`, Investor Representative `2`,
   Kori `1`, medium threshold `3`, high threshold `4`, master weight `0`. Only
   Lead + Representative or Kori + Representative can authorize release.
-- Both permitted pairs completed minimal Testnet payments; Lead + Kori was
-  rejected with `TxBadAuth`. Hashes are recorded in the deployment manifest.
+- Both permitted pairs completed contract releases; Lead + Kori and Kori alone
+  were rejected with `TxBadAuth`.
 - The optimized deployment artifact is ready: 22,419 bytes, SHA-256
   `c997029a0f411837ad0f09b48b390b84ec4a40cc98df3173ec122971b9b09263`.
 - The shared identities and their secrets are intentionally public Testnet
   fixtures. This proves protocol behavior, not separation of control.
-- No escrow contract has been deployed yet.
+- Five live escrows exercised normal release, multi-investor refunds, recovery
+  release, evidence replacement/surplus isolation, and failed-payout recovery.
+- An untouched 5 USDC team sandbox is live at
+  `CA7VZWOWBPMCCZ32QAY254PGCGZJALP4AU7ZGHG4RU3ZG64D2JNT333Y` until the
+  documented deadlines.
 
 Public identifiers and verified bootstrap state are recorded in
 [`deployments/testnet-v1.json`](./deployments/testnet-v1.json). Team fixture
 secrets are in
 [`deployments/PUBLIC_TESTNET_TEAM_KEYS.json`](./deployments/PUBLIC_TESTNET_TEAM_KEYS.json).
+The complete results and transaction links are in the
+[`TESTNET_ASSURANCE_REPORT.md`](./TESTNET_ASSURANCE_REPORT.md).
 Import all fixtures into Stellar CLI with:
 
 ```bash

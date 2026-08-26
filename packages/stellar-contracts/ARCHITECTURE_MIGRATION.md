@@ -11,17 +11,17 @@ claim to be the final production custody or legal model.
 
 ## Role mapping
 
-| Product responsibility | Stellar implementation |
-| --- | --- |
-| Investor funds a deal | Investor authenticates `fund`; the USDC SAC transfer occurs in the same invocation |
-| Deal custody | USDC balance is held by the deal's Soroban contract address |
-| Milestone evidence | Startup signs a versioned off-chain evidence hash; Fund Manager approves it |
-| Payout authorization | Separate weighted `release_authority` authenticates the exact release |
-| Threshold governance | Investor Representative plus Lead, or Investor Representative plus Kori |
-| Startup payout | Exact immutable target transfers once to the immutable startup address |
-| Timeout safety | Anyone may open/claim refunds; funds return only to original investors |
-| AI analysis | Off-chain and advisory; never an on-chain authority |
-| Evidence documents | Off-chain; only a 32-byte integrity hash is stored on-chain |
+| Product responsibility | Stellar implementation                                                             |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| Investor funds a deal  | Investor authenticates `fund`; the USDC SAC transfer occurs in the same invocation |
+| Deal custody           | USDC balance is held by the deal's Soroban contract address                        |
+| Milestone evidence     | Startup signs a versioned off-chain evidence hash; Fund Manager approves it        |
+| Payout authorization   | Separate weighted `release_authority` authenticates the exact release              |
+| Threshold governance   | Investor Representative plus Lead, or Investor Representative plus Kori            |
+| Startup payout         | Exact immutable target transfers once to the immutable startup address             |
+| Timeout safety         | Anyone may open/claim refunds; funds return only to original investors             |
+| AI analysis            | Off-chain and advisory; never an on-chain authority                                |
+| Evidence documents     | Off-chain; only a 32-byte integrity hash is stored on-chain                        |
 
 The Fund Manager and release authority are intentionally different
 responsibilities, even if the initial demo assigns the same person to both.
@@ -77,12 +77,13 @@ are processed one investor at a time; this path is implemented and tested.
 - current RustSec audit: no known vulnerabilities; one unmaintained transitive
   `paste` warning exists in the Soroban host/test dependency graph and is absent
   from the `wasm32v1-none` target
+- five public Testnet USDC scenarios covering both release pairs, multi-investor
+  refunds, evidence replacement, surplus isolation, failed-payout rollback, and
+  post-deadline recovery; see
+  [`TESTNET_ASSURANCE_REPORT.md`](./TESTNET_ASSURANCE_REPORT.md)
 
 ## Explicitly deferred
 
-- Testnet contract deployment and end-to-end execution (the verified USDC SAC
-  is now pinned and the required Testnet identities exist)
-- Selection of actual Testnet target/deadline constructor values
 - Non-timeout cancellation/disputes (V2)
 - Multiple milestones or partial releases
 - Pausing, signer rotation and upgrade governance

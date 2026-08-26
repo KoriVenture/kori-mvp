@@ -37,6 +37,12 @@
       "publicKey": "GDOZZLZU7I4P7CFPNE46PB6ZLLDBSIHJEIWLNCEXHGLBR5BYZ6KNNCDN",
       "secretKey": "SCS2FGZGVH3HTYEYMTW6CRZ36OCVFR75CMHN2EAPDLLEGUMW2VTYQH44"
     },
+    "startupWithoutUsdcTrustline": {
+      "identityAlias": "kori-v1-team-no-trustline-startup",
+      "role": "negative-test-startup-without-usdc-trustline",
+      "publicKey": "GBYCANP5NAW6KMZE5AWK75NYOLDDICMLBRZP5SDPCRXCTBBB6JSGFZ65",
+      "secretKey": "SDYXPR6G3MDJONSS6RQLLNMFXM6VOCXEP3TTPZSYY24R7QUDAQXOSGBD"
+    },
     "leadInvestorFundManager": {
       "identityAlias": "kori-v1-team-lead-investor",
       "role": "lead-investor-fund-manager-and-release-signer",

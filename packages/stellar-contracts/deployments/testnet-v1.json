@@ -6,7 +6,7 @@
   "protocolVersion": 27,
   "stellarCliVersion": "27.1.0",
   "generatedOn": "2026-08-25",
-  "verifiedAtLedger": 4321564,
+  "verifiedAtLedger": 4336904,
   "asset": {
     "code": "USDC",
     "issuer": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5",
@@ -31,21 +31,28 @@
       "publicKey": "GDDWS25MKDXHW3FNRSKGT4G6LODA7UL5F7NDXDI4LS7HCSABVFYLRBTF",
       "testnetXlmFunded": true,
       "usdcTrustline": true,
-      "verifiedUsdcBalance": "0.0000000"
+      "verifiedUsdcBalance": "16.5000000"
     },
     "investorB": {
       "identityAlias": "kori-v1-team-investor-b",
       "publicKey": "GDX5SVXQL5DXHJ3R5ZVDHAN7N5CY2Y74N4MX67OHQIJIOM2SXQBQPC2V",
       "testnetXlmFunded": true,
       "usdcTrustline": true,
-      "verifiedUsdcBalance": "0.0000000"
+      "verifiedUsdcBalance": "17.0000000"
     },
     "startup": {
       "identityAlias": "kori-v1-team-startup",
       "publicKey": "GDOZZLZU7I4P7CFPNE46PB6ZLLDBSIHJEIWLNCEXHGLBR5BYZ6KNNCDN",
       "testnetXlmFunded": true,
       "usdcTrustline": true,
-      "verifiedUsdcBalance": "0.0000000"
+      "verifiedUsdcBalance": "6.0000000"
+    },
+    "startupWithoutUsdcTrustline": {
+      "identityAlias": "kori-v1-team-no-trustline-startup",
+      "publicKey": "GBYCANP5NAW6KMZE5AWK75NYOLDDICMLBRZP5SDPCRXCTBBB6JSGFZ65",
+      "testnetXlmFunded": true,
+      "usdcTrustline": false,
+      "purpose": "negative payout and atomic rollback test only"
     },
     "leadInvestorFundManager": {
       "identityAlias": "kori-v1-team-lead-investor",
@@ -128,13 +135,136 @@
       "ledgerIncluded": false
     }
   },
-  "deployment": {
-    "status": "built-not-deployed",
-    "contractId": null,
+  "artifact": {
     "wasmSha256": "c997029a0f411837ad0f09b48b390b84ec4a40cc98df3173ec122971b9b09263",
     "wasmSizeBytes": 22419,
     "buildCommand": "stellar contract build --locked --optimize",
-    "constructor": null,
-    "deploymentTransaction": null
+    "uploadTransaction": "908a85a11076b74a843466fc2de4d017829b2fd6351f0f4b1782fac5954345e0"
+  },
+  "testnetCampaign": {
+    "status": "PASS",
+    "executedAtUtc": "2026-08-26",
+    "assuranceReport": "../TESTNET_ASSURANCE_REPORT.md",
+    "scenarios": {
+      "normalRelease": {
+        "contractId": "CDJFW5EISTACAQ7W5DPIYOV3C2BENTXYKGPLG5B5JOAED3ULDDJXLUCL",
+        "targetAmountBaseUnits": "30000000",
+        "fundingDeadline": 1788044400,
+        "releaseDeadline": 1788217200,
+        "evidenceFile": "testnet-release-evidence-v1.json",
+        "evidenceSha256": "94cebd59f63ee34dc135235198d3ae30252aaebb963cb1022a7117d69723c673",
+        "deploymentTransaction": "c8568fb000b894706efd3f6ae0b8626b68a2c2e02d4b66996ef79a2a0911974c",
+        "transactions": {
+          "investorAFunding": "449447554d4d6570a6d19513fcb77956a733e56d8b5ca3524bbe3db3d8622fa9",
+          "investorBFunding": "e64f44f1942305ca413fd48b6c1d0a5189a3b82513c11527d8ce11e23ae74df2",
+          "evidence": "c492f03547f4c3e18499b8c4d2271a4b26736f34ca0ebfc15820e6dea316be3d",
+          "approval": "9feafba2d1afffcd87532bd1725b22d68440b1bb6b5a69c4adee4e7632df57ee",
+          "release": "a8f04adf7bbcf990a8d05d3acd6729e60fb2be6cce6494e51588ba543b8826ec"
+        },
+        "releaseSigners": [
+          "lead-investor-fund-manager",
+          "investor-representative"
+        ],
+        "finalState": "Released",
+        "totalFundedBaseUnits": "30000000",
+        "totalReleasedBaseUnits": "30000000",
+        "escrowBalanceBaseUnits": "0"
+      },
+      "underfundedRefund": {
+        "contractId": "CD742EYPMVU3SROYGOKBPYI43XLZF75XSKCGLFJEAG3PPOOOK3KNMHMU",
+        "targetAmountBaseUnits": "30000000",
+        "fundingDeadline": 1787706496,
+        "releaseDeadline": 1787709916,
+        "deploymentTransaction": "e111b929d03e75fae6ab979c11ef32f948364b1faf4d18aa330ac2b0f14568c0",
+        "transactions": {
+          "investorAFunding": "e1130cdb2bf18469ee5922b5d5eaa4cefc572f62e2edb2f921232158553fdf69",
+          "investorBFunding": "9f6af518f2efaf87a7715af6c2c498b3319a0595c085185ffd0034f70de5d71f",
+          "investorARefund": "7971bacaea073ad856cdd08d3d7e4d674b149dfed6858925041d2c3e139bb17c",
+          "investorBRefund": "0f0b84c5e2720a1a9ea95142ace55efd9eab975caa9b25595d6edce9ff83f68a"
+        },
+        "finalState": "Refunded",
+        "totalFundedBaseUnits": "20000000",
+        "totalRefundedBaseUnits": "20000000",
+        "escrowBalanceBaseUnits": "0"
+      },
+      "recoveryRelease": {
+        "contractId": "CD26OIFLDEMXGK6RFHSOGBMUUXDMWSMNYXLMGBD4VHAU6BRT7HP234BO",
+        "targetAmountBaseUnits": "10000000",
+        "fundingDeadline": 1787710332,
+        "releaseDeadline": 1787713932,
+        "deploymentTransaction": "ed77857b61768743c51407df5a9dc28ab0ee6c71cf38f11803a89b1c0aa73cf1",
+        "transactions": {
+          "funding": "2722a0f7299b43f5816b4344b4a4dc539fe8c319570baee8b07a5c47d4357546",
+          "evidence": "f200d7a83d9ec7d88284ab54d2bdc19b9cd6acb1e51ecf3258a78bd4d85dbe02",
+          "approval": "8b2467ecf5b277a2d37a22449c4c50e0b220d164ab9e006561676c0640f7e2ee",
+          "release": "e7d538dc6d5f8ef2cf87f5252a262e2ae837c7b2d1351e677684630ede610414"
+        },
+        "releaseSigners": ["kori-release-officer", "investor-representative"],
+        "finalState": "Released",
+        "totalFundedBaseUnits": "10000000",
+        "totalReleasedBaseUnits": "10000000",
+        "escrowBalanceBaseUnits": "0"
+      },
+      "evidenceVersionAndSurplus": {
+        "contractId": "CCJBKDVARGRXJIDHTNQRQ4AW3FBE454KSH4CI5QZW4NEA76FGHDQD65L",
+        "targetAmountBaseUnits": "20000000",
+        "unsolicitedSurplusBaseUnits": "5000000",
+        "fundingDeadline": 1787710466,
+        "releaseDeadline": 1787714066,
+        "deploymentTransaction": "beb47eb58f682a7ad20741b6e1e45720132a6ac7c86396944d333ca3cb29d3e6",
+        "transactions": {
+          "investorAFunding": "22b6912d641d5cdda820a7ef21412cb27c016f24df74112e84a023539188ca51",
+          "investorBFunding": "619c4cf6cbff9ff21cc9b4e3c5fe0e6fcdd5bf5b08cdaf3093b39c31d8bcfee2",
+          "unsolicitedSurplus": "a96f226a155982527fbf136a5df37d657829491276d9517eff36a7d363cd4d8c",
+          "evidenceV1": "d213faa439595cb9ebd955146b745fc41cda733d78bd9a77c284ef5f7dcc6168",
+          "evidenceV2": "9eb64ad875d8ddb4337cfbafe05a201df260ddeee414240955c98b1f8386f47f",
+          "approvalV2": "0081f090d6678d7b7202b1b10428d262fdc3a8789e0fcfa763ebf012affaf080",
+          "release": "e06805ae859a6108cbf159860ce5e635c324b8e7212d38f11e56a3f312e4f4d1"
+        },
+        "finalState": "Released",
+        "totalFundedBaseUnits": "20000000",
+        "totalReleasedBaseUnits": "20000000",
+        "escrowBalanceBaseUnits": "5000000"
+      },
+      "failedPayoutRecovery": {
+        "contractId": "CDQQVVGGPTNYFP4R4P5FIKOUONOOXM5LXLCDB2KWE35NU5SJMNNG4KPD",
+        "targetAmountBaseUnits": "10000000",
+        "fundingDeadline": 1787707538,
+        "releaseDeadline": 1787707778,
+        "deploymentTransaction": "1d52c13664baab7a4ce27a05f3a344ab69b1eabd80d2087ab3491f4bcfd6c1d0",
+        "transactions": {
+          "funding": "5caf91afd0ae5d9b021f7cd13df1829ee72a3e925d12f1902e789c528212f9e7",
+          "evidence": "9c0faeabc320ba1b89da574baf0675389057e22c740e25dfe4614299192ef74f",
+          "approval": "05f4ab92315e302a67b351e17946c326dae68b57da11e147841b632bde275d2a",
+          "timeoutRefund": "f06fe6021e137e19f5891ecf1c511b36dd438a83ba16b84b69708adc9ca5cf0d"
+        },
+        "payoutSimulation": {
+          "result": "SAC Contract #13: trustline entry is missing for account",
+          "ledgerIncluded": false,
+          "postFailureState": "Approved",
+          "postFailureTotalReleasedBaseUnits": "0",
+          "postFailureEscrowBalanceBaseUnits": "10000000"
+        },
+        "refundReason": "ReleaseDeadlineMissed",
+        "finalState": "Refunded",
+        "totalFundedBaseUnits": "10000000",
+        "totalReleasedBaseUnits": "0",
+        "totalRefundedBaseUnits": "10000000",
+        "escrowBalanceBaseUnits": "0"
+      }
+    },
+    "teamSandbox": {
+      "status": "FundingOpen",
+      "contractId": "CA7VZWOWBPMCCZ32QAY254PGCGZJALP4AU7ZGHG4RU3ZG64D2JNT333Y",
+      "targetAmountBaseUnits": "50000000",
+      "fundingDeadline": 1788044400,
+      "releaseDeadline": 1788217200,
+      "deploymentTransaction": "e67ef963de46416ff82e6def36d253c76ee27f484e9921344c656e7809366386",
+      "initialTotalsBaseUnits": {
+        "funded": "0",
+        "released": "0",
+        "refunded": "0"
+      }
+    }
   }
 }
