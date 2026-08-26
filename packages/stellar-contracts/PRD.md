@@ -4,10 +4,10 @@
 
 | Field             | Value                                                          |
 | ----------------- | -------------------------------------------------------------- |
-| Status            | Living draft and implementation handoff                        |
+| Status            | Approved V1 contract specification and implementation handoff  |
 | Audience          | Kori developers, reviewers, and coding agents                  |
 | Scope             | Stellar/Soroban blockchain path and its application boundaries |
-| Last verified     | 2026-08-24                                                     |
+| Last verified     | 2026-08-25                                                     |
 | Working branch    | `liobrasil/stellar-soroban-escrow`                             |
 | Target network    | Stellar Testnet only for the MVP                               |
 | Production status | Not production-ready; no real funds                            |
@@ -65,14 +65,17 @@ separate release quorum authorizes the payout.
 
 The selected Stellar model is:
 
-1. The investor signs one `fund` invocation.
-2. `DealEscrow` calls the USDC Stellar Asset Contract (SAC) in that invocation.
-3. USDC moves from the investor G-account to the deal's C-address.
-4. Evidence documents remain off-chain; hashes anchor integrity on-chain.
-5. The Fund Manager approves the evidence hash.
-6. A separate 2-of-N Stellar release quorum authorizes payout.
-7. `DealEscrow` transfers the approved amount to the immutable startup account.
-8. Kori indexes confirmed contract events into its operational database.
+1. Constructor fixes the startup, Fund Manager, weighted release account, exact
+   target, funding deadline, and release deadline.
+2. Each investor signs `fund`; USDC moves atomically into DealEscrow custody.
+3. Reaching the exact target closes funding; overfunding is rejected.
+4. The startup signs submission of an off-chain evidence hash.
+5. The Fund Manager/Lead Investor approves that exact hash and version.
+6. The Investor Representative plus either the Lead Investor or Kori Release
+   Officer authorizes the exact payout through a weighted Stellar G-account.
+7. DealEscrow transfers exactly the target to the immutable startup address.
+8. If no valid release occurs by the applicable deadline, anyone may trigger
+   per-investor refunds to the original funding addresses.
 
 The deal contract holds the money; the multisig governs release. This is not a
 treasury account holding the money, and it is not a revocable allowance that is
@@ -92,12 +95,14 @@ mislabelled as funded capital.
 | AD-008 | **DECIDED**  | AI is advisory only and has no on-chain address, key, approval, or release power.                                             |
 | AD-009 | **DECIDED**  | There is no separate independent-verifier role in the current flow; the Fund Manager is the human milestone approver.         |
 | AD-010 | **DECIDED**  | A legal SPV and a smart contract are distinct objects linked to the same deal. A contract is not a legal vehicle.             |
-| AD-011 | **PROPOSED** | Direct-deploy one escrow for the demo; add a factory only when multiple live deals justify it.                                |
-| AD-012 | **OPEN**     | Exact release signers, value of N, signer weights, rotation, and emergency procedure. The board currently illustrates 2-of-N. |
-| AD-013 | **PARTIAL**  | Permissionless per-investor refund to the original funding address after the release deadline is decided. Exact deadline values, funding-close/underfunding behavior, and dispute/cancellation rules remain open. |
-| AD-014 | **OPEN**     | Whether founder evidence submission must be separately signed on-chain or only authenticated off-chain.                       |
-| AD-015 | **OPEN**     | Upgrade policy. Recommendation: immutable after first funding, or governed upgrade with notice and investor exit.             |
-| AD-016 | **OPEN**     | Community voting/quorum for selecting a deal. It cannot replace each investor's authorization of an exact funded amount.      |
+| AD-011 | **DECIDED**  | Direct-deploy one immutable escrow for V1; a multi-deal factory is V2.                                                         |
+| AD-012 | **DECIDED**  | Release uses a weighted G-account. Investor Representative is mandatory: Lead + Representative is normal; Kori + Representative is recovery after prior Lead approval; Lead + Kori is forbidden. |
+| AD-013 | **DECIDED**  | Constructor fixes absolute funding/release deadlines. Timeout refunds are permissionless, per investor, and can only pay the original funding address. |
+| AD-014 | **DECIDED**  | In V1, the immutable startup payout address signs each on-chain evidence-hash submission; documents remain off-chain.          |
+| AD-015 | **DECIDED**  | V1 exposes no configuration setter or contract-upgrade entry point. Production upgrade governance is V2/security review work. |
+| AD-016 | **V2**       | Community voting/quorum may select deals later but never replaces each investor's authorization of an exact contribution.     |
+| AD-017 | **DECIDED**  | V1 uses `minimum = target = maximum`; target is the full release amount and contributions above it are rejected.               |
+| AD-018 | **DECIDED**  | If the Lead disappears before approval, the startup is not paid; the deal becomes refundable at the release deadline.          |
 
 ## 4. Product boundary
 
@@ -119,6 +124,8 @@ mislabelled as funded capital.
 - Fiat conversion, on-ramp, off-ramp, CCTP, or cross-chain settlement.
 - Production KYC/KYB, AML, sanctions, tax, or regulatory automation.
 - Multiple milestones, partial tranches, multiple assets, or a deal factory.
+- Variable minimum/target/maximum amounts, manual early close, or overfunding.
+- Non-timeout cancellation, dispute resolution, or discretionary admin refunds.
 - On-chain evidence documents or personally identifiable information.
 - AI-controlled approvals or transactions.
 - A reusable custom smart-wallet/account protocol.
@@ -172,10 +179,11 @@ explicit asset.
 | Actor                             | May do                                                                                         | Must not do                                                                     |
 | --------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Investor                          | Select a deal, authorize an exact contribution, view funded position, claim an eligible refund | Move another investor's assets or approve a milestone by default                |
-| Startup Founder                   | Upload evidence and, if AD-014 is approved, attest its hash                                    | Approve its own evidence or release funds                                       |
+| Startup Founder                   | Upload evidence off-chain and sign submission of its current hash                              | Approve its own evidence or release funds                                       |
 | Fund Manager / Milestone Approver | Review source evidence and AI advice; approve/reject the evidence hash for an assigned deal    | Gain release power merely from community-admin status                           |
-| Release Signers                   | Satisfy the configured 2-of-N release authority                                                | Change evidence, recipient, amount, or deal rules while signing                 |
-| Kori Operator                     | Deploy configured contracts, build/simulate/submit invocations, operate indexer                | Unilaterally move escrowed funds unless explicitly one of the disclosed signers |
+| Investor Representative           | Co-authorize every release through the weighted release account                               | Release alone or approve evidence                                                |
+| Kori Release Officer              | Replace the Lead only for release after the Lead already approved the exact evidence           | Approve evidence, release alone, or bypass the Investor Representative           |
+| Kori Operator                     | Deploy reviewed contracts, submit public refund calls, and operate the indexer                 | Redirect refunds or gain discretionary escrow control                            |
 | AI Review                         | Produce structured advisory findings off-chain                                                 | Hold keys, call the contract, approve, reject, or release                       |
 | Legal/Compliance operator         | Determine eligibility and maintain legal records off-chain                                     | Treat a smart contract as formation of an SPV or proof of investment rights     |
 | Stablecoin issuer                 | Operates the asset and may retain issuer controls                                              | Is not controlled by Kori                                                       |
@@ -188,6 +196,21 @@ Custody, control, and authority are different:
 - **Execution:** DealEscrow enforces state and calls the SAC.
 - **Legal rights:** the SPV and agreements define investor rights off-chain.
 
+Release-account policy:
+
+| Signers                               | Result                                         |
+| ------------------------------------- | ---------------------------------------------- |
+| Lead + Investor Representative        | Allowed normal release                         |
+| Kori + Investor Representative        | Allowed recovery release after Lead approval   |
+| Lead + Kori                           | Forbidden                                      |
+| Any single signer                     | Forbidden                                      |
+
+Recommended V1 weights are Lead `1`, Investor Representative `2`, Kori `1`,
+medium threshold `3`, master weight `0`, and high threshold `4`. This makes the
+Representative mandatory for release and all three parties mandatory for signer
+or threshold changes. The contract authenticates the release G-account; the
+account configuration enforces the underlying pair.
+
 ## 7. System architecture
 
 ### On-chain
@@ -195,7 +218,7 @@ Custody, control, and authority are different:
 - Investor and startup G-accounts.
 - One verified USDC Stellar Asset Contract.
 - One deal-specific `DealEscrow` C-address.
-- Immutable or tightly governed deal configuration.
+- Immutable V1 target, deadlines, payout recipient, and authorities.
 - Contribution, evidence-approval, release, and refund state.
 - Structured events for every financial/state transition.
 - Native Stellar G-account authorization for the release quorum.
@@ -226,9 +249,12 @@ are solved.
 1. Kori creates a canonical off-chain deal ID and terms/evidence schema version.
 2. Product/legal owners provide the startup recipient and applicable deal terms.
 3. Blockchain owner verifies network and USDC SAC identity.
-4. The team assigns the deal-scoped Fund Manager and release quorum account.
-5. Kori verifies the startup can receive the asset.
-6. Kori deploys one escrow with reviewed constructor arguments.
+4. The team assigns the deal-scoped Fund Manager and verifies the weighted
+   release account against AD-012.
+5. Kori fixes one positive target and two absolute Unix timestamps where
+   `now < funding_deadline < release_deadline`.
+6. Kori verifies the startup can receive USDC and deploys one escrow with the
+   reviewed constructor arguments.
 7. Kori records network, contract ID, Wasm hash, constructor values, deployment
    transaction, and ledger.
 8. No constructor value may be silently inferred from UI language, country, or
@@ -244,132 +270,132 @@ are solved.
 5. `fund` requires investor authorization.
 6. DealEscrow calls SAC transfer from investor to escrow in the same invocation.
 7. Contribution and aggregate accounting update atomically with the transfer.
-8. DealEscrow emits `Funded`.
-9. The indexer records the event only after successful confirmed execution.
-10. The UI derives “funded” from confirmed chain evidence, never from a pending
+8. A contribution exceeding the target is rejected; reaching the target moves
+   the deal atomically to `Funded`.
+9. DealEscrow emits `Funded` and, when applicable, `FundingCompleted`.
+10. The indexer records events only after successful confirmed execution.
+11. The UI derives “funded” from confirmed chain evidence, never from a pending
     database row, allowance, signature request, or commitment.
 
 ### 8.3 Evidence and human approval
 
-1. Founder uploads a versioned evidence package off-chain.
+1. Startup uploads a versioned evidence package off-chain.
 2. Kori canonicalizes a manifest and computes its versioned hash.
 3. AI returns advisory findings referencing the same evidence version.
 4. Fund Manager inspects the underlying evidence and advisory result.
-5. Fund Manager approves or rejects the exact evidence hash.
-6. The chain stores only the hash, decision state, and approver/ledger data.
-7. Re-submission produces a new evidence version and hash; history is never
-   overwritten off-chain.
+5. Startup signs submission of the canonical hash; resubmission increments the
+   version only before approval.
+6. Fund Manager approves the exact current hash and version.
+7. The chain stores only the hash, version, decision state, and ledger data.
+8. Off-chain evidence history is append-only; prior versions are never
+   overwritten.
 
 ### 8.4 Release
 
-1. The app constructs a release authorization containing the contract, evidence
-   hash, amount, and immutable recipient/deal context.
-2. Required release signers satisfy the configured 2-of-N G-account threshold.
+1. The app constructs `release(evidence_hash, evidence_version, target_amount)`.
+2. Lead + Representative normally authorize the weighted G-account. If the Lead
+   already approved evidence but is unavailable, Kori + Representative may do so.
 3. DealEscrow checks evidence approval, release arguments, balance/accounting,
    recipient, and current state.
 4. DealEscrow marks the terminal state and transfers USDC atomically.
 5. DealEscrow emits `Released` with the amount and evidence reference.
 6. The indexer projects the confirmed state and transaction identifiers.
 
-The current zero-argument `release()` is not sufficient for the target design:
-the quorum signature is not explicitly bound to an evidence hash and amount,
-and the Fund Manager can replace the stored approval before release. This is a
-high-priority contract change.
+The approval is immutable and the release authorization is bound to the exact
+contract invocation. Kori cannot create the prerequisite Lead approval.
 
 ### 8.5 Refund/cancellation
 
-**PARTIALLY DECIDED:** exact deadline values and non-timeout cancellation or
-dispute rules still require product/legal approval. The liveness fallback is
-decided: once the release deadline has elapsed and the deal has not been
-released, any address may call `claim_refund(investor)`.
+Exact deadline values are deployment inputs. Non-timeout cancellation and
+dispute handling are V2. In V1, timeout behavior is deterministic:
 
-The target implementation is a permissionless, per-investor pull refund:
+The implementation is a permissionless, per-investor pull refund:
 
-1. `claim_refund(investor)` checks the immutable release deadline and terminal
-   state; caller authentication is not required.
-2. The first eligible claim atomically makes the unreleased deal `Refundable`;
+1. If funding is incomplete at `funding_deadline`, or any funded deal remains
+   unreleased at `release_deadline`, `open_refunds()` may be called by anyone.
+2. `claim_refund(investor)` is also permissionless and opens refunds implicitly
+   when eligible.
+3. The first eligible call atomically makes the unreleased deal `Refundable`;
    release becomes impossible, including when evidence was already approved.
-3. The destination is always the supplied investor's original recorded funding
+4. The destination is always the supplied investor's original recorded funding
    address. The caller cannot redirect or receive the refund.
-4. The contract zeroes that investor's refundable amount before transferring
+5. The contract marks that investor's full contribution refunded before transferring
    the exact unreleased contribution; failure rolls state and transfer back.
-5. One investor is processed per call. The contract never loops over all
+6. One investor is processed per call. The contract never loops over all
    investors, so any user, relayer, or operator may make progress safely.
 
 Soroban contracts do not execute automatically when time passes. An external
 transaction is still required, but no privileged actor can block the refund.
 
-Provenance: the 5 July product vision already required unreleased capital to
-return to investors after startup failure or a time limit. The 23 July MVP
-scope deferred automated refunds. The 24 August blockchain decision restores
-the minimal permissionless timeout path for V1 while leaving exact timing and
-non-timeout disputes to product/legal confirmation.
+Kori may operationally submit these calls but receives no special refund power.
 
-## 9. Target state machine
-
-The release-timeout refund branch is decided. Other cancellation and
-underfunding branches remain proposed until the remaining AD-013 inputs are
-resolved.
+## 9. V1 state machine
 
 ```mermaid
 stateDiagram-v2
   [*] --> FundingOpen
-  FundingOpen --> Funded: target reached or funding closed
-  FundingOpen --> Refundable: deadline failure or cancellation
-  Funded --> EvidenceSubmitted: evidence hash accepted
-  EvidenceSubmitted --> Funded: rejected or resubmission requested
+  FundingOpen --> Funded: exact target reached
+  FundingOpen --> Refundable: funding deadline, target missed
+  Funded --> EvidenceSubmitted: startup submits evidence hash
+  EvidenceSubmitted --> EvidenceSubmitted: startup resubmits before approval
   EvidenceSubmitted --> Approved: Fund Manager approval
-  Approved --> Released: release quorum authorization
+  Approved --> Released: weighted release authority
   Funded --> Refundable: release deadline elapsed
   EvidenceSubmitted --> Refundable: release deadline elapsed
   Approved --> Refundable: release deadline elapsed
-  Funded --> Refundable: approved cancellation
   Refundable --> Refunded: all claims settled
   Released --> [*]
   Refunded --> [*]
 ```
 
-Terminal states cannot reopen. AI output causes no state transition by itself.
+At a deadline boundary (`timestamp == deadline`), the timeout path wins: funding
+or release is rejected and refunds may open. Terminal states cannot reopen. AI
+output causes no state transition.
 
 ## 10. On-chain functional requirements
 
 | ID     | Priority | Requirement                                                                                          | Current status                                        |
 | ------ | -------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| FR-001 | P0       | Constructor stores one asset, startup, Fund Manager, and release authority atomically.               | **IMPLEMENTED**                                       |
-| FR-002 | P0       | Config also anchors deal ID/schema, target/release amount, deadline, and terms hash when approved.   | **MISSING / OPEN inputs**                             |
-| FR-003 | P0       | `fund(investor, amount)` requires investor auth, positive amount, valid state, and SAC transfer.     | **IMPLEMENTED**, but no target/deadline/state gate    |
-| FR-004 | P0       | Track cumulative contribution per investor and aggregate accepted funding in base units.             | **IMPLEMENTED**                                       |
-| FR-005 | P0       | Reject overfunding or apply an explicitly approved excess policy.                                    | **MISSING**                                           |
-| FR-006 | P0       | Store/version founder evidence submission if AD-014 requires on-chain attestation.                   | **MISSING / OPEN**                                    |
-| FR-007 | P0       | Fund Manager approval binds exact evidence hash, version, and approved release amount.               | **PARTIAL**; hash only, replaceable                   |
-| FR-008 | P0       | Release authorization binds exact evidence hash and amount; startup is immutable.                    | **MISSING**; current `release()` has no arguments     |
-| FR-009 | P0       | Release requires separate authority and is terminal/atomic.                                          | **IMPLEMENTED** for one address                       |
-| FR-010 | P0       | Exercise a real 2-of-N G-account threshold in integration tests.                                     | **MISSING**                                           |
-| FR-011 | P0       | Implement explicit deal state transitions rather than optional approval plus `released` boolean.     | **MISSING**                                           |
-| FR-012 | P0       | After the release deadline, anyone can trigger one investor's refund; payment goes only to that investor's original address. | **DESIGN DECIDED / NOT IMPLEMENTED**                  |
-| FR-013 | P0       | Amount released/refunded never exceeds accounted accepted funding.                                   | **PARTIAL**; release currently sends full SAC balance |
-| FR-014 | P0       | Define treatment of direct/unattributed SAC transfers to the C-address.                              | **OPEN**                                              |
-| FR-015 | P1       | Extend or operationally maintain TTL for instance, persistent contribution, and Wasm entries.        | **MISSING**                                           |
-| FR-016 | P0       | Emit versioned events for funding, evidence submission/approval, release, cancellation, and refund.  | **PARTIAL**                                           |
-| FR-017 | P1       | Expose deterministic views for config, state, contribution, approval, refundable amount, and totals. | **PARTIAL**                                           |
-| FR-018 | P1       | Freeze upgrades after first funding or enforce approved governed upgrade/exit policy.                | **OPEN**; no upgrade entry point today                |
+| FR-001 | P0       | Constructor atomically fixes startup, Fund Manager, release authority, exact target, and ordered absolute deadlines. | **IMPLEMENTED** |
+| FR-002 | P0       | Pin Testnet network and official Testnet USDC SAC.                                                    | **IMPLEMENTED** |
+| FR-003 | P0       | `fund` requires investor auth, positive amount, open funding, pre-deadline execution, and atomic SAC transfer. | **IMPLEMENTED** |
+| FR-004 | P0       | Track cumulative contribution per investor and aggregate accepted funding with checked arithmetic.   | **IMPLEMENTED** |
+| FR-005 | P0       | Reject overfunding; exact target closes V1 funding automatically.                                    | **IMPLEMENTED** |
+| FR-006 | P0       | Startup-authenticated evidence submission is versioned and replaceable only before approval.         | **IMPLEMENTED** |
+| FR-007 | P0       | Fund Manager approval binds exact evidence hash, version, and target amount and cannot be overwritten. | **IMPLEMENTED** |
+| FR-008 | P0       | Release authorization binds exact evidence hash, version, and amount; startup is immutable.          | **IMPLEMENTED** |
+| FR-009 | P0       | Release requires the separate weighted G-account and is terminal/atomic.                             | **IMPLEMENTED IN CONTRACT**; contract release E2E pending |
+| FR-010 | P0       | Investor Representative is required for both approved release pairs.                                 | **IMPLEMENTED IN VERIFIED TESTNET ACCOUNT** |
+| FR-011 | P0       | Enforce the explicit V1 state machine and deadline boundaries.                                       | **IMPLEMENTED** |
+| FR-012 | P0       | Permissionless timeout refunds pay only each original investor address, one investor per call.       | **IMPLEMENTED** |
+| FR-013 | P0       | Released/refunded amounts never exceed accounted accepted funding; SAC deficits stop settlement.    | **IMPLEMENTED** |
+| FR-014 | P0       | Direct/unattributed SAC surplus does not affect accounting, release, or refunds and remains unswept in V1. | **IMPLEMENTED POLICY** |
+| FR-015 | P1       | Operationally maintain/restore instance, persistent investor, and Wasm TTL entries.                  | **NOT IMPLEMENTED** |
+| FR-016 | P0       | Emit schema-versioned funding, evidence, approval, release, refund-opened, refunded, and refund-completed events. | **IMPLEMENTED** |
+| FR-017 | P1       | Expose deterministic config, state, evidence, approval, contribution, refund, and total views.       | **IMPLEMENTED** |
+| FR-018 | P1       | V1 exposes no upgrade or mutable-config entry point.                                                  | **IMPLEMENTED** |
 
 ### Core invariants
 
 - Accepted amounts are positive `i128` base units and arithmetic cannot overflow.
-- Asset identity, startup recipient, deal, and network cannot change after
-  funding begins.
+- Asset identity, startup recipient, target, authorities, and deadlines cannot
+  change after deployment.
+- `now < funding_deadline < release_deadline`; at equality the timeout path wins.
 - Every recorded contribution corresponds to a successful SAC transfer.
 - `total_released + total_refunded <= total_accepted_funding` always.
 - A caller may trigger another investor's refund but cannot redirect or receive
   it; only the original funding address receives that recorded contribution.
 - No release before the exact milestone evidence is approved.
+- Recovery release by Kori still requires prior Fund Manager approval and the
+  Investor Representative's signature.
 - Founder and AI cannot approve or release.
 - Community administration does not automatically grant release authority.
 - A release authorization cannot be replayed for different evidence, amount,
   recipient, contract, or network.
 - `Released` and `Refunded` are mutually exclusive terminal outcomes.
 - State and token movement roll back together on failure.
+- Unattributed SAC surplus is excluded from every financial total and cannot be
+  swept through a V1 admin backdoor.
 - No PII or evidence document content is stored on-chain.
 
 ## 11. Event and database requirements
@@ -378,12 +404,14 @@ Minimum event data:
 
 | Event                    | Required fields                                                    |
 | ------------------------ | ------------------------------------------------------------------ |
-| `Funded`                 | investor, amount, resulting investor contribution, resulting total |
-| `EvidenceSubmitted`      | submitter if on-chain, evidence hash, schema/version               |
-| `MilestoneApproved`      | Fund Manager, evidence hash, amount, decision version              |
-| `Released`               | startup, amount, evidence hash                                     |
-| `Refundable`/`Cancelled` | reason code, effective ledger/deadline                             |
-| `Refunded`               | investor, amount                                                   |
+| `Funded`                 | investor, amount, investor total, deal total, schema version       |
+| `FundingCompleted`       | exact funded total, timestamp, schema version                      |
+| `EvidenceSubmitted`      | startup, evidence hash/version, timestamp, schema version          |
+| `MilestoneApproved`      | Fund Manager, evidence hash/version, amount, timestamp             |
+| `Released`               | startup, amount, evidence hash/version, timestamp                  |
+| `RefundsOpened`          | deterministic timeout reason, funded total, timestamp              |
+| `Refunded`               | investor, amount, resulting total refunded                         |
+| `RefundsCompleted`       | final total refunded, timestamp                                    |
 
 The operational database must store at least:
 
@@ -445,61 +473,68 @@ configured token's `decimals()` value in client and integration tests.
 - Workspace SDK: `soroban-sdk = "27.0.6"`.
 - Contract: [`KoriDealEscrow`](./contracts/kori-deal-escrow/src/lib.rs).
 - Build artifact: `target/wasm32v1-none/release/kori_deal_escrow.wasm`.
-- Named Testnet accounts, USDC trustlines, and a verified 2-of-3 release account
-  are recorded in [`deployments/testnet-v1.json`](./deployments/testnet-v1.json).
+- A fresh named Testnet fixture, USDC trustlines, and the live-verified weighted
+  release account are recorded in [`deployments/testnet-v1.json`](./deployments/testnet-v1.json).
+- Minimal Testnet payments prove both allowed signer pairs succeed; Lead + Kori
+  fails with `TxBadAuth`. Transaction evidence is recorded in the manifest.
 - No contract ID, deployment transaction, funded Testnet USDC balance, or
   Testnet end-to-end run is recorded yet.
 
 ### Implemented API
 
-- `__constructor(startup, fund_manager, release_authority)`; the build rejects
-  non-Testnet deployment and pins the official Testnet USDC SAC.
+- `__constructor(startup, fund_manager, release_authority, target_amount,
+  funding_deadline, release_deadline)`
 - `fund(investor, amount)`
-- `approve_milestone(evidence_hash)`
-- `release()`
+- `submit_evidence(evidence_hash)`
+- `approve_milestone(evidence_hash, evidence_version)`
+- `release(evidence_hash, evidence_version, amount)`
+- `open_refunds()`
+- `claim_refund(investor)`
 - `config()`
+- `state()`
 - `contribution(investor)`
+- `refunded_amount(investor)` / `refundable_amount(investor)`
 - `total_funded()`
+- `total_released()` / `total_refunded()`
+- `evidence_submission()`
 - `milestone_approval()`
+- `refund_reason()`
 - `is_released()`
 
 ### Current storage
 
-- Instance: config, total funded, approval, released flag.
-- Persistent per investor: cumulative contribution.
+- Instance: immutable config, explicit state, totals, current evidence, immutable
+  approval, and refund reason.
+- Persistent per investor: cumulative contribution and refunded amount.
 - No TTL extension logic.
 
 ### Current events
 
-- `Funded(investor, amount)`
-- `MilestoneApproved(fund_manager, evidence_hash)`
-- `Released(startup, amount)`
+- `Funded`, `FundingCompleted`, `EvidenceSubmitted`, `MilestoneApproved`,
+  `Released`, `RefundsOpened`, `Refunded`, and `RefundsCompleted`.
+- Every event includes `schema_version = 1`.
 
 ### Current tests
 
-Seven embedded-host tests cover:
-
-1. Complete funding, approval, and full release.
-2. Non-positive funding rejection.
-3. Cumulative repeated contribution accounting.
-4. Release rejection before approval.
-5. Approved but empty escrow rejection.
-6. Double-release rejection.
-7. Expected role authorization entries.
+Twenty-three embedded-host tests cover constructor safety, exact/cumulative
+funding, target and deadline boundaries, evidence versioning, immutable
+approval, exact release binding, terminal states, multi-investor permissionless
+refunds, zero-fund expiry, unattributed SAC surplus, balance deficits, typed
+financial events, failed-SAC rollback, and each requested role authorization.
 
 The fixture calls `mock_all_auths()`. This proves which addresses the contract
-requests, not that a real wallet, signature, transaction assembly, or 2-of-N
+requests, not that a real wallet, signature, transaction assembly, or weighted
 account works end-to-end.
 
 ### Honest readiness scores
 
 | Area                                           | Score | Reason                                                                                                                  |
 | ---------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------- |
-| Selected custody/authority design for the demo | 8/10  | Simple and Stellar-native; key policy details remain open.                                                              |
-| Current code coverage of the FigJam target     | 5/10  | Core funding/approval/release exists; evidence submission, refund, state machine, indexer, and real quorum are missing. |
-| Raw Testnet deployment readiness               | 8/10  | Wasm builds and USDC/network identity is pinned, but deployment has not been exercised.                                 |
-| Complete Testnet demo readiness                | 6/10  | Accounts, trustlines, and 2-of-3 exist; USDC funding, deployment, E2E execution, client, and event projection remain.    |
-| Production readiness                           | 2/10  | Legal model, refund rules, audit, operations, incident controls, and production integration are unresolved.             |
+| Selected custody/authority design for the demo | 9/10  | V1 policy, recovery/refund behavior, and live weighted-account authorization are explicit and verified.                |
+| Current code coverage of the FigJam target     | 8/10  | On-chain V1 core is implemented; off-chain evidence, indexer, UI, and E2E integration remain.                           |
+| Raw Testnet deployment readiness               | 8/10  | Wasm and weighted accounts are locally/live verified; contract deployment and Testnet USDC remain.                       |
+| Complete Testnet demo readiness                | 6/10  | USDC funding, contract deployment/release, client flow, and event projection are not yet exercised end-to-end.          |
+| Production readiness                           | 3/10  | Testnet contract hardening improved; audit, legal model, operations, and Mainnet controls remain unresolved.            |
 
 ## 15. Required test strategy
 
@@ -507,21 +542,9 @@ account works end-to-end.
 
 Fast Rust tests for contract logic. Keep these deterministic and offline.
 
-Add tests for:
-
-- exact release binding to evidence hash and amount;
-- approval replacement/version rules;
-- explicit state transitions and forbidden transitions;
-- funding target, close, deadline, and overfunding policy;
-- multiple investors and partial refund claims;
-- release/refund mutual exclusion;
-- wrong investor, founder, manager, and release authority;
-- amount overflow boundaries;
-- direct/unattributed asset transfer policy;
-- event payload/version correctness;
-- TTL extension behavior;
-- failed SAC transfer rollback;
-- post-terminal funding, approval, release, and refund rejection.
+The current 23-test suite covers the deterministic V1 state and accounting
+rules. Remaining Level 1 work is property/fuzz testing, broader decoded
+event-payload coverage, and TTL restoration.
 
 Use explicit auth mocks for negative authorization tests where possible. Do not
 use `mock_all_auths()` as the only proof of an authority boundary.
@@ -534,7 +557,7 @@ Use the compiled Wasm and Quickstart to test:
 - real G-accounts and asset trustlines;
 - simulation, footprint, fees, assembly, signing, and submission;
 - investor-to-C-address and C-address-to-startup SAC transfers;
-- native 2-of-N signer weights and medium threshold;
+- native weighted signer combinations and medium threshold;
 - events through RPC and indexer deduplication;
 - restore/TTL behavior where practical.
 
@@ -554,10 +577,10 @@ cargo fmt --all -- --check
 cargo test
 cargo clippy --all-targets -- -D warnings
 RUSTDOCFLAGS="-D warnings" cargo doc --no-deps
-cargo build --target wasm32v1-none --release
+stellar contract build --locked --optimize
 ```
 
-Current expectation: seven tests pass until requirements add new tests.
+Current expectation: 23 tests pass.
 
 Environment ladder:
 
@@ -580,26 +603,21 @@ stellar container stop local
 
 Owners: product, blockchain, and legal/compliance.
 
-- Confirm release signer identities, N, weights, rotation, and recovery.
-- Confirm target, exact funding/release deadlines, overfunding, underfunding,
-  and non-timeout cancellation/dispute rules. Permissionless timeout refunds
-  to original funding addresses are already decided.
-- Confirm founder on-chain evidence authorization.
-- Confirm release amount and whether a full release means target, accepted total,
-  or actual contract balance.
-- Confirm immutable versus governed-upgrade policy.
+- **DONE:** authority roles, valid signer pairs, recovery limits, exact-target
+  funding, timeout refunds, startup evidence authorization, exact full release,
+  and immutable V1 configuration.
+- Before deployment, choose the actual positive target and absolute deadline
+  values and independently re-verify every constructor address.
+- Non-timeout cancellation/dispute rules remain V2 and are not a V1 code path.
 
-**Exit:** AD-012 through AD-015 have recorded decisions and testable rules.
+**Exit:** achieved for contract logic; deployment-specific values remain Gate D.
 
 ### Gate B: harden the contract
 
-- Add explicit state machine and missing immutable deal configuration.
-- Bind approval/release to evidence, amount, and recipient.
-- Add target/close/deadline controls.
-- Implement permissionless per-investor refunds after the release deadline.
-- Define direct-transfer/excess behavior.
-- Add versioned events and TTL strategy.
-- Expand unit and invariant tests.
+- **DONE:** explicit state machine, immutable V1 configuration, exact release
+  binding, target/deadline controls, permissionless refunds, direct-surplus
+  isolation, schema-versioned events, and expanded deterministic tests.
+- Remaining: TTL operational strategy and property/fuzz testing.
 
 **Exit:** all P0 requirements pass embedded-host tests, clippy, Rustdoc, and Wasm
 build; no unexplained deviation from this PRD.
@@ -607,7 +625,7 @@ build; no unexplained deviation from this PRD.
 ### Gate C: local full-stack blockchain integration
 
 - Add reproducible Quickstart scripts/configuration.
-- Configure local accounts, mock asset, trustlines, and 2-of-N release account.
+- Configure local accounts, mock asset, trustlines, and weighted release account.
 - Exercise deployment and complete funding-to-payout/refund paths through RPC.
 - Capture deployment manifest and Wasm hash.
 
@@ -619,7 +637,11 @@ build; no unexplained deviation from this PRD.
 - **DONE:** Create named Testnet-only accounts and fund network fees through
   Friendbot.
 - **PARTIAL:** USDC trustlines exist; obtain Testnet USDC from Circle.
-- **DONE:** Configure and verify the native 2-of-3 release account.
+- **DONE:** Create and independently verify a fresh release account with Lead
+  `1`, Investor Representative `2`, Kori `1`, medium threshold `3`, high
+  threshold `4`, and master weight `0`.
+- **DONE:** Exercise both allowed signer pairs and confirm the forbidden pair is
+  rejected by Testnet authorization.
 - Deploy reviewed Wasm and record the deployment manifest.
 - Execute and independently verify one complete deal lifecycle.
 
@@ -650,9 +672,24 @@ live components.
 
 **Exit:** requires separate approval. Passing the Testnet gates is insufficient.
 
+## V2 backlog — non-normative
+
+These items must not alter V1 acceptance criteria:
+
+- distinct minimum, target, and maximum amounts; early/manual close and an
+  explicit under/overfunding allocation policy;
+- multiple milestones, partial tranches, rejection/dispute/cancellation states,
+  and partial post-release refunds if legally required;
+- separate startup evidence-signer and payout addresses;
+- governed signer rotation, incident pause, audited upgrade/exit policy, and
+  stronger key custody;
+- factory/registry for multiple deals, SPVs, and contract deployments;
+- community deal-selection voting, production eligibility controls, fee
+  sponsorship, TTL automation, and complete indexer/application integration.
+
 ## 18. Testnet configuration reference
 
-As verified from official Stellar documentation on 2026-08-24:
+As verified from official Stellar documentation on 2026-08-25:
 
 | Property           | Testnet value                                              |
 | ------------------ | ---------------------------------------------------------- |
@@ -693,18 +730,15 @@ deployment script/runbook before relying on copied terminal history.
 - AI findings must be labelled advisory, traceable, and reviewable by the human
   approver.
 
-## 20. Open decision register
+## 20. Remaining decision register
 
 | Decision                                                          | Owner                   | Blocking                           |
 | ----------------------------------------------------------------- | ----------------------- | ---------------------------------- |
-| Exact 2-of-N signers, weights, rotation, and recovery             | Product + Blockchain    | Local multisig and Testnet E2E     |
-| Funding target/close/deadline and overfunding                     | Product                 | State machine and hardened funding |
-| Exact release deadline and non-timeout cancellation/dispute rules | Product + Legal         | Complete refund state machine       |
-| Founder on-chain evidence signature                               | Product + Blockchain    | Final evidence flow/API            |
+| Actual V1 target and absolute deployment deadlines                | Product + Blockchain    | Testnet deployment                  |
+| Non-timeout cancellation/dispute rules                            | Product + Legal         | V2 only                             |
 | Evidence canonicalization and retention                           | Product + Backend/Legal | Stable approval hash               |
-| Full-release amount definition                                    | Product + Blockchain    | Bound release API                  |
-| Direct/unattributed transfers                                     | Blockchain + Product    | Accounting invariant               |
-| Upgrade/immutability policy                                       | Product + Security      | Deployment architecture            |
+| TTL restoration/extension operations                              | Blockchain              | Long-lived Testnet reliability      |
+| Production upgrade/immutability policy                            | Product + Security      | Mainnet consideration               |
 | Fee payer/sponsorship and wallet choice                           | Product + Frontend      | Client integration                 |
 | KYC/eligibility enforcement boundary                              | Legal + Backend         | Production consideration           |
 | SPV-to-deal legal relationship and authoritative ownership ledger | Legal                   | Production consideration           |
@@ -721,7 +755,7 @@ The MVP is done only when:
 - a founder evidence package is stored privately with a canonical on-chain hash;
 - AI produces advisory output only;
 - the assigned Fund Manager approves the exact evidence version;
-- a separately configured real 2-of-N G-account authorizes the exact release;
+- the verified weighted G-account authorizes the exact release;
 - the contract pays the immutable startup address once and cannot replay;
 - the UI and database show confirmed network state and transaction references;
 - failure paths and any approved refund path are demonstrated;

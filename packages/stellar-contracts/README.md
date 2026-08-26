@@ -1,6 +1,6 @@
 # Kori Stellar Contracts
 
-Soroban prototype for one deal, one milestone and one full USDC release. It
+Soroban V1 for one deal, one milestone and one exact USDC release. It
 implements the on-chain core of the current [Stellar architecture](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data)
 while retaining `packages/contracts` only as the historical EVM reference. See
 the [Stellar/Soroban PRD](./PRD.md) for the complete target, current gaps and
@@ -10,11 +10,12 @@ build order.
 
 1. An investor authenticates `fund`; the pinned official Testnet USDC SAC
    transfers assets into DealEscrow.
-2. The Fund Manager approves an off-chain evidence hash.
-3. A separate release authority authenticates `release`.
-4. DealEscrow transfers its full balance to the startup.
-5. Target design: if no release occurs before the release deadline, anyone may
-   trigger a refund to an original investor; the caller cannot redirect funds.
+2. The exact target closes funding; the startup signs an evidence hash.
+3. The Fund Manager/Lead Investor approves that exact evidence version.
+4. A weighted account requires the Investor Representative plus either the Lead
+   or Kori Release Officer to authorize the exact payout.
+5. If a deadline expires, anyone may trigger per-investor refunds to the
+   original addresses; the caller cannot redirect funds.
 
 AI and evidence documents remain off-chain.
 
@@ -35,10 +36,10 @@ cd packages/stellar-contracts
 rustup target add wasm32v1-none
 cargo test
 cargo clippy --all-targets -- -D warnings
-cargo build --target wasm32v1-none --release
+stellar contract build --locked --optimize
 ```
 
-Expected: `8 passed; 0 failed`.
+Expected: `23 passed; 0 failed`.
 
 Wasm output:
 
@@ -69,19 +70,27 @@ stellar container start local
 stellar container stop local
 ```
 
-Tests verify funding, contribution accounting, role authorization, milestone
-approval, full release and failure/replay conditions.
+Tests verify constructor safety, exact funding/deadline boundaries, evidence
+versioning, authorization, exact release, accounting deficits, terminal states,
+multi-investor permissionless refunds, typed event payloads, and atomic rollback
+when the SAC rejects a payout or refund.
 
 ## V1 Testnet bootstrap status
 
 - Official Testnet USDC SAC is pinned in the contract; deployment on a network
   other than Stellar Testnet is rejected.
-- Deployer, two investors, startup, Fund Manager, release authority and three
-  release signers exist and are funded with Testnet XLM.
+- A fresh deployer, two investors, startup, Lead/Fund Manager, Investor
+  Representative, Kori Release Officer, and release authority are funded with
+  Testnet XLM.
 - Investor and startup USDC trustlines exist; their USDC balances are still
   zero pending the Circle faucet.
-- Release authority is a real 2-of-3 account: three signers have weight 1,
-  thresholds are 2, and the master key has weight 0.
+- Release authority is live-verified: Lead `1`, Investor Representative `2`,
+  Kori `1`, medium threshold `3`, high threshold `4`, master weight `0`. Only
+  Lead + Representative or Kori + Representative can authorize release.
+- Both permitted pairs completed minimal Testnet payments; Lead + Kori was
+  rejected with `TxBadAuth`. Hashes are recorded in the deployment manifest.
+- The optimized deployment artifact is ready: 22,419 bytes, SHA-256
+  `c997029a0f411837ad0f09b48b390b84ec4a40cc98df3173ec122971b9b09263`.
 - The shared identities and their secrets are intentionally public Testnet
   fixtures. This proves protocol behavior, not separation of control.
 - No escrow contract has been deployed yet.

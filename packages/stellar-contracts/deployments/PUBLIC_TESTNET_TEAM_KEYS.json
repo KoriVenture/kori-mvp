@@ -6,57 +6,60 @@
     "DO NOT USE THESE KEYS OR ADDRESSES FOR MAINNET OR PRODUCTION.",
     "DO NOT SEND MAINNET ASSETS TO THESE ADDRESSES: STELLAR KEYS ARE NOT NETWORK-SPECIFIC.",
     "ANYONE WITH REPOSITORY ACCESS CAN CONTROL THESE ACCOUNTS.",
-    "THE 2-OF-3 ACCOUNT DEMONSTRATES PROTOCOL BEHAVIOR, NOT SEPARATION OF CONTROL.",
+    "THE WEIGHTED ACCOUNT PROVES TESTNET PROTOCOL BEHAVIOR, NOT ORGANIZATIONAL SEPARATION OF CONTROL.",
     "STELLAR TESTNET MAY RESET; THESE FIXTURES MAY NEED TO BE RECREATED."
   ],
   "network": "stellar-testnet",
   "networkPassphrase": "Test SDF Network ; September 2015",
-  "generatedOn": "2026-08-24",
+  "generatedOn": "2026-08-25",
   "accounts": {
     "deployer": {
-      "identityAlias": "kori-v1-public-deployer",
-      "publicKey": "GBVZOKTZ37KWMW5ODEKUZNJ46OMQQ74RJ7SEMYPRL5P6CO3TI4N6CAYZ",
-      "secretKey": "SCMTBK4WG5MX2E6IXQ6DFMSTHZ45EFK53VS2U4YHAI6ZDMMIL7LE5UNP"
+      "identityAlias": "kori-v1-team-deployer",
+      "role": "contract-deployer",
+      "publicKey": "GABM3A6KELVDZ7ZW37FCU6JVDK3I3MKQSIIIOZH6DXKFX7OAHDK3PCG7",
+      "secretKey": "SCUL66SJ446X2FQENCPMHGJBZ7ULIJVSUPM264RIDJ6CO3YMZFGZHTQM"
     },
     "investorA": {
-      "identityAlias": "kori-v1-public-investor-a",
-      "publicKey": "GCKRSXJSPNBLMO3RBESRQSNVQPOLA5NNGJKX2575NSCDNV2RVRJ4CCN4",
-      "secretKey": "SAIKBCRIAJ3IGPJQZH3J24O4HFFKT2WQIFDD3ALLTMMODKVWVNUNHU5F"
+      "identityAlias": "kori-v1-team-investor-a",
+      "role": "investor",
+      "publicKey": "GDDWS25MKDXHW3FNRSKGT4G6LODA7UL5F7NDXDI4LS7HCSABVFYLRBTF",
+      "secretKey": "SDIM5ELBGNVMJONZMIIRYA265DNKPLOLCTXMIMKCG6YEL4KX6WVUQF4W"
     },
     "investorB": {
-      "identityAlias": "kori-v1-public-investor-b",
-      "publicKey": "GBLUTCNB4EQ4IJGJEYD2EQ6ZNO2FMV76T25BVRT6E2PDYSDBPSQGE6BR",
-      "secretKey": "SAVE6F5LOU7QZA72V3NRW5HOLCE7BGDZJZD4QXMHSRQMB6CNCVVYHIMQ"
+      "identityAlias": "kori-v1-team-investor-b",
+      "role": "investor",
+      "publicKey": "GDX5SVXQL5DXHJ3R5ZVDHAN7N5CY2Y74N4MX67OHQIJIOM2SXQBQPC2V",
+      "secretKey": "SAHJ4WTG2AOKUKOFGAVKVV3FN6PEXD4VLQHZYKOAYOG2HU3EAAL4YRJO"
     },
     "startup": {
-      "identityAlias": "kori-v1-public-startup",
-      "publicKey": "GDMLXU2DQF4S5KOWZOIEAQJRWZCUX5A6KGBZ3AGT56TFAJM2Q732OLVO",
-      "secretKey": "SDP4PJRJO6RQ53OONAIYL35SS7PAUZ3BK7FKF3NFLL5MROZABPSGBVGK"
+      "identityAlias": "kori-v1-team-startup",
+      "role": "startup-payout-and-evidence-submitter",
+      "publicKey": "GDOZZLZU7I4P7CFPNE46PB6ZLLDBSIHJEIWLNCEXHGLBR5BYZ6KNNCDN",
+      "secretKey": "SCS2FGZGVH3HTYEYMTW6CRZ36OCVFR75CMHN2EAPDLLEGUMW2VTYQH44"
     },
-    "fundManager": {
-      "identityAlias": "kori-v1-public-fund-manager",
-      "publicKey": "GD4OUQGFGK4GJKPKK77OILH2ETNPXO7MBDOJ7DTWWEACVK3E2WQA2QF4",
-      "secretKey": "SCCKI2KGYN3BNANKDFY6NPBBSRDFWZ6WYTXHLUVYGXCR2F5JTOZB724H"
+    "leadInvestorFundManager": {
+      "identityAlias": "kori-v1-team-lead-investor",
+      "role": "lead-investor-fund-manager-and-release-signer",
+      "publicKey": "GC2ESKS3DNBYODUMPKI6LSQOFLD2ACVNBW6WKDB323YDLEVRFXZCXFAB",
+      "secretKey": "SDNJ6Y2GZL7IMLZ5DIG65J2223WKBGQMCHCD55T3457KJMLT3IOOHO7I"
+    },
+    "investorRepresentative": {
+      "identityAlias": "kori-v1-team-investor-representative",
+      "role": "mandatory-release-signer",
+      "publicKey": "GAM23PR6ZEDT27YTK577XPBNNNYL34WB6WS66IQJQT7UFSM66PYREGEE",
+      "secretKey": "SBNXUKX5W22RRVRBSBRROOE3EJMGKF774HYRC5RE6ZICRQWFURWUDP4C"
+    },
+    "koriReleaseOfficer": {
+      "identityAlias": "kori-v1-team-release-officer",
+      "role": "recovery-release-signer",
+      "publicKey": "GCERD6HEUD3RZ6VQBLDBLFIN3KMB3KKA7W7NQPAXX57AGRCZCWYSITRJ",
+      "secretKey": "SCM72IMHGUKPBKXDGMQ4R2PICW2EZNEHIC436N2ZSVWNUWYOIZ6LR43Z"
     },
     "releaseAuthority": {
-      "identityAlias": "kori-v1-public-release-authority",
-      "publicKey": "GBY72ML34XTWHABB3SHZ5FULQYSC35HZMJ2IZL3HQRMPNKT6JMENLQCJ",
-      "secretKey": "SBOAWG3LKK4FKEOGBEDIOUI34AFO25FZKQG7TJAHBNY6SRJM7HWBI2ZC"
-    },
-    "releaseSigner1": {
-      "identityAlias": "kori-v1-public-release-signer-1",
-      "publicKey": "GDJOHEO52H5Q26OKOFLOQNEHMVK5CLY4VNZHH7W32NAFL7R64LFQ3LOS",
-      "secretKey": "SBQUVJ4U7GHVKF25UZKAPJGPPQDMHAYDATOJQLOM2S63XO4KXN3P6GYP"
-    },
-    "releaseSigner2": {
-      "identityAlias": "kori-v1-public-release-signer-2",
-      "publicKey": "GDT24EGU4EMQ7WRJT3OMJSQ4KNM7JBS5UXGPNXCDWPIUGGZKEVUHN2CC",
-      "secretKey": "SDLKKRZ3PKBSLRD2OED7ZXLZNJAYXOF6ESBYRORUB6RZZUL3AMLPVQSQ"
-    },
-    "releaseSigner3": {
-      "identityAlias": "kori-v1-public-release-signer-3",
-      "publicKey": "GB7T7V3QX4GPRT3XXLYT4WAFJLFPXLRGJQ4YOIA4DYBDU4A3EU7LID4M",
-      "secretKey": "SDPIWII7PVEI4JJSQGI7RUUX2ORW3ORRAPJOZFDQKJEJYBZNQ7SNAC5H"
+      "identityAlias": "kori-v1-team-release-authority",
+      "role": "weighted-release-authority-master-disabled",
+      "publicKey": "GDRXLRJLFK7REVAGORYI7NLX6Q2XE5RUS5IXUER7YJDCHEAAEPEWQTP5",
+      "secretKey": "SBF4ASKSIMFLRUWGUOAN7CIWFKLBCKTPQ2FKHK5Q3XEQH4QPNCDGALAQ"
     }
   }
 }

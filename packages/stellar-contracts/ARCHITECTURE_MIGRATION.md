@@ -15,10 +15,11 @@ claim to be the final production custody or legal model.
 | --- | --- |
 | Investor funds a deal | Investor authenticates `fund`; the USDC SAC transfer occurs in the same invocation |
 | Deal custody | USDC balance is held by the deal's Soroban contract address |
-| Milestone evidence review | Community-scoped Fund Manager approves the evidence hash |
-| Payout authorization | Separate `release_authority` authenticates `release` |
-| Threshold governance | `release_authority` may be a native Stellar multisig G-account |
-| Startup payout | Full escrow balance transfers to the immutable startup address |
+| Milestone evidence | Startup signs a versioned off-chain evidence hash; Fund Manager approves it |
+| Payout authorization | Separate weighted `release_authority` authenticates the exact release |
+| Threshold governance | Investor Representative plus Lead, or Investor Representative plus Kori |
+| Startup payout | Exact immutable target transfers once to the immutable startup address |
+| Timeout safety | Anyone may open/claim refunds; funds return only to original investors |
 | AI analysis | Off-chain and advisory; never an on-chain authority |
 | Evidence documents | Off-chain; only a 32-byte integrity hash is stored on-chain |
 
@@ -34,40 +35,55 @@ programmed milestone condition and the asset transfer atomic.
 This is materially different from a treasury model in which a classic Stellar
 account holds the funds and human signers manually send each payout.
 
+The public V1 Testnet fixture is configured and verified with Lead weight `1`,
+Investor Representative weight `2`, Kori weight `1`, medium threshold `3`, high
+threshold `4`, and master weight `0`. The Representative is therefore mandatory;
+Lead + Kori cannot authorize a release.
+
 ## Enforced invariants in this prototype
 
 - Funding amounts must be strictly positive.
 - Investors authenticate their own funding operations.
 - Contributions are attributable and cumulative per investor.
-- Funding is rejected after the final release.
-- A milestone evidence hash must be approved before release.
+- Funding is capped at the exact target and rejected at/after its deadline.
+- Exact funding automatically transitions the deal to `Funded`.
+- Startup evidence submissions are versioned and immutable after approval.
+- The Fund Manager approval binds the exact hash, version, and target amount.
 - Only the configured Fund Manager can authenticate milestone approval.
-- The configured release authority must authenticate the payout.
-- Empty escrows cannot be released.
-- The release transfers the full escrow balance to the configured startup.
+- The configured weighted release authority must authenticate the exact payout.
+- Release is rejected at/after the release deadline.
+- The release transfers the target, never an unsolicited SAC surplus.
 - A deal cannot be released twice.
+- Funding-target and release-timeout refunds are permissionless and per investor.
+- A refund caller cannot redirect or receive another investor's funds.
+- Release and refund terminal states are mutually exclusive.
+- A SAC deficit blocks settlement without corrupting state.
 
 ## Decided refund target
 
-If the deal remains unreleased after its immutable release deadline, anyone may
-call `claim_refund(investor)`. The contract must return only that investor's
-recorded unreleased contribution to the original funding address. The caller
-cannot choose a destination or receive the funds. Claims are processed one
-investor at a time; this permissionless path is not implemented yet.
+If funding misses its target or a funded deal misses its release deadline,
+anyone may call `open_refunds()` or `claim_refund(investor)`. The contract
+returns only that investor's recorded contribution to the same address. Claims
+are processed one investor at a time; this path is implemented and tested.
 
 ## Verification performed
 
 - `cargo fmt --all -- --check`
-- `cargo test`: seven passing tests, including explicit role-authorization checks
+- `cargo test`: 23 passing tests, including deadlines, exact release binding,
+  multi-investor refunds, terminal states, surplus isolation, typed events,
+  failed-SAC rollback, and auth checks
 - `cargo clippy --all-targets -- -D warnings`
 - optimized `wasm32v1-none` release build
+- current RustSec audit: no known vulnerabilities; one unmaintained transitive
+  `paste` warning exists in the Soroban host/test dependency graph and is absent
+  from the `wasm32v1-none` target
 
 ## Explicitly deferred
 
 - Testnet contract deployment and end-to-end execution (the verified USDC SAC
   is now pinned and the required Testnet identities exist)
-- Funding target and exact funding/release deadlines
-- Permissionless refund implementation and non-timeout cancellation/disputes
+- Selection of actual Testnet target/deadline constructor values
+- Non-timeout cancellation/disputes (V2)
 - Multiple milestones or partial releases
 - Pausing, signer rotation and upgrade governance
 - Storage TTL maintenance and event ingestion
