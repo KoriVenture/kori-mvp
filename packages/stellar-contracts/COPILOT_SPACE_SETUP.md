@@ -2,8 +2,9 @@
 
 ## Space
 
-- **Name:** `Kori Blockchain — Stellar Source of Truth`
-- **Owner:** `KoriVenture` when organization policy permits
+- **Live Space:** [Kori Blockchain - Stellar Source of Truth](https://github.com/copilot/spaces/KoriVenture/2)
+- **Owner:** `KoriVenture`
+- **Team access:** `Viewer`
 - **Purpose:** let technical and nontechnical teammates ask plain-language
   questions about architecture, code, Testnet evidence, and remaining gaps
 
