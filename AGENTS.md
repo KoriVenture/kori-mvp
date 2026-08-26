@@ -41,10 +41,16 @@ Run every pnpm command from the repository root. Do not create package-local loc
 
 ## Blockchain reference
 
-New blockchain work targets Stellar/Soroban. Read
+New blockchain work targets Stellar/Soroban. Start with
+`packages/stellar-contracts/AI_CONTEXT.md`, then read
 `packages/stellar-contracts/PRD.md` before changing blockchain code or client
-integration. `packages/contracts` remains a historical EVM reference; its
-Sepolia, MetaMask, and Safe choices do not define the active implementation.
+integration. Live Testnet claims must be supported by
+`packages/stellar-contracts/deployments/testnet-v1.json` and
+`packages/stellar-contracts/TESTNET_ASSURANCE_REPORT.md`; contract behavior must
+be supported by Soroban source and tests. The FigJam board is a visual
+reference, not deployment evidence. `packages/contracts` remains a historical
+EVM reference; its Sepolia, MetaMask, and Safe choices do not define the active
+implementation.
 
 ## Internationalization
 

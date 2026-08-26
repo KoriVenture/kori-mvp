@@ -6,6 +6,12 @@ while retaining `packages/contracts` only as the historical EVM reference. See
 the [Stellar/Soroban PRD](./PRD.md) for the complete target, current gaps and
 build order.
 
+For fast AI-assisted or nontechnical exploration, start with
+[`AI_CONTEXT.md`](./AI_CONTEXT.md). The reproducible GitHub Copilot Space source
+list and instructions are in
+[`COPILOT_SPACE_SETUP.md`](./COPILOT_SPACE_SETUP.md); the FigJam-to-code mapping
+is in [`FIGMA_REFERENCE.md`](./FIGMA_REFERENCE.md).
+
 ## Current flow
 
 1. An investor authenticates `fund`; the pinned official Testnet USDC SAC
