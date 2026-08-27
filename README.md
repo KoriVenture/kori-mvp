@@ -11,15 +11,22 @@ The intended workflow is:
 
 1. An investor deposits test funds.
 2. Funds remain locked in escrow.
-3. A startup submits milestone evidence.
-4. AI analyzes the evidence as decision support.
-5. A human reviews the evidence and analysis.
-6. A Safe multisig approves the release decision.
-7. Funds are released or the request is rejected.
+3. A startup submits the hash of a canonical source-evidence manifest.
+4. AI may analyze that exact manifest version as decision support.
+5. A human records a separate decision for the same hash and version.
+6. A weighted Stellar release authority approves the exact payout.
+7. Funds are released after approval, or become refundable at the deadline if
+   release never occurs.
 
-AI must remain advisory and must never sign transactions, approve milestones, or make the final financial decision.
+AI must remain advisory and must never sign transactions, approve milestones, or make the final financial decision. AI reviews and human decisions reference the confirmed manifest hash/version and are never included in the manifest hash preimage.
 
-The repository currently implements the faithful multilingual frontend demonstration and a local Hardhat escrow-contract phase. It does not connect the UI to contracts or implement the workflow end to end.
+An unavailable AI provider must not block human review, deadline progression,
+or refunds.
+
+The repository currently implements the multilingual frontend demonstration,
+retains a historical local Hardhat phase, and includes the active Soroban
+contract package with verified Testnet evidence. The Next.js application is not
+yet connected to the Stellar contract or to an AI provider.
 
 ## Available now
 
@@ -33,6 +40,8 @@ The repository currently implements the faithful multilingual frontend demonstra
 - Audit-derived Kori light/dark tokens, typography, responsive spacing, brand assets, shared component variants, and reusable Kori patterns.
 - Framework-independent locale and formatting definitions in `@kori/i18n`.
 - `MockUSDC` and `KoriEscrow` contracts with local Hardhat tests.
+- Stellar/Soroban `DealEscrow` contract, tests, deployment manifest, and
+  Testnet assurance report in `packages/stellar-contracts`.
 - Package boundaries for future domain, database, AI, Web3, observability, and shared configuration work.
 
 Every frontend financial value and transaction record is demonstration data. Actions either update local in-memory state or are explicitly disabled; no real funds are handled.
@@ -49,16 +58,16 @@ Operations and compliance responsibilities are outside the first application sco
 
 ## Technology stack
 
-| Area                  | Current technology                                                   |
-| --------------------- | -------------------------------------------------------------------- |
-| Workspace             | pnpm 10.33.0, pnpm workspaces, Turborepo 2                           |
-| Web                   | Next.js 16 App Router, React 19, TypeScript                          |
-| Internationalization  | next-intl 4, `@kori/i18n`, namespaced JSON messages                  |
-| UI                    | Tailwind CSS 4, shadcn/Base UI, CVA, Lucide, next-themes             |
-| Forms and validation  | React Hook Form and Zod dependencies; application forms are deferred |
-| Testing               | Vitest, Testing Library, Hardhat 3, `node:test`, Viem                |
-| Contracts             | Solidity 0.8.28, Hardhat 3, OpenZeppelin Contracts, Viem             |
-| Integration scaffolds | Supabase JS, Wagmi, Safe SDK packages, SIWE, Pino, and Sentry        |
+| Area                  | Current technology                                                    |
+| --------------------- | --------------------------------------------------------------------- |
+| Workspace             | pnpm 10.33.0, pnpm workspaces, Turborepo 2                            |
+| Web                   | Next.js 16 App Router, React 19, TypeScript                           |
+| Internationalization  | next-intl 4, `@kori/i18n`, namespaced JSON messages                   |
+| UI                    | Tailwind CSS 4, shadcn/Base UI, CVA, Lucide, next-themes              |
+| Forms and validation  | React Hook Form and Zod dependencies; application forms are deferred  |
+| Testing               | Vitest, Testing Library, Soroban host tests, Hardhat historical tests |
+| Contracts             | Soroban/Rust active reference; Solidity/Hardhat historical reference  |
+| Integration scaffolds | Supabase JS, Wagmi, Safe SDK packages, SIWE, Pino, and Sentry         |
 
 Installed dependencies and package directories do not imply completed integrations.
 
@@ -74,6 +83,7 @@ packages/
   i18n/           Framework-independent locales and formatting options
   domain/         Domain package scaffold
   contracts/      Hardhat project, MockUSDC, KoriEscrow, and tests
+  stellar-contracts/ Active Soroban contract, PRD, tests, and Testnet evidence
   web3/           Web3 and Safe dependency scaffold
   db/             Supabase dependency scaffold
   ai/             AI/document-analysis package scaffold
@@ -155,7 +165,16 @@ pnpm --filter @kori/i18n typecheck
 pnpm --filter @kori/i18n test
 ```
 
-Contract checks:
+Active Soroban contract checks:
+
+```bash
+cd packages/stellar-contracts
+cargo test --locked
+cargo clippy --all-targets -- -D warnings
+stellar contract build --locked --optimize
+```
+
+Historical EVM contract checks:
 
 ```bash
 pnpm --filter @kori/contracts compile
@@ -167,7 +186,8 @@ pnpm --filter @kori/contracts clean
 
 The localized UI does not require environment variables. No `.env.example` is currently provided.
 
-The Hardhat configuration defines optional Sepolia configuration-variable names:
+The historical Hardhat configuration defines optional Sepolia
+configuration-variable names:
 
 ```text
 SEPOLIA_RPC_URL
@@ -176,7 +196,9 @@ SEPOLIA_PRIVATE_KEY
 
 They are not required for local UI or contract tests. Never commit private keys, wallet secrets, API tokens, service credentials, or real environment values.
 
-Environment variables for Supabase, Safe, SIWE, AI providers, and Sentry are intentionally not documented because those integrations are not implemented.
+Environment variables for Supabase, Stellar application wiring, AI providers,
+and Sentry are intentionally not documented because those integrations are not
+implemented.
 
 ## Frontend source of truth
 
@@ -192,14 +214,17 @@ The historical repository at `../Kori` and its audited revision `main@f95f986` a
 
 ## Current implementation status
 
-The multilingual public pages, all canonical role-dashboard routes, the simulator, shared Kori design system, theme state, route negotiation, metadata, historical redirects, and unit/component tests are present. The frontend remains a local, static/in-memory demonstration.
+The multilingual public pages, all canonical role-dashboard routes, the
+simulator, shared Kori design system, theme state, route negotiation, metadata,
+historical redirects, and unit/component tests are present. The Soroban core is
+implemented and independently exercised on Testnet; the frontend remains a
+local, static/in-memory demonstration and is not wired to that deployment.
 
 The following remain deferred:
 
 - Supabase clients, repositories, migrations, storage, authentication, and RLS;
-- wallet connection, Wagmi clients, MetaMask flows, and SIWE;
-- Safe transaction proposal and application approval flows;
-- connection between the Next.js application and `MockUSDC`/`KoriEscrow`;
+- Stellar wallet/client signing and weighted release-account application flows;
+- connection between the Next.js application and the active Soroban contract;
 - AI-provider integration and evidence analysis;
 - Sentry and Pino application wiring;
 - Storybook and CI enforcement;
@@ -229,3 +254,5 @@ The following remain deferred:
 - [Audit fidelity matrix](docs/architecture/audit-fidelity-matrix.md)
 - [Changelog](CHANGELOG.md)
 - [Contract package](packages/contracts/README.md)
+- [Stellar/Soroban contract package](packages/stellar-contracts/README.md)
+- [Stellar/Soroban PRD](packages/stellar-contracts/PRD.md)

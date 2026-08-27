@@ -1,5 +1,12 @@
 # Kori MVP — Current Status
 
+> **Blockchain status:** this page primarily describes the frontend
+> reconstruction. The active blockchain reference is the
+> [Stellar/Soroban PRD](../../packages/stellar-contracts/PRD.md). Its evidence
+> flow is deliberately one-way: source manifest hash -> optional AI review ->
+> human decision -> on-chain approval. Each downstream record references the
+> confirmed manifest hash/version and never changes its preimage.
+
 ## Verified foundation
 
 - pnpm workspace and Turborepo task graph are configured.

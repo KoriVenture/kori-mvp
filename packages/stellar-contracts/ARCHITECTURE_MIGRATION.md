@@ -11,20 +11,25 @@ claim to be the final production custody or legal model.
 
 ## Role mapping
 
-| Product responsibility | Stellar implementation                                                             |
-| ---------------------- | ---------------------------------------------------------------------------------- |
-| Investor funds a deal  | Investor authenticates `fund`; the USDC SAC transfer occurs in the same invocation |
-| Deal custody           | USDC balance is held by the deal's Soroban contract address                        |
-| Milestone evidence     | Startup signs a versioned off-chain evidence hash; Fund Manager approves it        |
-| Payout authorization   | Separate weighted `release_authority` authenticates the exact release              |
-| Threshold governance   | Investor Representative plus Lead, or Investor Representative plus Kori            |
-| Startup payout         | Exact immutable target transfers once to the immutable startup address             |
-| Timeout safety         | Anyone may open/claim refunds; funds return only to original investors             |
-| AI analysis            | Off-chain and advisory; never an on-chain authority                                |
-| Evidence documents     | Off-chain; only a 32-byte integrity hash is stored on-chain                        |
+| Product responsibility | Stellar implementation                                                              |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| Investor funds a deal  | Investor authenticates `fund`; the USDC SAC transfer occurs in the same invocation  |
+| Deal custody           | USDC balance is held by the deal's Soroban contract address                         |
+| Milestone evidence     | Startup signs a canonical source-manifest hash; Fund Manager approves that version  |
+| Payout authorization   | Separate weighted `release_authority` authenticates the exact release               |
+| Threshold governance   | Investor Representative plus Lead, or Investor Representative plus Kori             |
+| Startup payout         | Exact immutable target transfers once to the immutable startup address              |
+| Timeout safety         | Anyone may open/claim refunds; funds return only to original investors              |
+| AI analysis            | Separate off-chain record referencing the manifest hash/version; never an authority |
+| Evidence documents     | Off-chain; only the 32-byte source-manifest digest is stored on-chain               |
 
 The Fund Manager and release authority are intentionally different
 responsibilities, even if the initial demo assigns the same person to both.
+
+The evidence pipeline is deliberately one-way: source documents produce a
+canonical manifest and digest; AI review and the Fund Manager decision are
+later append-only records that reference that digest. They are never hashed back
+into the manifest they assess.
 
 ## Custody model
 

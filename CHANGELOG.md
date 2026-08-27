@@ -43,6 +43,9 @@ No versioned release has been identified. The entries below are based on the cur
 
 ### Fixed
 
+- Removed the circular evidence specification: the canonical source-manifest
+  hash is now created before review, while AI and Fund Manager records are
+  separate downstream references to the confirmed hash/version.
 - Added the Suspense boundary required by Next.js 16 for the query-preserving language switcher during static rendering.
 - Added direct application ownership of `lucide-react` instead of relying on the UI package's transitive dependency.
 - Restored complete Markdown structures in the root agent instructions and project-context/status documents.

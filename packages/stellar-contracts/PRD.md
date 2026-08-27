@@ -7,7 +7,7 @@
 | Status            | Approved V1 contract specification and implementation handoff  |
 | Audience          | Kori developers, reviewers, and coding agents                  |
 | Scope             | Stellar/Soroban blockchain path and its application boundaries |
-| Last verified     | 2026-08-25                                                     |
+| Last verified     | 2026-08-26                                                     |
 | Working branch    | `liobrasil/stellar-soroban-escrow`                             |
 | Target network    | Stellar Testnet only for the MVP                               |
 | Production status | Not production-ready; no real funds                            |
@@ -69,12 +69,15 @@ The selected Stellar model is:
    target, funding deadline, and release deadline.
 2. Each investor signs `fund`; USDC moves atomically into DealEscrow custody.
 3. Reaching the exact target closes funding; overfunding is rejected.
-4. The startup signs submission of an off-chain evidence hash.
-5. The Fund Manager/Lead Investor approves that exact hash and version.
-6. The Investor Representative plus either the Lead Investor or Kori Release
+4. Kori hashes a canonical source-evidence manifest, and the startup signs
+   submission of that manifest hash.
+5. AI and human-review records are stored separately off-chain and reference the
+   confirmed manifest hash and version; they never change its preimage.
+6. The Fund Manager/Lead Investor approves that exact manifest hash and version.
+7. The Investor Representative plus either the Lead Investor or Kori Release
    Officer authorizes the exact payout through a weighted Stellar G-account.
-7. DealEscrow transfers exactly the target to the immutable startup address.
-8. If no valid release occurs by the applicable deadline, anyone may trigger
+8. DealEscrow transfers exactly the target to the immutable startup address.
+9. If no valid release occurs by the applicable deadline, anyone may trigger
    per-investor refunds to the original funding addresses.
 
 The deal contract holds the money; the multisig governs release. This is not a
@@ -83,26 +86,27 @@ mislabelled as funded capital.
 
 ## 3. Architecture decisions
 
-| ID     | Status      | Decision                                                                                                                                                                                         |
-| ------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| AD-001 | **DECIDED** | New blockchain work targets Stellar/Soroban. EVM remains a historical reference implementation.                                                                                                  |
-| AD-002 | **DECIDED** | Each deal uses contract custody: USDC is held at the `DealEscrow` C-address.                                                                                                                     |
-| AD-003 | **DECIDED** | Investor funding is an actual SAC transfer, not a deferred `approve`/allowance or delegated wallet pull.                                                                                         |
-| AD-004 | **DECIDED** | The MVP accepts one configured USDC SAC; asset identity includes the network and contract address.                                                                                               |
-| AD-005 | **DECIDED** | MVP scope is one deal, one startup, one milestone, and one full release.                                                                                                                         |
-| AD-006 | **DECIDED** | Fund Manager is a contextual community/deal role held by an investor, not a global `User.isFundManager` identity.                                                                                |
-| AD-007 | **DECIDED** | Human evidence approval and financial release authorization are separate responsibilities.                                                                                                       |
-| AD-008 | **DECIDED** | AI is advisory only and has no on-chain address, key, approval, or release power.                                                                                                                |
-| AD-009 | **DECIDED** | There is no separate independent-verifier role in the current flow; the Fund Manager is the human milestone approver.                                                                            |
-| AD-010 | **DECIDED** | A legal SPV and a smart contract are distinct objects linked to the same deal. A contract is not a legal vehicle.                                                                                |
-| AD-011 | **DECIDED** | Direct-deploy one immutable escrow for V1; a multi-deal factory is V2.                                                                                                                           |
-| AD-012 | **DECIDED** | Release uses a weighted G-account. Investor Representative is mandatory: Lead + Representative is normal; Kori + Representative is recovery after prior Lead approval; Lead + Kori is forbidden. |
-| AD-013 | **DECIDED** | Constructor fixes absolute funding/release deadlines. Timeout refunds are permissionless, per investor, and can only pay the original funding address.                                           |
-| AD-014 | **DECIDED** | In V1, the immutable startup payout address signs each on-chain evidence-hash submission; documents remain off-chain.                                                                            |
-| AD-015 | **DECIDED** | V1 exposes no configuration setter or contract-upgrade entry point. Production upgrade governance is V2/security review work.                                                                    |
-| AD-016 | **V2**      | Community voting/quorum may select deals later but never replaces each investor's authorization of an exact contribution.                                                                        |
-| AD-017 | **DECIDED** | V1 uses `minimum = target = maximum`; target is the full release amount and contributions above it are rejected.                                                                                 |
-| AD-018 | **DECIDED** | If the Lead disappears before approval, the startup is not paid; the deal becomes refundable at the release deadline.                                                                            |
+| ID     | Status      | Decision                                                                                                                                                                                                                           |
+| ------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AD-001 | **DECIDED** | New blockchain work targets Stellar/Soroban. EVM remains a historical reference implementation.                                                                                                                                    |
+| AD-002 | **DECIDED** | Each deal uses contract custody: USDC is held at the `DealEscrow` C-address.                                                                                                                                                       |
+| AD-003 | **DECIDED** | Investor funding is an actual SAC transfer, not a deferred `approve`/allowance or delegated wallet pull.                                                                                                                           |
+| AD-004 | **DECIDED** | The MVP accepts one configured USDC SAC; asset identity includes the network and contract address.                                                                                                                                 |
+| AD-005 | **DECIDED** | MVP scope is one deal, one startup, one milestone, and one full release.                                                                                                                                                           |
+| AD-006 | **DECIDED** | Fund Manager is a contextual community/deal role held by an investor, not a global `User.isFundManager` identity.                                                                                                                  |
+| AD-007 | **DECIDED** | Human evidence approval and financial release authorization are separate responsibilities.                                                                                                                                         |
+| AD-008 | **DECIDED** | AI is advisory only and has no on-chain address, key, approval, or release power.                                                                                                                                                  |
+| AD-009 | **DECIDED** | There is no separate independent-verifier role in the current flow; the Fund Manager is the human milestone approver.                                                                                                              |
+| AD-010 | **DECIDED** | A legal SPV and a smart contract are distinct objects linked to the same deal. A contract is not a legal vehicle.                                                                                                                  |
+| AD-011 | **DECIDED** | Direct-deploy one immutable escrow for V1; a multi-deal factory is V2.                                                                                                                                                             |
+| AD-012 | **DECIDED** | Release uses a weighted G-account. Investor Representative is mandatory: Lead + Representative is normal; Kori + Representative is recovery after prior Lead approval; Lead + Kori is forbidden.                                   |
+| AD-013 | **DECIDED** | Constructor fixes absolute funding/release deadlines. Timeout refunds are permissionless, per investor, and can only pay the original funding address.                                                                             |
+| AD-014 | **DECIDED** | In V1, the immutable startup payout address signs each on-chain evidence-hash submission; documents remain off-chain.                                                                                                              |
+| AD-015 | **DECIDED** | V1 exposes no configuration setter or contract-upgrade entry point. Production upgrade governance is V2/security review work.                                                                                                      |
+| AD-016 | **V2**      | Community voting/quorum may select deals later but never replaces each investor's authorization of an exact contribution.                                                                                                          |
+| AD-017 | **DECIDED** | V1 uses `minimum = target = maximum`; target is the full release amount and contributions above it are rejected.                                                                                                                   |
+| AD-018 | **DECIDED** | If the Lead disappears before approval, the startup is not paid; the deal becomes refundable at the release deadline.                                                                                                              |
+| AD-019 | **DECIDED** | The on-chain evidence hash commits only to the canonical source-evidence manifest. AI review and Fund Manager decision records are downstream, append-only references to that hash/version and are never included in its preimage. |
 
 ## 4. Product boundary
 
@@ -110,7 +114,8 @@ mislabelled as funded capital.
 
 - Prove that investor funding corresponds to an atomic on-chain USDC transfer.
 - Attribute every accepted contribution to the authorizing investor.
-- Keep evidence and AI analysis off-chain while anchoring the approved package.
+- Keep evidence and AI analysis off-chain while anchoring the source-evidence
+  manifest without hashing downstream AI or human-review data.
 - Require a human milestone decision and separate quorum-controlled payout.
 - Prevent early release, unauthorized release, over-release, and double release.
 - Produce sufficient events for an auditable off-chain projection.
@@ -148,27 +153,32 @@ flowchart LR
   Deal --> Milestone[Milestone]
   Deal --> Deployment[Contract Deployment]
   Deployment --> Escrow[DealEscrow C-address]
-  Milestone --> Evidence[Evidence Package]
-  Evidence --> Approval[Milestone Approval]
+  Milestone --> Manifest[Evidence Manifest]
+  Manifest -. optional .-> AIReview[AI Review Record]
+  Manifest --> HumanDecision[Human Decision Record]
+  AIReview -. advisory input .-> HumanDecision
+  HumanDecision -->|approve only| Approval[On-chain Milestone Approval]
   Deal --> Policy[Release Policy]
   Policy --> Quorum[Release Quorum]
 ```
 
-| Entity                | Meaning and required boundary                                                                                                       |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `User`                | Person/account identity. Base identity may be investor or founder; do not add a global fund-manager boolean.                        |
-| `CommunityMembership` | User's scoped role in one community, such as member, manager, or lead investor. A user may have different roles across communities. |
-| `InvestorCommunity`   | Reusable group of investors. It is not a wallet, deal, SPV, or startup.                                                             |
-| `CommunityDeal`       | Aggregate root for one community investing in one funding opportunity/round for one startup.                                        |
-| `DealParticipation`   | One member's committed and funded amounts for one deal. A membership balance is not a substitute.                                   |
-| `Startup`             | Company/founder context. One startup may have multiple rounds/deals.                                                                |
-| `LegalSPV`            | Optional legal vehicle and agreements associated with the deal. It does not execute code.                                           |
-| `ContractDeployment`  | Network, contract ID, Wasm hash/version, constructor configuration, deployment transaction, and active status for a deal.           |
-| `Milestone`           | Business criterion and release policy. The current MVP has exactly one.                                                             |
-| `EvidencePackage`     | Versioned off-chain evidence manifest, URI, hash algorithm, schema version, and submitter.                                          |
-| `MilestoneApproval`   | Human decision bound to an evidence package, approver, decision, and timestamp/ledger.                                              |
-| `ReleasePolicy`       | Required authority, threshold, amount, recipient, and valid state for payout.                                                       |
-| `ChainEvent`          | Immutable indexed network event identified by network, contract, ledger, transaction, and event ID.                                 |
+| Entity                | Meaning and required boundary                                                                                                          |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `User`                | Person/account identity. Base identity may be investor or founder; do not add a global fund-manager boolean.                           |
+| `CommunityMembership` | User's scoped role in one community, such as member, manager, or lead investor. A user may have different roles across communities.    |
+| `InvestorCommunity`   | Reusable group of investors. It is not a wallet, deal, SPV, or startup.                                                                |
+| `CommunityDeal`       | Aggregate root for one community investing in one funding opportunity/round for one startup.                                           |
+| `DealParticipation`   | One member's committed and funded amounts for one deal. A membership balance is not a substitute.                                      |
+| `Startup`             | Company/founder context. One startup may have multiple rounds/deals.                                                                   |
+| `LegalSPV`            | Optional legal vehicle and agreements associated with the deal. It does not execute code.                                              |
+| `ContractDeployment`  | Network, contract ID, Wasm hash/version, constructor configuration, deployment transaction, and active status for a deal.              |
+| `Milestone`           | Business criterion and release policy. The current MVP has exactly one.                                                                |
+| `EvidenceManifest`    | Canonical, versioned inventory of source evidence. Its digest excludes all later AI and human-review data.                             |
+| `AIReviewRecord`      | Optional append-only advisory output referencing one manifest hash/version, with model, prompt, output, citation, and provenance data. |
+| `HumanDecisionRecord` | Append-only Fund Manager decision referencing one manifest hash/version and, when used, one AI review record.                          |
+| `MilestoneApproval`   | Confirmed on-chain approval binding the current manifest hash/version, Fund Manager, exact amount, and ledger data.                    |
+| `ReleasePolicy`       | Required authority, threshold, amount, recipient, and valid state for payout.                                                          |
+| `ChainEvent`          | Immutable indexed network event identified by network, contract, ledger, transaction, and event ID.                                    |
 
 Amounts shown at community, SPV, or startup level are derived aggregates. The
 source of truth is each confirmed deal participation/funding event in one
@@ -176,17 +186,17 @@ explicit asset.
 
 ## 6. Actors and authority
 
-| Actor                             | May do                                                                                         | Must not do                                                                 |
-| --------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Investor                          | Select a deal, authorize an exact contribution, view funded position, claim an eligible refund | Move another investor's assets or approve a milestone by default            |
-| Startup Founder                   | Upload evidence off-chain and sign submission of its current hash                              | Approve its own evidence or release funds                                   |
-| Fund Manager / Milestone Approver | Review source evidence and AI advice; approve/reject the evidence hash for an assigned deal    | Gain release power merely from community-admin status                       |
-| Investor Representative           | Co-authorize every release through the weighted release account                                | Release alone or approve evidence                                           |
-| Kori Release Officer              | Replace the Lead only for release after the Lead already approved the exact evidence           | Approve evidence, release alone, or bypass the Investor Representative      |
-| Kori Operator                     | Deploy reviewed contracts, submit public refund calls, and operate the indexer                 | Redirect refunds or gain discretionary escrow control                       |
-| AI Review                         | Produce structured advisory findings off-chain                                                 | Hold keys, call the contract, approve, reject, or release                   |
-| Legal/Compliance operator         | Determine eligibility and maintain legal records off-chain                                     | Treat a smart contract as formation of an SPV or proof of investment rights |
-| Stablecoin issuer                 | Operates the asset and may retain issuer controls                                              | Is not controlled by Kori                                                   |
+| Actor                             | May do                                                                                                                     | Must not do                                                                 |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Investor                          | Select a deal, authorize an exact contribution, view funded position, claim an eligible refund                             | Move another investor's assets or approve a milestone by default            |
+| Startup Founder                   | Upload source evidence and sign submission of its canonical manifest hash                                                  | Approve its own evidence or release funds                                   |
+| Fund Manager / Milestone Approver | Review source evidence and AI advice; record a decision and approve the current manifest hash/version for an assigned deal | Gain release power merely from community-admin status                       |
+| Investor Representative           | Co-authorize every release through the weighted release account                                                            | Release alone or approve evidence                                           |
+| Kori Release Officer              | Replace the Lead only for release after the Lead already approved the exact evidence                                       | Approve evidence, release alone, or bypass the Investor Representative      |
+| Kori Operator                     | Deploy reviewed contracts, submit public refund calls, and operate the indexer                                             | Redirect refunds or gain discretionary escrow control                       |
+| AI Review                         | Produce structured advisory findings off-chain                                                                             | Hold keys, call the contract, approve, reject, or release                   |
+| Legal/Compliance operator         | Determine eligibility and maintain legal records off-chain                                                                 | Treat a smart contract as formation of an SPV or proof of investment rights |
+| Stablecoin issuer                 | Operates the asset and may retain issuer controls                                                                          | Is not controlled by Kori                                                   |
 
 Custody, control, and authority are different:
 
@@ -228,8 +238,10 @@ account configuration enforces the underlying pair.
 - Web application and API.
 - Wallet connection, transaction simulation, assembly, signing, and submission.
 - Operational database containing projections, not an alternative money ledger.
-- Private evidence object store and versioned evidence manifest.
-- AI advisory service.
+- Private evidence object store and canonical, versioned evidence manifests.
+- Separate append-only AI review and human decision records that reference a
+  manifest hash/version.
+- AI advisory service with no wallet or on-chain authority.
 - Stellar event indexer with replay and deduplication.
 - Eligibility controls and role assignments.
 
@@ -279,16 +291,28 @@ are solved.
 
 ### 8.3 Evidence and human approval
 
-1. Startup uploads a versioned evidence package off-chain.
-2. Kori canonicalizes a manifest and computes its versioned hash.
-3. AI returns advisory findings referencing the same evidence version.
-4. Fund Manager inspects the underlying evidence and advisory result.
-5. Startup signs submission of the canonical hash; resubmission increments the
-   version only before approval.
-6. Fund Manager approves the exact current hash and version.
-7. The chain stores only the hash, version, decision state, and ledger data.
-8. Off-chain evidence history is append-only; prior versions are never
-   overwritten.
+1. Startup uploads a draft source-evidence package off-chain.
+2. Kori builds a canonical manifest from fields already known at this point and
+   computes `manifest_hash`.
+3. The app reads the current chain version. The startup signs
+   `submit_evidence(manifest_hash)`; a confirmed invocation assigns the next
+   on-chain evidence version.
+4. Kori records the confirmed hash, version, transaction, and ledger. A failed
+   or stale submission remains an unanchored draft and is not current evidence.
+5. AI may read the exact anchored source package and write an append-only
+   `AIReviewRecord` referencing the same hash/version. An AI failure or omission
+   does not block human review, approval, release timeout, or refunds.
+6. The Fund Manager inspects the source evidence and any matching advisory
+   record, then writes a separate append-only `HumanDecisionRecord` referencing
+   that hash/version.
+7. A rejection remains off-chain and may lead to a new evidence revision. An
+   approval requires the Fund Manager to sign
+   `approve_milestone(manifest_hash, evidence_version)`.
+8. The chain stores only the manifest hash, version, approval state, exact
+   release amount, and ledger data. It stores neither AI findings nor the human
+   reason.
+9. Every history is append-only. A new manifest revision makes prior reviews and
+   decisions stale for approval but never rewrites them.
 
 ### 8.4 Release
 
@@ -336,7 +360,7 @@ stateDiagram-v2
   [*] --> FundingOpen
   FundingOpen --> Funded: exact target reached
   FundingOpen --> Refundable: funding deadline, target missed
-  Funded --> EvidenceSubmitted: startup submits evidence hash
+  Funded --> EvidenceSubmitted: startup submits manifest hash
   EvidenceSubmitted --> EvidenceSubmitted: startup resubmits before approval
   EvidenceSubmitted --> Approved: Fund Manager approval
   Approved --> Released: weighted release authority
@@ -361,9 +385,9 @@ output causes no state transition.
 | FR-003 | P0       | `fund` requires investor auth, positive amount, open funding, pre-deadline execution, and atomic SAC transfer.       | **IMPLEMENTED**                              |
 | FR-004 | P0       | Track cumulative contribution per investor and aggregate accepted funding with checked arithmetic.                   | **IMPLEMENTED**                              |
 | FR-005 | P0       | Reject overfunding; exact target closes V1 funding automatically.                                                    | **IMPLEMENTED**                              |
-| FR-006 | P0       | Startup-authenticated evidence submission is versioned and replaceable only before approval.                         | **IMPLEMENTED**                              |
-| FR-007 | P0       | Fund Manager approval binds exact evidence hash, version, and target amount and cannot be overwritten.               | **IMPLEMENTED**                              |
-| FR-008 | P0       | Release authorization binds exact evidence hash, version, and amount; startup is immutable.                          | **IMPLEMENTED**                              |
+| FR-006 | P0       | Startup-authenticated manifest-hash submission is versioned and replaceable only before approval.                    | **IMPLEMENTED**                              |
+| FR-007 | P0       | Fund Manager approval binds exact manifest hash, version, and target amount and cannot be overwritten.               | **IMPLEMENTED**                              |
+| FR-008 | P0       | Release authorization binds exact manifest hash, version, and amount; startup is immutable.                          | **IMPLEMENTED**                              |
 | FR-009 | P0       | Release requires the separate weighted G-account and is terminal/atomic.                                             | **IMPLEMENTED AND LIVE-VERIFIED ON TESTNET** |
 | FR-010 | P0       | Investor Representative is required for both approved release pairs.                                                 | **IMPLEMENTED IN VERIFIED TESTNET ACCOUNT**  |
 | FR-011 | P0       | Enforce the explicit V1 state machine and deadline boundaries.                                                       | **IMPLEMENTED**                              |
@@ -389,6 +413,9 @@ output causes no state transition.
 - Recovery release by Kori still requires prior Fund Manager approval and the
   Investor Representative's signature.
 - Founder and AI cannot approve or release.
+- The manifest digest commits only to source-evidence fields fixed before
+  submission. AI reviews and human decisions reference it and cannot feed back
+  into or replace its preimage.
 - Community administration does not automatically grant release authority.
 - A release authorization cannot be replayed for different evidence, amount,
   recipient, contract, or network.
@@ -428,22 +455,52 @@ event window (stock default is about seven days), so Kori must continuously
 ingest and deduplicate events. The database is a query projection; on-chain
 state and successful asset movement remain authoritative for settlement.
 
-## 12. Evidence requirements
+## 12. Evidence, AI review, and human decision requirements
 
-An evidence hash is only meaningful if its preimage is deterministic. Define:
+### Non-circular record model
 
-- canonical manifest schema and version;
-- hash algorithm, currently proposed SHA-256;
-- ordered file list with each file's hash, size, MIME type, and storage object ID;
-- milestone/deal identifiers;
-- submitter and submission timestamp;
-- previous evidence version when resubmitted;
-- AI model/provider/version and advisory output hash;
-- Fund Manager decision, reason, and approved evidence version.
+The contract field remains named `evidence_hash`; semantically it is the
+`evidence_manifest_hash`. It is computed once from source-evidence facts that
+exist before AI review and human approval. Every later record points to that
+hash/version. No later record is part of its preimage.
 
-Never hash an arbitrary JSON serialization without canonicalization. Evidence
-URIs must not expose private documents publicly, and deleting a document must
-follow the legal retention policy rather than silently breaking the audit trail.
+| Record                | Created when                       | Required content                                                                                                                                      |
+| --------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EvidenceManifest`    | Before `submit_evidence`           | schema version, deal/milestone IDs, evidence revision, prior manifest hash when any, submitter, fixed creation time, ordered file metadata and hashes |
+| `AIReviewRecord`      | After the manifest anchor confirms | manifest hash/version, provider/model, prompt and output schema versions, findings, source citations, output hash, timestamp                          |
+| `HumanDecisionRecord` | After human inspection             | manifest hash/version, Fund Manager, decision, reason, optional AI review ID/output hash, timestamp                                                   |
+| `MilestoneApproval`   | After `approve_milestone` confirms | manifest hash/version, Fund Manager, exact release amount, transaction, ledger, timestamp                                                             |
+
+V1 manifest hashing requirements:
+
+- encode the manifest as UTF-8 JSON canonicalized with RFC 8785 JCS;
+- hash the canonical bytes with SHA-256 into the contract's `BytesN<32>`;
+- sort the file list by a stable logical key and include each file's immutable
+  object ID, SHA-256, byte size, MIME type, and document role;
+- set `evidence_revision` and every timestamp included in the manifest before
+  hashing; never include a later chain-generated transaction hash, ledger, or
+  timestamp in the preimage;
+- exclude signed download URLs, mutable database status, AI provider/model,
+  prompt, findings, AI output hash, Fund Manager decision/reason, and approval
+  transaction data;
+- after submission, assert that the returned on-chain version equals the
+  manifest's expected revision before launching AI review;
+- permit approval only when the human decision matches the current confirmed
+  manifest hash/version; when an AI review is used, require its reference to
+  match too.
+
+A resubmission creates a new manifest and hash. Prior AI and human records stay
+immutable but are stale for the new revision. Rejection is an off-chain human
+decision in V1; only approval creates an on-chain state transition.
+
+Evidence URIs must not expose private documents publicly, and deleting a
+document must follow the legal retention policy rather than silently breaking
+the audit trail.
+
+**Status:** this non-circular model is **DECIDED** and **REQUIRED** for the app,
+database, and AI integration. The current contract is compatible because it
+stores the digest as opaque data, but the application implementation is still
+deferred.
 
 ## 13. EVM-to-Stellar mapping
 
@@ -659,8 +716,10 @@ balances, events, and known limitations are published in a Testnet runbook.
 - Add Stellar wallet/client support to `packages/web3` and `apps/web`.
 - Simulate before requesting signatures; assemble using RPC results.
 - Display exact network, asset, amount, contract, and recipient.
-- Implement private evidence storage and canonical hashing.
-- Implement AI advisory output with provenance.
+- Implement private evidence storage and the Section 12 canonical manifest
+  pipeline.
+- Implement separate `AIReviewRecord` and `HumanDecisionRecord` persistence with
+  provenance and strict manifest hash/version matching.
 - Implement indexer, deduplication, reorg/result handling, and DB projection.
 - Replace misleading EVM/Safe simulator language in the active Stellar flow.
 
@@ -738,17 +797,17 @@ deployment script/runbook before relying on copied terminal history.
 
 ## 20. Remaining decision register
 
-| Decision                                                          | Owner                   | Blocking                       |
-| ----------------------------------------------------------------- | ----------------------- | ------------------------------ |
-| Production deal target and deadline policy                        | Product + Blockchain    | Production design              |
-| Non-timeout cancellation/dispute rules                            | Product + Legal         | V2 only                        |
-| Evidence canonicalization and retention                           | Product + Backend/Legal | Stable approval hash           |
-| TTL restoration/extension operations                              | Blockchain              | Long-lived Testnet reliability |
-| Production upgrade/immutability policy                            | Product + Security      | Mainnet consideration          |
-| Fee payer/sponsorship and wallet choice                           | Product + Frontend      | Client integration             |
-| KYC/eligibility enforcement boundary                              | Legal + Backend         | Production consideration       |
-| SPV-to-deal legal relationship and authoritative ownership ledger | Legal                   | Production consideration       |
-| Community deal-selection voting/quorum                            | Product + Backend       | Community governance flow      |
+| Decision                                                          | Owner                   | Blocking                        |
+| ----------------------------------------------------------------- | ----------------------- | ------------------------------- |
+| Production deal target and deadline policy                        | Product + Blockchain    | Production design               |
+| Non-timeout cancellation/dispute rules                            | Product + Legal         | V2 only                         |
+| Evidence formats, retention, redaction, and deletion policy       | Product + Backend/Legal | Application evidence operations |
+| TTL restoration/extension operations                              | Blockchain              | Long-lived Testnet reliability  |
+| Production upgrade/immutability policy                            | Product + Security      | Mainnet consideration           |
+| Fee payer/sponsorship and wallet choice                           | Product + Frontend      | Client integration              |
+| KYC/eligibility enforcement boundary                              | Legal + Backend         | Production consideration        |
+| SPV-to-deal legal relationship and authoritative ownership ledger | Legal                   | Production consideration        |
+| Community deal-selection voting/quorum                            | Product + Backend       | Community governance flow       |
 
 ## 21. Definition of done for the Testnet MVP
 
@@ -758,9 +817,12 @@ The MVP is done only when:
 - one or more investors fund it with verified Testnet USDC through signed
   invocations;
 - confirmed contributions reconcile with SAC transfers and indexed events;
-- a founder evidence package is stored privately with a canonical on-chain hash;
-- AI produces advisory output only;
-- the assigned Fund Manager approves the exact evidence version;
+- a founder evidence package is stored privately and its canonical source-only
+  manifest hash/version is confirmed on-chain;
+- when AI review is enabled, it produces a separate advisory record bound to
+  that exact hash/version without becoming a release prerequisite;
+- the assigned Fund Manager records a separate decision and approves that exact
+  manifest hash/version;
 - the verified weighted G-account authorizes the exact release;
 - the contract pays the immutable startup address once and cannot replay;
 - the UI and database show confirmed network state and transaction references;

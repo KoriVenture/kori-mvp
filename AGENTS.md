@@ -8,13 +8,19 @@ Core workflow:
 
 1. An investor deposits funds.
 2. Funds remain in escrow.
-3. A startup submits milestone evidence.
-4. AI analyzes the evidence as decision support.
-5. A human reviews the evidence and analysis.
+3. A startup submits a canonical source-evidence manifest hash.
+4. AI may analyze that exact manifest version as decision support.
+5. A human records a separate decision for that hash/version.
 6. A Stellar release quorum approves the exact payout.
-7. Funds are released or the request is rejected.
+7. Funds are released after approval, or become refundable at the deadline if
+   release never occurs.
 
 AI is consultative only and must never make the final financial decision. The MVP must never imply that it handles real funds or provides investment, legal, tax, compliance, or financial advice.
+
+The evidence hash is the digest of a canonical source-evidence manifest created
+before AI or human review. AI review and Fund Manager decision records are
+separate, append-only off-chain records that reference the confirmed manifest
+hash/version. Never include either downstream record in the manifest preimage.
 
 ## Repository
 

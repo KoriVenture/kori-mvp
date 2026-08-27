@@ -35,6 +35,16 @@ The PRD is authoritative for accepted product intent. The FigJam board is a
 visual explanation, not proof of deployed behavior. If sources conflict, state
 the discrepancy instead of silently choosing one.
 
+## Evidence and AI invariant
+
+- `evidence_hash` on-chain means the digest of the canonical source-evidence
+  manifest created before review.
+- `AIReviewRecord` and `HumanDecisionRecord` are separate append-only off-chain
+  records that reference the confirmed manifest hash/version.
+- Never put AI output, model metadata, a Fund Manager decision/reason, or later
+  chain data into the manifest hash preimage. That would create a circular
+  workflow and invalidate the object being reviewed.
+
 ## Blockchain safety
 
 - The current deployment is **Stellar Testnet only** and is not

@@ -35,6 +35,12 @@ submission.
 Amounts are shown in USDC; on-chain arguments use 7-decimal base units
 (`1 USDC = 10,000,000`).
 
+`testnet-release-evidence-v1.json` is the source-evidence manifest preimage used
+for this historical campaign. Its digest does not include AI output or the Fund
+Manager decision; those are downstream records in the current application
+specification. This clarification does not change any deployed transaction or
+Wasm behavior.
+
 ## Live scenario matrix
 
 |   # | Scenario                                          | Contract                                                                                                                  | Final proof                                                                                                                  | Result                                                    |

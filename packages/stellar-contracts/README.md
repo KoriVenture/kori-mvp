@@ -17,14 +17,18 @@ is in [`FIGMA_REFERENCE.md`](./FIGMA_REFERENCE.md).
 
 1. An investor authenticates `fund`; the pinned official Testnet USDC SAC
    transfers assets into DealEscrow.
-2. The exact target closes funding; the startup signs an evidence hash.
-3. The Fund Manager/Lead Investor approves that exact evidence version.
+2. The exact target closes funding; Kori builds a canonical source-evidence
+   manifest and the startup submits its hash.
+3. AI review and human decision records reference the confirmed hash/version;
+   they never alter the manifest hash. The Fund Manager/Lead Investor approves
+   that exact manifest version.
 4. A weighted account requires the Investor Representative plus either the Lead
    or Kori Release Officer to authorize the exact payout.
 5. If a deadline expires, anyone may trigger per-investor refunds to the
    original addresses; the caller cannot redirect funds.
 
-AI and evidence documents remain off-chain.
+AI, evidence documents, and human decision reasons remain off-chain. The
+contract stores only the source-manifest digest and its version.
 
 ## Prerequisites
 

@@ -1,5 +1,11 @@
 # Kori MVP - Buildathon Remaining Work
 
+> **Historical EVM handoff (2026-07-23).** Current Stellar/Soroban and evidence
+> requirements are defined in
+> [`packages/stellar-contracts/PRD.md`](../../packages/stellar-contracts/PRD.md).
+> Do not derive the current evidence-hash preimage or release architecture from
+> this snapshot.
+
 Last updated: 2026-07-23
 Repository: `KoriVenture/kori-mvp`
 Local path: `/Users/liobrasil/Desktop/ Kori project/kori-mvp`

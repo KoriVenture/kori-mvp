@@ -1,10 +1,20 @@
 # Kori MVP — Project Context
 
+> **Current blockchain and evidence reference:**
+> [`packages/stellar-contracts/PRD.md`](../../packages/stellar-contracts/PRD.md).
+> In particular, the evidence manifest is hashed before review; AI and human
+> decision records separately reference that confirmed hash/version.
+
 ## Purpose
 
 Kori is a demonstration platform for milestone-based startup investment and controlled fund release. It is not a production financial platform, does not handle real client funds, and does not provide regulated investment services or professional advice.
 
-The product principle is simple: AI may analyze milestone evidence, but a human must make the decision and a multisig must control release.
+The product principle is simple: AI may analyze milestone evidence, but a human
+must make the decision and the weighted Stellar authority must control release.
+
+The source-evidence manifest, AI review, and human decision are three distinct
+records. The manifest digest never includes the later AI output or human
+decision; doing so would make the review flow circular.
 
 ## Main actors
 
@@ -36,11 +46,11 @@ Operations and compliance responsibilities may exist in a future architecture, b
 ```text
 Investor deposits test funds
   -> funds remain in escrow
-  -> startup submits milestone evidence
-  -> AI produces advisory analysis
-  -> a human reviews and decides
-  -> a Safe multisig approves release
-  -> test funds are released or the request is rejected
+  -> startup anchors a canonical source-evidence manifest hash
+  -> AI may produce a separate advisory record for that hash/version
+  -> the Fund Manager records a separate human decision
+  -> a weighted Stellar authority approves the exact release
+  -> test funds are released, or become refundable at the deadline
 ```
 
 ## Current product state
@@ -55,9 +65,14 @@ The repository currently contains:
 - a framework-independent locale package;
 - Vitest and Testing Library coverage for locale, routing, shared-style, and component behavior;
 - local `MockUSDC` and `KoriEscrow` contracts with tests;
+- the active Soroban escrow package, verified Testnet deployment evidence, and
+  its implementation PRD;
 - scaffolds and dependencies for future application integrations.
 
-The web application is not connected to the contracts, Supabase, wallets, Safe, or an AI provider. Dashboard and simulator actions use static fixtures or local in-memory state; the end-to-end financial workflow is not implemented.
+The web application is not connected to the Soroban contract, Supabase,
+wallets, or an AI provider. Dashboard and simulator actions use static fixtures
+or local in-memory state; the end-to-end application workflow is not
+implemented.
 
 ## Historical visual reference
 

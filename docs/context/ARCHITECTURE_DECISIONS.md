@@ -1,5 +1,12 @@
 # Kori MVP — Architecture Decisions
 
+> **Historical scope:** the EVM decisions below document the earlier frontend
+> reconstruction phase. New blockchain work follows the
+> [Stellar/Soroban PRD](../../packages/stellar-contracts/PRD.md). In that active
+> design, the source-evidence manifest is hashed before review; optional AI and
+> human decision records only reference the confirmed hash/version and are not
+> part of its preimage.
+
 ## ADR summary
 
 ### Monorepo

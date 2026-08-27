@@ -9,8 +9,10 @@ nontechnical teammates.
 - Investors transfer the pinned official **Stellar Testnet USDC SAC** into the
   escrow C-address. The weighted release G-account authorizes payout but never
   holds deal funds.
-- The startup submits an off-chain evidence hash. AI is advisory. The Fund
-  Manager approves the exact hash and version.
+- The startup submits the hash of a canonical source-evidence manifest. AI and
+  human decision records separately reference the confirmed hash/version; they
+  never feed back into its preimage. AI remains advisory, and the Fund Manager
+  approves the exact manifest hash and version.
 - Release requires the Investor Representative plus either the Lead Investor
   (normal path) or Kori Release Officer (recovery path). Lead + Kori is rejected.
 - After the applicable immutable deadline, anyone may advance the refund path;
@@ -21,9 +23,13 @@ nontechnical teammates.
 ```mermaid
 flowchart LR
   Investor[Investor G-account] -->|fund: Testnet USDC| Escrow[DealEscrow C-address]
-  Founder[Startup founder] -->|evidence hash| Escrow
-  AI[AI review] -. "advisory only" .-> Manager[Fund Manager]
-  Manager -->|approve exact hash + version| Escrow
+  Founder[Startup founder] -->|source files| Manifest[Canonical evidence manifest]
+  Manifest -->|startup submits manifest hash| Escrow
+  Manifest -. optional review .-> AIRecord[AIReviewRecord]
+  AIRecord -. "advisory only" .-> Manager[Fund Manager]
+  Manifest --> Manager
+  Manager --> Decision[HumanDecisionRecord]
+  Manager -->|approve same hash + version| Escrow
   Lead[Lead investor: weight 1] --> Authority[Weighted release G-account]
   Representative[Investor representative: weight 2] --> Authority
   Kori[Kori release officer: weight 1] --> Authority
@@ -57,6 +63,19 @@ Not yet production proof: application wallet integration, evidence storage and
 AI integration, event-indexer operations, production identity/compliance,
 legal SPV operations, independent security audit, Mainnet asset/custody policy,
 monitoring, and incident response.
+
+## Non-circular evidence rule
+
+1. Build and hash the canonical source-evidence manifest.
+2. Confirm `submit_evidence(manifest_hash)` on-chain.
+3. Store AI review and Fund Manager decision records as downstream references to
+   the confirmed hash/version.
+4. Approve only that same current hash/version.
+
+AI output and human decision data are never inputs to `manifest_hash`. A new
+submission creates a new manifest revision; prior reviews and decisions remain
+auditable but stale for approval. AI is optional decision support: provider
+failure must not block human review, deadline progression, or refunds.
 
 ## Useful questions for Copilot
 

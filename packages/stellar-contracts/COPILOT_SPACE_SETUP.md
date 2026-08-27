@@ -17,6 +17,11 @@ truth, Soroban code/tests as enforcement truth, the PRD as accepted intent, and
 FigJam as visual intent. State conflicts. Never call this Testnet deployment
 production-ready or real-value USDC.
 
+Treat the evidence hash as the digest of the canonical source-evidence
+manifest created before review. AI review and human decision records are
+separate downstream records that reference the confirmed manifest hash/version;
+never place either record in the manifest preimage.
+
 ## Sources
 
 Add these repository sources:
