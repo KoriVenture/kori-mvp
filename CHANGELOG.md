@@ -8,6 +8,23 @@ Release entries below are based on the repository state and Git history availabl
 
 ## [Unreleased]
 
+### Added
+
+- Stellar/Soroban V1 deal escrow with exact-target funding, versioned evidence,
+  weighted release authorization, and permissionless per-investor refunds.
+- Contract tests, Testnet deployment evidence, assurance report, product
+  requirements, FigJam mapping, and AI/Copilot source-of-truth guidance.
+
+### Changed
+
+- New blockchain work now targets Stellar/Soroban; EVM/Sepolia/Safe material is
+  retained only as historical implementation context.
+
+### Security
+
+- Testnet signing material is excluded from the active reference tree; only public
+  addresses and transaction evidence are documented.
+
 ## [1.1.0] - 2026-08-23
 
 ### Added
