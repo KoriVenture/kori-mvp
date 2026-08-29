@@ -19,7 +19,7 @@ function profilePhotoUrl(path: string | null | undefined) {
   if (!path) return "/assets/onboarding/investor/profile-photo.png";
   if (/^https?:\/\//i.test(path)) return path;
 
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const base = process.env.NEXT_SUPABASE_URL;
   if (!base) return "/assets/onboarding/investor/profile-photo.png";
 
   return `${base}/storage/v1/object/public/profile-photos/${path}`;
