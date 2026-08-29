@@ -114,7 +114,7 @@ export function InvestorOnboarding() {
       biography: profile.biography ?? "",
       photoPath: profile.photo_path ?? "",
       photoUrl: profile.photo_path
-        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile-photos/${profile.photo_path}`
+        ? `${process.env.NEXT_SUPABASE_URL}/storage/v1/object/public/profile-photos/${profile.photo_path}`
         : current.photoUrl,
       languages: profile.languages ?? [],
       investorType:
