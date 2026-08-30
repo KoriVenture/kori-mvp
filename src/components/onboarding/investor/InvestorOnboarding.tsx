@@ -1,8 +1,22 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  createEmailPasswordAccount,
+  resendEmailAccountOtp,
+  startSocialAccountCreation,
+  verifyEmailAccountOtp,
+} from "@/lib/auth/account";
+import {
+  beginTotpEnrollment,
+  registerKoriPasskey,
+  type TotpEnrollment,
+} from "@/lib/auth/security";
 import { createClient } from "@/lib/supabase/client";
-import { passkeysEnabled } from "@/lib/supabase/config";
+import {
+  passkeysEnabled,
+  phoneMfaEnabled,
+} from "@/lib/supabase/config";
 import {
   initialInvestorDraft,
   type InvestorOnboardingDraft,
@@ -13,6 +27,7 @@ import { ExpertisePreferencesStep } from "./steps/ExpertisePreferencesStep";
 import { InvestmentEligibilityStep } from "./steps/InvestmentEligibilityStep";
 import { InvestorProfileStep } from "./steps/InvestorProfileStep";
 import { ReviewAgreementsStep } from "./steps/ReviewAgreementsStep";
+import { SecurityEnrollmentDialog } from "./steps/SecurityEnrollmentDialog";
 import { VerifySecureStep } from "./steps/VerifySecureStep";
 
 const PREAUTH_KEY = "kori:onboarding:investor:preauth";
@@ -46,6 +61,11 @@ export function InvestorOnboarding() {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [otpRequired, setOtpRequired] = useState(true);
+  const [securityDialogMethod, setSecurityDialogMethod] =
+    useState<"totp" | "sms" | null>(null);
+  const [totpEnrollment, setTotpEnrollment] =
+    useState<TotpEnrollment | null>(null);
+  const photoActionInProgress = useRef(false);
 
   function set<K extends keyof InvestorOnboardingDraft>(
     key: K,
@@ -114,7 +134,7 @@ export function InvestorOnboarding() {
       biography: profile.biography ?? "",
       photoPath: profile.photo_path ?? "",
       photoUrl: profile.photo_path
-        ? `${process.env.NEXT_SUPABASE_URL}/storage/v1/object/public/profile-photos/${profile.photo_path}`
+        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile-photos/${profile.photo_path}`
         : current.photoUrl,
       languages: profile.languages ?? [],
       investorType:
@@ -187,26 +207,17 @@ export function InvestorOnboarding() {
           if (!active) return;
 
           setOtpRequired(false);
-          setDraft((current) => ({
-            ...current,
-            email:
-              auth.data.user?.email ?? current.email,
-            emailVerified: Boolean(
-              auth.data.user?.email_confirmed_at,
-            ),
-            country: preAuth.country ?? current.country,
-            accountTerms:
-              preAuth.accountTerms ?? current.accountTerms,
-            newsletter:
-              preAuth.newsletter ?? current.newsletter,
-          }));
-
           window.history.replaceState(
             {},
             "",
             "/onboarding/investor",
           );
-          setStep(1);
+
+          await load();
+        } else if (query.get("auth") === "error") {
+          setMessage(
+            "Social sign-in could not be completed. Please try again.",
+          );
         } else if (auth.data.user) {
           await load();
         }
@@ -264,25 +275,23 @@ export function InvestorOnboarding() {
       }
 
       savePreAuth();
-      const supabase = createClient();
-      const result = await supabase.auth.signUp({
-        email: draft.email.trim(),
-        password: draft.password,
-        options: {
-          data: { onboarding_role: "investor" },
-        },
-      });
-      if (result.error) throw result.error;
 
-      setOtpRequired(!result.data.session);
+      const result = await createEmailPasswordAccount({
+        email: draft.email,
+        password: draft.password,
+        role: "investor",
+      });
+
+      setOtpRequired(!result.session);
       set(
         "emailVerified",
-        Boolean(result.data.user?.email_confirmed_at),
+        Boolean(result.user?.email_confirmed_at),
       );
 
-      if (result.data.session) {
+      if (result.session) {
         await bootstrap();
       }
+
       setStep(1);
     } catch (error) {
       setMessage(
@@ -299,28 +308,26 @@ export function InvestorOnboarding() {
     provider: "google" | "linkedin_oidc",
   ) {
     setMessage("");
+    setBusy(true);
+
     try {
-      validateAccount();
+      // Social account creation is intentionally one-click.
+      // Country/consents already selected on the page are preserved, but they
+      // are not used as a gate before leaving for Google/LinkedIn. Required
+      // platform agreements remain enforced before onboarding completion.
       savePreAuth();
-      const supabase = createClient();
-      const origin = window.location.origin;
-      const result = await supabase.auth.signInWithOAuth({
+
+      await startSocialAccountCreation({
         provider,
-        options: {
-          redirectTo: `${origin}/auth/callback?next=/onboarding/investor`,
-          queryParams:
-            provider === "google"
-              ? { access_type: "offline", prompt: "consent" }
-              : undefined,
-        },
+        next: "/onboarding/investor",
       });
-      if (result.error) throw result.error;
     } catch (error) {
       setMessage(
         error instanceof Error
           ? error.message
           : "Unable to start social sign-in.",
       );
+      setBusy(false);
     }
   }
 
@@ -329,13 +336,10 @@ export function InvestorOnboarding() {
       setBusy(true);
       setMessage("");
       try {
-        const supabase = createClient();
-        const result = await supabase.auth.verifyOtp({
+        await verifyEmailAccountOtp({
           email: draft.email,
           token,
-          type: "email",
         });
-        if (result.error) throw result.error;
         set("emailVerified", true);
         await bootstrap();
       } catch (error) {
@@ -352,12 +356,7 @@ export function InvestorOnboarding() {
   );
 
   async function resendOtp() {
-    const supabase = createClient();
-    const result = await supabase.auth.resend({
-      type: "signup",
-      email: draft.email,
-    });
-    if (result.error) throw result.error;
+    await resendEmailAccountOtp(draft.email);
     setMessage("A new verification code was sent.");
   }
 
@@ -366,42 +365,98 @@ export function InvestorOnboarding() {
     data: Record<string, unknown>,
     complete = false,
   ) {
-    const response = await fetch("/api/onboarding/investor", {
-      method: "PATCH",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        screen: target,
-        ...data,
-        ...(complete ? { complete: true } : {}),
-      }),
-    });
-    const body = await response.json().catch(() => ({}));
+    const response = await fetch(
+      "/api/onboarding/investor",
+      {
+        method: "PATCH",
+        headers: {
+          "content-type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          screen: target,
+          ...data,
+          ...(complete
+            ? { complete: true }
+            : {}),
+        }),
+      },
+    );
+
+    const body = await response
+      .json()
+      .catch(() => ({}));
+
     if (!response.ok) {
+      const databaseMessage =
+        typeof body?.database?.message ===
+        "string"
+          ? body.database.message
+          : "";
+
       throw new Error(
-        body.error ?? "Unable to save onboarding.",
+        databaseMessage
+          ? `${body.error ?? "Unable to save onboarding."} ${databaseMessage}`
+          : body.error ??
+              "Unable to save onboarding.",
       );
     }
   }
 
+  async function finishSecurityStep() {
+    await saveStep(2, {});
+    setSecurityDialogMethod(null);
+    setTotpEnrollment(null);
+    setStep(2);
+  }
+
   async function secureAndContinue() {
     if (!draft.emailVerified) {
-      setMessage("Verify your email before continuing.");
+      setMessage(
+        "Verify your email before continuing.",
+      );
       return;
     }
 
     setBusy(true);
     setMessage("");
+
     try {
-      if (
-        draft.securityMethod === "passkey" &&
-        passkeysEnabled()
-      ) {
-        const supabase = createClient();
-        const result = await supabase.auth.registerPasskey();
-        if (result.error) throw result.error;
+      if (draft.securityMethod === "passkey") {
+        if (!passkeysEnabled()) {
+          throw new Error(
+            "Passkeys are not enabled for this environment. Configure Authentication > Passkeys in Supabase, then set NEXT_PUBLIC_ENABLE_PASSKEYS=true.",
+          );
+        }
+
+        await registerKoriPasskey();
+        await finishSecurityStep();
+        return;
       }
-      await saveStep(2, {});
-      setStep(2);
+
+      if (draft.securityMethod === "totp") {
+        const enrollment =
+          await beginTotpEnrollment();
+
+        setTotpEnrollment(enrollment);
+        setSecurityDialogMethod("totp");
+        return;
+      }
+
+      if (draft.securityMethod === "sms") {
+        if (!phoneMfaEnabled()) {
+          throw new Error(
+            "SMS Backup requires Supabase Advanced MFA Phone and is not available on the current Supabase Free plan. Choose Passkey or Authenticator App.",
+          );
+        }
+
+        setSecurityDialogMethod("sms");
+        return;
+      }
+
+      throw new Error(
+        "Select a sign-in safeguard before continuing.",
+      );
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -463,6 +518,28 @@ export function InvestorOnboarding() {
   }
 
   async function uploadPhoto(file: File) {
+    if (photoActionInProgress.current) return;
+
+    const allowedTypes = new Set([
+      "image/png",
+      "image/jpeg",
+    ]);
+
+    if (!allowedTypes.has(file.type)) {
+      setMessage(
+        "Profile photo must be a PNG or JPG image.",
+      );
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage(
+        "Profile photo must be 5MB or smaller.",
+      );
+      return;
+    }
+
+    photoActionInProgress.current = true;
     setBusy(true);
     setMessage("");
     try {
@@ -487,21 +564,44 @@ export function InvestorOnboarding() {
           : "Photo upload failed.",
       );
     } finally {
+      photoActionInProgress.current = false;
       setBusy(false);
     }
   }
 
   async function removePhoto() {
-    const response = await fetch(
-      "/api/onboarding/investor/photo",
-      { method: "DELETE" },
-    );
-    if (response.ok) {
+    if (photoActionInProgress.current) return;
+
+    photoActionInProgress.current = true;
+    setBusy(true);
+    setMessage("");
+
+    try {
+      const response = await fetch(
+        "/api/onboarding/investor/photo",
+        { method: "DELETE" },
+      );
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(
+          body.error ?? "Photo removal failed.",
+        );
+      }
+
       set("photoPath", "");
       set(
         "photoUrl",
         "/assets/onboarding/investor/profile-photo.png",
       );
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Photo removal failed.",
+      );
+    } finally {
+      photoActionInProgress.current = false;
+      setBusy(false);
     }
   }
 
@@ -576,27 +676,62 @@ export function InvestorOnboarding() {
         message={message}
         busy={busy}
         onSet={set}
-        onCreate={createEmailAccount}
-        onGoogle={() => void social("google")}
-        onLinkedIn={() => void social("linkedin_oidc")}
+        onEmailAccountCreate={createEmailAccount}
+        onGoogleAccountCreate={() => void social("google")}
+        onLinkedInAccountCreate={() => void social("linkedin_oidc")}
+        onChangeRole={() =>
+          window.location.assign(
+            "/onboarding/founder",
+          )
+        }
       />
     );
   }
 
   if (step === 1) {
     return (
-      <VerifySecureStep
-        draft={draft}
-        otpRequired={otpRequired}
-        message={message}
-        busy={busy}
-        onSet={set}
-        onVerifyOtp={verifyOtp}
-        onResend={resendOtp}
-        onChangeEmail={() => setStep(0)}
-        onContinue={secureAndContinue}
-        onSaveExit={saveExit}
-      />
+      <>
+        <VerifySecureStep
+          draft={draft}
+          otpRequired={otpRequired}
+          message={message}
+          busy={busy}
+          onSet={set}
+          onVerifyOtp={verifyOtp}
+          onResend={resendOtp}
+          onChangeEmail={() => setStep(0)}
+          onContinue={secureAndContinue}
+          onSaveExit={saveExit}
+        />
+
+        <SecurityEnrollmentDialog
+          method={securityDialogMethod}
+          totpEnrollment={totpEnrollment}
+          onCancel={() => {
+            setTotpEnrollment(null);
+            setSecurityDialogMethod(null);
+          }}
+          onComplete={async () => {
+            setBusy(true);
+            setMessage("");
+
+            try {
+              await finishSecurityStep();
+            } catch (error) {
+              const reason =
+                error instanceof Error
+                  ? error
+                  : new Error(
+                      "Unable to finish security setup.",
+                    );
+              setMessage(reason.message);
+              throw reason;
+            } finally {
+              setBusy(false);
+            }
+          }}
+        />
+      </>
     );
   }
 

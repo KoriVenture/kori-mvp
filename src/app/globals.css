@@ -1457,3 +1457,712 @@ blockquote.pull cite {
   body { transition: none; }
   .person,.person img,.person .exp,.person p.bio,.person a.li { transition: none; }
 }
+
+/* ==========================================================
+   ONBOARDING INTERACTION OVERLAYS
+   Does not alter the Figma base screen geometry.
+   ========================================================== */
+
+.ko-role-banner__change {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ko-coral);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ko-inline-legal-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ko-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(3, 12, 18, 0.56);
+}
+
+.ko-dialog {
+  width: 440px;
+  max-width: 100%;
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid var(--ko-border);
+  border-radius: 12px;
+  background: var(--ko-white);
+  color: var(--ko-midnight);
+  box-shadow:
+    0 24px 64px rgba(3, 12, 18, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ko-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ko-dialog__header h2 {
+  margin: 0;
+  font: 700 24px/1.2 "Fraunces", serif;
+}
+
+.ko-dialog__close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ko-midnight);
+  font-size: 26px;
+  line-height: 1;
+}
+
+.ko-dialog__copy {
+  margin: 0;
+  color: var(--ko-copy);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ko-totp-qr {
+  width: 220px;
+  height: 220px;
+  align-self: center;
+  object-fit: contain;
+  background: #fff;
+}
+
+.ko-totp-secret {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--ko-border);
+  border-radius: 8px;
+  background: var(--ko-ivory);
+}
+
+.ko-totp-secret span {
+  color: var(--ko-copy);
+  font-size: 11px;
+}
+
+.ko-totp-secret code {
+  overflow-wrap: anywhere;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   BEGIN KORI FIGMA PROFILE + INVESTOR DASHBOARD FIX
+   Visual source:
+   KoriVenture/Figma_fronted@create_investor_account_flo
+   - src/App.tsx -> UserProfile
+   - src/index.css -> exact UserProfile CSS
+   - imports/index.tsx -> ProductExperience/AppMockup
+   ========================================================================== */
+
+.profile-page{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:220px 1fr;
+  background:#f4f1ea;
+}
+.profile-nav{
+  position:sticky;
+  top:0;
+  height:100vh;
+  padding:28px 20px;
+  display:flex;
+  flex-direction:column;
+  color:#fff;
+  background:#030c12;
+}
+.profile-nav>img{
+  width:75px;
+  margin:0 10px 36px;
+}
+.profile-nav nav{
+  display:grid;
+  gap:6px;
+}
+.profile-nav nav a,
+.profile-nav-back{
+  padding:11px 12px;
+  text-align:left;
+  border:0;
+  border-radius:6px;
+  color:#ffffffb3;
+  background:transparent;
+  text-decoration:none;
+  cursor:pointer;
+}
+.profile-nav nav a.active{
+  color:#fff;
+  background:#ffffff12;
+}
+.profile-nav-back{
+  margin-top:auto;
+}
+.profile-content{
+  min-width:0;
+  padding-bottom:80px;
+}
+.profile-cover{
+  height:230px;
+  overflow:hidden;
+  background:#11242c;
+}
+.profile-cover img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.profile-identity{
+  max-width:1120px;
+  margin:-58px auto 0;
+  padding:0 32px;
+  display:flex;
+  align-items:flex-end;
+  gap:22px;
+  position:relative;
+}
+.profile-identity>img{
+  width:128px;
+  height:128px;
+  object-fit:cover;
+  border:5px solid #f4f1ea;
+  border-radius:50%;
+}
+.profile-identity h1{
+  margin:0 0 5px;
+  font:700 32px "Fraunces",serif;
+}
+.profile-identity p,
+.profile-identity span{
+  margin:0;
+  color:#445052;
+  font-size:13px;
+}
+.profile-actions{
+  margin-left:auto;
+  display:flex;
+  gap:8px;
+}
+.profile-actions button{
+  padding:10px 18px;
+  border:1px solid #030c12;
+  border-radius:7px;
+  background:transparent;
+  font-weight:600;
+}
+.profile-actions button:first-child{
+  color:#fff;
+  background:#030c12;
+}
+.profile-bio{
+  max-width:1056px;
+  margin:28px auto;
+  padding:0 32px;
+  color:#445052;
+  line-height:1.6;
+}
+.stats{
+  max-width:1056px;
+  margin:0 auto 24px;
+  padding:20px 32px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border:1px solid #e5dec9;
+  border-radius:10px;
+  background:#fff;
+}
+.stats div{
+  display:grid;
+  text-align:center;
+  border-right:1px solid #e5dec9;
+}
+.stats div:last-child{
+  border:0;
+}
+.stats b{
+  font:700 24px "Fraunces",serif;
+}
+.stats span{
+  color:#647071;
+  font-size:11px;
+}
+.profile-grid{
+  max-width:1120px;
+  margin:auto;
+  padding:0 32px;
+  display:grid;
+  grid-template-columns:minmax(0,1.7fr) minmax(280px,1fr);
+  gap:24px;
+}
+.profile-grid>div,
+.profile-grid>aside{
+  display:grid;
+  align-content:start;
+  gap:24px;
+}
+.profile-card{
+  padding:24px;
+  border:1px solid #e5dec9;
+  border-radius:10px;
+  background:#fff;
+}
+.profile-card h2{
+  margin:0 0 20px;
+  font:600 20px "Fraunces",serif;
+}
+.profile-card blockquote{
+  margin:20px 0 0;
+  padding:20px;
+  border-left:3px solid #f5513e;
+  color:#445052;
+  background:#f7f3ec;
+  font:600 15px/1.55 "Fraunces",serif;
+}
+.profile-card .chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.profile-card .chips span{
+  padding:7px 11px;
+  border:1px solid #d8d0c3;
+  border-radius:99px;
+  color:#445052;
+  background:#fff;
+  font-size:12px;
+}
+.profile-card .chips span.selected{
+  border-color:#049c9f;
+  color:#036f72;
+  background:#049c9f10;
+}
+.portfolio-row{
+  padding:14px 0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid #eee8de;
+}
+.portfolio-row i{
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  color:#fff;
+  background:#030c12;
+  font-style:normal;
+}
+.portfolio-row span{
+  display:grid;
+}
+.portfolio-row small{
+  color:#8a9499;
+}
+.portfolio-row em{
+  margin-left:auto;
+  color:#647071;
+  font-size:12px;
+  font-style:normal;
+}
+.contribution{
+  padding:14px 0;
+  border-bottom:1px solid #eee8de;
+  font-size:13px;
+}
+.contribution span{
+  float:right;
+  color:#8a9499;
+  font-size:11px;
+}
+.contribution p{
+  margin:6px 0 0;
+  color:#647071;
+}
+.preference{
+  padding:10px 0;
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  border-bottom:1px solid #eee8de;
+  font-size:13px;
+}
+.preference b{
+  color:#049c9f;
+  text-align:right;
+}
+.profile-context-list,
+.profile-trust-list{
+  display:grid;
+  gap:12px;
+}
+.profile-context-list p,
+.profile-trust-list p{
+  margin:0;
+  color:#445052;
+  font-size:13px;
+}
+.profile-trust-list p{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.profile-trust-list .ok{
+  color:#049c9f;
+}
+.profile-trust-list .deferred{
+  color:#ff9815;
+}
+.profile-trust-list .neutral{
+  color:#647071;
+}
+.profile-placeholder-row{
+  opacity:.72;
+}
+
+/* Exact ProductExperience/AppMockup visual shell from imports/index.tsx. */
+.investor-dashboard-page{
+  min-height:100vh;
+  padding:80px;
+  overflow-x:auto;
+  background:#f7f3ec;
+}
+.investor-dashboard{
+  width:100%;
+  min-width:1000px;
+  height:680px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #e5dec9;
+  border-radius:12px;
+  background:#fff;
+}
+.investor-dashboard-topbar{
+  width:100%;
+  padding:20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+  border-bottom:1px solid #e5dec9;
+  background:#f7f3ec;
+}
+.dashboard-interface-label{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.dashboard-window-dot{
+  width:10px;
+  height:10px;
+  flex:0 0 10px;
+  border-radius:50%;
+}
+.dashboard-window-dot--red{background:#ff5f56}
+.dashboard-window-dot--yellow{background:#ffbd2e}
+.dashboard-window-dot--green{background:#27c93f}
+.dashboard-window-divider{
+  width:1px;
+  height:16px;
+  background:#e5dec9;
+}
+.dashboard-interface-label strong{
+  color:#647071;
+  font:700 11px "IBM Plex Mono",monospace;
+}
+.dashboard-tabs{
+  padding:2px;
+  display:flex;
+  gap:4px;
+  align-items:flex-start;
+  border:1px solid #e5dec9;
+  border-radius:6px;
+  background:#fff;
+}
+.dashboard-tabs a{
+  padding:6px 16px;
+  border-radius:4px;
+  color:#030c12;
+  background:transparent;
+  text-decoration:none;
+  font:500 12px "Manrope",sans-serif;
+}
+.dashboard-tabs a.active{
+  background:#f7f3ec;
+  font-weight:700;
+}
+.dashboard-account{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.dashboard-account>span{
+  color:#445052;
+  font:400 12px "IBM Plex Mono",monospace;
+}
+.dashboard-account-avatar{
+  width:24px;
+  height:24px;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  color:#fff;
+  background:#049c9f;
+  text-decoration:none;
+  font:700 8px "IBM Plex Mono",monospace;
+}
+.dashboard-account-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.investor-dashboard-body{
+  width:100%;
+  height:calc(680px - 69px);
+  min-height:0;
+  display:flex;
+  align-items:stretch;
+}
+.dashboard-sidebar{
+  width:240px;
+  height:100%;
+  flex:0 0 240px;
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  border-right:1px solid #e5dec9;
+  background:#f7f3ec;
+}
+.dashboard-sidebar-section{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.dashboard-sidebar-section h2,
+.dashboard-panel>h2{
+  margin:0;
+  color:#647071;
+  font:400 10px "IBM Plex Mono",monospace;
+}
+.dashboard-opportunity{
+  width:100%;
+  padding:10px;
+  overflow:hidden;
+  border-radius:4px;
+  color:#030c12;
+  background:transparent;
+  text-decoration:none;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font:600 12px "Manrope",sans-serif;
+}
+.dashboard-opportunity.active{
+  border:1px solid #e5dec9;
+  background:#fff;
+}
+.dashboard-sidebar-section p{
+  margin:0;
+  color:#445052;
+  font:400 12px "Manrope",sans-serif;
+}
+.dashboard-sidebar-section p.active-room{
+  font-weight:700;
+}
+.dashboard-main{
+  min-width:0;
+  flex:1 1 0;
+  padding:32px;
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  overflow:hidden;
+}
+.dashboard-room-header{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+}
+.dashboard-room-header>div{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.dashboard-room-header h1{
+  margin:0;
+  color:#030c12;
+  font:400 20px "Fraunces",serif;
+}
+.dashboard-room-header p{
+  margin:0;
+  color:#647071;
+  font:400 11px "IBM Plex Mono",monospace;
+}
+.dashboard-verified-badge{
+  padding:4px 12px;
+  flex:0 0 auto;
+  border:1px solid #049c9f;
+  border-radius:4px;
+  color:#049c9f;
+  background:rgba(4,156,159,.08);
+  font:700 11px "IBM Plex Mono",monospace;
+}
+.dashboard-detail-grid{
+  width:100%;
+  display:flex;
+  gap:16px;
+  align-items:stretch;
+}
+.dashboard-panel{
+  min-width:0;
+  flex:1 1 0;
+  align-self:stretch;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  border-radius:6px;
+  background:#f7f3ec;
+}
+.dashboard-evidence-list{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.dashboard-evidence-row{
+  width:100%;
+  padding:8px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  border-radius:4px;
+  background:#fff;
+}
+.dashboard-evidence-row>span{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  color:#030c12;
+  font:400 11px "Manrope",sans-serif;
+}
+.dashboard-evidence-row small{
+  color:#647071;
+  font:400 9px "IBM Plex Mono",monospace;
+}
+.dashboard-status-icon{
+  width:12px;
+  height:12px;
+  flex:0 0 12px;
+}
+.dashboard-spv{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.dashboard-spv>div{
+  width:100%;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  color:#445052;
+  font-size:12px;
+}
+.dashboard-spv>div>strong{
+  color:#030c12;
+  font:700 12px "IBM Plex Mono",monospace;
+}
+.dashboard-commitments{
+  padding-top:8px;
+  display:flex!important;
+  flex-direction:column;
+  gap:4px!important;
+}
+.dashboard-commitments>div:first-child{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  color:#647071;
+  font:400 10px "IBM Plex Mono",monospace;
+}
+.dashboard-commitments>div:first-child strong{
+  color:#f5513e;
+  font-weight:700;
+}
+.dashboard-progress-track{
+  width:100%;
+  height:6px;
+  overflow:hidden;
+  border-radius:3px;
+  background:#fff;
+}
+.dashboard-progress-track>span{
+  display:block;
+  width:82.6%;
+  height:100%;
+  background:#f5513e;
+}
+
+@media(max-width:900px){
+  .profile-page{display:block}
+  .profile-nav{
+    height:auto;
+    position:relative;
+    flex-direction:row;
+    align-items:center;
+    overflow:auto;
+  }
+  .profile-nav>img{margin:0 20px 0 0}
+  .profile-nav nav{display:flex}
+  .profile-nav-back{display:none}
+  .profile-grid{grid-template-columns:1fr}
+  .profile-identity{align-items:center}
+  .profile-actions{display:none}
+  .investor-dashboard-page{padding:32px}
+}
+@media(max-width:600px){
+  .profile-identity{
+    margin-top:-40px;
+    padding:0 20px;
+    display:block;
+  }
+  .profile-identity>img{
+    width:92px;
+    height:92px;
+  }
+  .profile-identity h1{font-size:26px}
+  .stats{
+    margin:20px;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .stats div{border:0}
+  .profile-grid{padding:0 20px}
+  .profile-bio{padding:0 20px}
+  .investor-dashboard-page{padding:20px}
+}
+
+/* END KORI FIGMA PROFILE + INVESTOR DASHBOARD FIX */

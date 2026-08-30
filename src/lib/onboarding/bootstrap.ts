@@ -24,7 +24,7 @@ export async function bootstrapOnboardingIdentity({
 }) {
   const existing = await supabase
     .from("profiles")
-    .select("id,roles")
+    .select("id,roles,country,marketing_opt_in,marketing_opt_in_at")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -33,18 +33,24 @@ export async function bootstrapOnboardingIdentity({
   const roles = Array.from(
     new Set([...(existing.data?.roles ?? []), role]),
   );
+  const profileCountry = country || existing.data?.country || "";
+  const marketingOptIn =
+    newsletter || existing.data?.marketing_opt_in === true;
+  const marketingOptInAt = marketingOptIn
+    ? existing.data?.marketing_opt_in_at ?? new Date().toISOString()
+    : null;
 
   const profile = await supabase.from("profiles").upsert(
     {
       id: user.id,
       display_name: displayName(user),
       roles,
-      country,
+      country: profileCountry,
       email: user.email ?? null,
       email_verified: Boolean(user.email_confirmed_at),
       verification_status: "deferred",
-      marketing_opt_in: newsletter,
-      marketing_opt_in_at: newsletter ? new Date().toISOString() : null,
+      marketing_opt_in: marketingOptIn,
+      marketing_opt_in_at: marketingOptInAt,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "id" },
@@ -58,7 +64,7 @@ export async function bootstrapOnboardingIdentity({
         onboarding_status: "in_progress",
         updated_at: new Date().toISOString(),
       },
-      { onConflict: "user_id" },
+      { onConflict: "user_id", ignoreDuplicates: true },
     );
     if (investor.error) throw investor.error;
   }
@@ -70,7 +76,7 @@ export async function bootstrapOnboardingIdentity({
         onboarding_status: "in_progress",
         updated_at: new Date().toISOString(),
       },
-      { onConflict: "user_id" },
+      { onConflict: "user_id", ignoreDuplicates: true },
     );
     if (founder.error) throw founder.error;
   }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { shouldAttemptEmailOtp } from "@/lib/auth/otp-attempt";
 import type {
   InvestorOnboardingDraft,
   SecurityMethod,
@@ -43,6 +44,7 @@ export function VerifySecureStep({
 }) {
   const [otp, setOtp] = useState("");
   const [seconds, setSeconds] = useState(45);
+  const lastAttemptedOtp = useRef("");
 
   useEffect(() => {
     if (seconds <= 0) return;
@@ -54,20 +56,20 @@ export function VerifySecureStep({
   }, [seconds]);
 
   useEffect(() => {
-    if (
-      otpRequired &&
-      otp.length === 6 &&
-      !draft.emailVerified &&
-      !busy
-    ) {
+    if (shouldAttemptEmailOtp({
+      otp,
+      otpRequired,
+      emailVerified: draft.emailVerified,
+      busy,
+      lastAttemptedOtp: lastAttemptedOtp.current,
+    })) {
+      lastAttemptedOtp.current = otp;
       void onVerifyOtp(otp);
     }
   }, [otp, otpRequired, draft.emailVerified, busy, onVerifyOtp]);
 
   function choose(value: SecurityMethod) {
-    // TOTP and SMS require approved enrollment interaction states that do not
-    // exist in the embedded visual contract. Do not invent them in this implementation.
-    if (value === "totp" || value === "sms") return;
+    if (busy) return;
     onSet("securityMethod", value);
   }
 
@@ -103,7 +105,15 @@ export function VerifySecureStep({
 
           {otpRequired ? (
             <div className="ko-verify-block">
-              <OtpInput value={otp} onChange={setOtp} />
+              <OtpInput
+                value={otp}
+                onChange={(value) => {
+                  setOtp(value);
+                  if (value.length < 6) {
+                    lastAttemptedOtp.current = "";
+                  }
+                }}
+              />
               <div className="ko-otp-actions">
                 <button
                   type="button"
@@ -111,6 +121,8 @@ export function VerifySecureStep({
                   disabled={seconds > 0 || busy}
                   onClick={async () => {
                     await onResend();
+                    setOtp("");
+                    lastAttemptedOtp.current = "";
                     setSeconds(45);
                   }}
                 >
@@ -147,16 +159,14 @@ export function VerifySecureStep({
               title="Authenticator App"
               description="Use Google Authenticator, 1Password, or Authy."
               icon="/assets/onboarding/investor/smartphone.svg"
-              selected={false}
-              disabled
+              selected={draft.securityMethod === "totp"}
               onClick={() => choose("totp")}
             />
             <Choice
               title="SMS Backup"
               description="Secure mobile phone delivery of verification codes."
               icon="/assets/onboarding/investor/mail.svg"
-              selected={false}
-              disabled
+              selected={draft.securityMethod === "sms"}
               onClick={() => choose("sms")}
             />
           </section>

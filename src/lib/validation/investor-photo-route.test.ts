@@ -1,0 +1,26 @@
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import test from "node:test";
+
+test("investor photo deletion contracts", () => {
+  const fixture = fileURLToPath(
+    new URL("./investor-photo-route.fixture.ts", import.meta.url),
+  );
+  const result = spawnSync(
+    process.execPath,
+    [
+      "--experimental-strip-types",
+      "--experimental-test-module-mocks",
+      "--test",
+      fixture,
+    ],
+    { encoding: "utf8" },
+  );
+
+  assert.equal(
+    result.status,
+    0,
+    `${result.stdout}\n${result.stderr}`,
+  );
+});

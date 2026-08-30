@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { role, country, newsletter } = parsed.data;
+  const { role, country, newsletter, termsAccepted } = parsed.data;
 
   try {
     const profileId = await bootstrapOnboardingIdentity({
@@ -38,25 +38,27 @@ export async function POST(request: Request) {
       newsletter,
     });
 
-    const acceptedAt = new Date().toISOString();
-    const agreements = ["terms", "privacy"].map((agreementType) => ({
-      user_id: profileId,
-      role,
-      agreement_type: agreementType,
-      agreement_version: AGREEMENT_VERSION,
-      accepted: true,
-      signature_name: null,
-      signed_at: null,
-      accepted_at: acceptedAt,
-    }));
+    if (termsAccepted) {
+      const acceptedAt = new Date().toISOString();
+      const agreements = ["terms", "privacy"].map((agreementType) => ({
+        user_id: profileId,
+        role,
+        agreement_type: agreementType,
+        agreement_version: AGREEMENT_VERSION,
+        accepted: true,
+        signature_name: null,
+        signed_at: null,
+        accepted_at: acceptedAt,
+      }));
 
-    const savedAgreements = await supabase
-      .from("agreement_acceptances")
-      .upsert(agreements, {
-        onConflict: "user_id,role,agreement_type,agreement_version",
-      });
+      const savedAgreements = await supabase
+        .from("agreement_acceptances")
+        .upsert(agreements, {
+          onConflict: "user_id,role,agreement_type,agreement_version",
+        });
 
-    if (savedAgreements.error) throw savedAgreements.error;
+      if (savedAgreements.error) throw savedAgreements.error;
+    }
 
     return NextResponse.json({
       ok: true,

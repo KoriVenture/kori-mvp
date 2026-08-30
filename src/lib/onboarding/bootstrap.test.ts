@@ -11,9 +11,11 @@ type CapturedWrite = {
 
 function fakeSupabase({
   existingRoles = [],
+  existingProfile,
   readError = null,
 }: {
   existingRoles?: string[];
+  existingProfile?: Record<string, unknown> | null;
   readError?: Error | null;
 } = {}) {
   const writes: CapturedWrite[] = [];
@@ -31,7 +33,11 @@ function fakeSupabase({
           },
           async maybeSingle() {
             return {
-              data: readError ? null : { id: "user-123", roles: existingRoles },
+              data: readError
+                ? null
+                : existingProfile === undefined
+                  ? { id: "user-123", roles: existingRoles }
+                  : existingProfile,
               error: readError,
             };
           },
@@ -78,7 +84,7 @@ test("bootstrap maps the Supabase user UUID and preserves an existing founder ro
 });
 
 test("bootstrap creates the founder subtype without creating an investor subtype", async () => {
-  const { client, writes } = fakeSupabase();
+  const { client, writes } = fakeSupabase({ existingProfile: null });
 
   await bootstrapOnboardingIdentity({
     supabase: client as never,
@@ -100,6 +106,44 @@ test("bootstrap creates the founder subtype without creating an investor subtype
   assert.deepEqual(writes[0]?.values.roles, ["founder"]);
   assert.equal(writes[0]?.values.email_verified, false);
   assert.equal(writes[0]?.values.marketing_opt_in_at, null);
+});
+
+test("returning OAuth bootstrap preserves stored profile state and completed subtype rows", async () => {
+  const marketingOptInAt = "2026-08-01T10:00:00.000Z";
+  const { client, writes } = fakeSupabase({
+    existingProfile: {
+      id: "user-123",
+      roles: ["investor"],
+      country: "Canada",
+      marketing_opt_in: true,
+      marketing_opt_in_at: marketingOptInAt,
+    },
+  });
+
+  await bootstrapOnboardingIdentity({
+    supabase: client as never,
+    user: {
+      id: "user-123",
+      email: "investor@example.com",
+      email_confirmed_at: "2026-08-28T12:00:00.000Z",
+      user_metadata: {},
+    } as never,
+    role: "investor",
+    country: "",
+    newsletter: false,
+  });
+
+  assert.equal(writes[0]?.values.country, "Canada");
+  assert.equal(writes[0]?.values.marketing_opt_in, true);
+  assert.equal(writes[0]?.values.marketing_opt_in_at, marketingOptInAt);
+  assert.deepEqual(writes[1]?.options, {
+    onConflict: "user_id",
+    ignoreDuplicates: true,
+  });
+  assert.deepEqual(writes[2]?.options, {
+    onConflict: "user_id,role",
+    ignoreDuplicates: true,
+  });
 });
 
 test("bootstrap stops before writes when the existing profile cannot be read", async () => {
