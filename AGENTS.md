@@ -330,3 +330,25 @@ If a file is replaced by a new authoritative implementation, remove the old impl
 For an execution task, report files created, files replaced, files deleted, packages added/removed/upgraded, migrations added, commands executed, exact lint/typecheck/test/build results, external Dashboard/manual actions still required, and concrete blockers if any.
 
 Do not substitute a new plan for this report.
+
+## 28. Current Stellar reference
+
+New blockchain work targets Stellar/Soroban. Before changing blockchain code or
+application integration, read:
+
+```text
+packages/stellar-contracts/AI_CONTEXT.md
+packages/stellar-contracts/PRD.md
+packages/stellar-contracts/README.md
+```
+
+Use `deployments/testnet-v1.json` and `TESTNET_ASSURANCE_REPORT.md` for verified
+Testnet claims, Soroban source and tests for enforced behavior, and the PRD for
+accepted product intent. The FigJam board is a visual reference, not deployment
+evidence. Historical EVM, Sepolia, MetaMask, and Safe material does not define
+the active blockchain implementation.
+
+No private signing key belongs in the active reference tree. Any historically
+exposed Testnet fixture is permanently compromised and must never be reused.
+Operators must use secure local Stellar identities and never reuse them for
+Mainnet.

@@ -47,7 +47,25 @@ npm run dev
 ```bash
 npm run typecheck
 npm run lint
+npm test
 npm run build
+```
+
+## Stellar/Soroban reference
+
+The Testnet deal-escrow contract, product requirements, deployment evidence and
+developer guide live in [`packages/stellar-contracts`](./packages/stellar-contracts/README.md).
+The root Next.js application does not yet call the contract; application and
+data integration remains a required V1 Gate E deliverable in the
+[`Stellar/Soroban PRD`](./packages/stellar-contracts/PRD.md).
+
+Validate the contract independently from the application:
+
+```bash
+cd packages/stellar-contracts
+cargo test --locked
+cargo clippy --locked --all-targets -- -D warnings
+stellar contract build --locked --optimize
 ```
 
 ## Why internal links use normal anchors
