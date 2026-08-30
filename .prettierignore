@@ -1,0 +1,2 @@
+# Canonical evidence bytes are hashed on-chain; formatting would change the hash.
+packages/stellar-contracts/deployments/testnet-release-evidence-v1.json
