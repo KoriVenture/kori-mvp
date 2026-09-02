@@ -59,10 +59,11 @@ Fund Manager approval, weighted release authorization, exact release,
 permissionless per-investor refunds, events, local tests, and live Testnet
 assurance.
 
-Not yet production proof: application wallet integration, evidence storage and
-AI integration, event-indexer operations, production identity/compliance,
+The application has a narrow Testnet wallet funding demo; this is not complete
+application integration or production proof. Evidence storage, AI integration,
+event-indexer operations, production identity/compliance,
 legal SPV operations, independent security audit, Mainnet asset/custody policy,
-monitoring, and incident response.
+monitoring, and incident response remain deferred.
 
 ## Non-circular evidence rule
 
