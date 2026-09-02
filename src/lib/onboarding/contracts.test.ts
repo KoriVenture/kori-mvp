@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  bootstrapSchema,
   documentUploadSchema,
   forceDeferredVerification,
   publicSignupRole,
@@ -20,6 +21,20 @@ test("callback redirects are allowlisted", () => {
 
 test("KYC status is always deferred", () => {
   assert.equal(forceDeferredVerification(), "deferred");
+});
+
+test("social bootstrap permits missing first-screen agreement acceptance", () => {
+  const explicitDecline = bootstrapSchema.safeParse({
+    role: "investor",
+    termsAccepted: false,
+  });
+  const omitted = bootstrapSchema.safeParse({ role: "founder" });
+
+  assert.equal(explicitDecline.success, true);
+  assert.equal(omitted.success, true);
+  if (omitted.success) {
+    assert.equal(omitted.data.termsAccepted, false);
+  }
 });
 
 test("documents enforce category, MIME, and 10 MB limit", () => {

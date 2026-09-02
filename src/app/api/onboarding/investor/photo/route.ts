@@ -60,16 +60,37 @@ export async function DELETE() {
 
   const profile = await auth.supabase.from("profiles")
     .select("photo_path").eq("id", auth.userId).single();
+  if (profile.error) {
+    return NextResponse.json(
+      { error: "Unable to load profile photo." },
+      { status: 500 },
+    );
+  }
+
   const path = profile.data?.photo_path;
 
   if (path) {
-    await auth.supabase.storage.from("profile-photos").remove([path]);
+    const removed = await auth.supabase.storage
+      .from("profile-photos")
+      .remove([path]);
+    if (removed.error) {
+      return NextResponse.json(
+        { error: "Photo removal failed." },
+        { status: 500 },
+      );
+    }
   }
 
-  await auth.supabase.from("profiles").update({
+  const cleared = await auth.supabase.from("profiles").update({
     photo_path: null,
     updated_at: new Date().toISOString(),
   }).eq("id", auth.userId);
+  if (cleared.error) {
+    return NextResponse.json(
+      { error: "Photo path could not be cleared." },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
