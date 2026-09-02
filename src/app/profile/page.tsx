@@ -59,12 +59,14 @@ export default async function Page({
             ? "admin"
             : undefined;
 
-  if (!role) redirect("/join");
+  if (!role) {
+    redirect("/join");
+  }
 
   if (role === "investor") {
     const investor = await supabase
       .from("investor_profiles")
-      .select("onboarding_status")
+      .select("*")
       .eq("user_id", userId)
       .maybeSingle();
 
@@ -72,7 +74,13 @@ export default async function Page({
       redirect("/onboarding/investor");
     }
 
-    return <ProfileView role="investor" profile={profileResult.data} />;
+    return (
+      <ProfileView
+        role="investor"
+        profile={profileResult.data}
+        investor={investor.data}
+      />
+    );
   }
 
   if (role === "founder") {

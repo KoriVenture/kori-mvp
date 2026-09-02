@@ -63,9 +63,9 @@ export function InvestorProfileStep({
                 <img className="ko-profile-photo" src={draft.photoUrl} alt="Profile" />
                 <div>
                   <div className="ko-inline-links">
-                    <button type="button" className="ko-link ko-link--coral" onClick={() => fileRef.current?.click()}>Upload new photo</button>
+                    <button type="button" className="ko-link ko-link--coral" disabled={busy} onClick={() => fileRef.current?.click()}>Upload new photo</button>
                     <span>·</span>
-                    <button type="button" className="ko-link ko-link--danger" onClick={() => void onRemovePhoto()}>Remove</button>
+                    <button type="button" className="ko-link ko-link--danger" disabled={busy} onClick={() => void onRemovePhoto()}>Remove</button>
                   </div>
                   <small>PNG or JPG up to 5MB. Square aspect recommended.</small>
                 </div>

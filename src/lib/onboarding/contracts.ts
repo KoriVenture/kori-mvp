@@ -68,6 +68,6 @@ export const agreementsSchema = z.object({
 export const bootstrapSchema = z.object({
   role: z.enum(PUBLIC_SIGNUP_ROLES),
   country: z.string().trim().max(120).default(""),
-  termsAccepted: z.literal(true),
+  termsAccepted: z.boolean().default(false),
   newsletter: z.boolean().default(false),
 });

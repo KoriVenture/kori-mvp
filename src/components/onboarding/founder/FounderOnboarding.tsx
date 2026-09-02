@@ -2,6 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import {
+  createEmailPasswordAccount,
+  resendEmailAccountOtp,
+  startSocialAccountCreation,
+  verifyEmailAccountOtp,
+} from "@/lib/auth/account";
 import { createClient } from "@/lib/supabase/client";
 import { passkeysEnabled } from "@/lib/supabase/config";
 
@@ -148,17 +154,14 @@ export function FounderOnboarding() {
           const preAuth = readPreAuth();
           await bootstrap(preAuth);
           if (!active) return;
+
           setOtpRequired(false);
-          setDraft((current) => ({
-            ...current,
-            email: auth.data.user?.email ?? current.email,
-            emailVerified: Boolean(auth.data.user?.email_confirmed_at),
-            country: preAuth.country ?? current.country,
-            accountTerms: preAuth.accountTerms ?? current.accountTerms,
-            newsletter: preAuth.newsletter ?? current.newsletter,
-          }));
           window.history.replaceState({}, "", "/onboarding/founder");
-          setStep(1);
+          await load();
+        } else if (query.get("auth") === "error") {
+          setMessage(
+            "Social sign-in could not be completed. Please try again.",
+          );
         } else if (auth.data.user) {
           await load();
         }
@@ -210,15 +213,20 @@ export function FounderOnboarding() {
         throw new Error("Password must contain at least 8 characters.");
       }
       savePreAuth();
-      const result = await createClient().auth.signUp({
-        email: draft.email.trim(),
+
+      const result = await createEmailPasswordAccount({
+        email: draft.email,
         password: draft.password,
-        options: { data: { onboarding_role: "founder" } },
+        role: "founder",
       });
-      if (result.error) throw result.error;
-      setOtpRequired(!result.data.session);
-      set("emailVerified", Boolean(result.data.user?.email_confirmed_at));
-      if (result.data.session) await bootstrap();
+
+      setOtpRequired(!result.session);
+      set(
+        "emailVerified",
+        Boolean(result.user?.email_confirmed_at),
+      );
+
+      if (result.session) await bootstrap();
       setStep(1);
     } catch (error) {
       setMessage(
@@ -233,24 +241,22 @@ export function FounderOnboarding() {
 
   async function social(provider: "google" | "linkedin_oidc") {
     setMessage("");
+    setBusy(true);
+
     try {
-      validateAccount();
       savePreAuth();
-      const result = await createClient().auth.signInWithOAuth({
+
+      await startSocialAccountCreation({
         provider,
-        options: {
-          redirectTo:
-            `${window.location.origin}/auth/callback` +
-            "?next=/onboarding/founder",
-        },
+        next: "/onboarding/founder",
       });
-      if (result.error) throw result.error;
     } catch (error) {
       setMessage(
         error instanceof Error
           ? error.message
           : "Unable to start social sign-in.",
       );
+      setBusy(false);
     }
   }
 
@@ -262,12 +268,10 @@ export function FounderOnboarding() {
     setBusy(true);
     setMessage("");
     try {
-      const result = await createClient().auth.verifyOtp({
+      await verifyEmailAccountOtp({
         email: draft.email,
         token: otp,
-        type: "email",
       });
-      if (result.error) throw result.error;
       set("emailVerified", true);
       await bootstrap();
     } catch (error) {
@@ -280,15 +284,16 @@ export function FounderOnboarding() {
   }
 
   async function resendOtp() {
-    const result = await createClient().auth.resend({
-      type: "signup",
-      email: draft.email,
-    });
-    if (result.error) {
-      setMessage(result.error.message);
-      return;
+    try {
+      await resendEmailAccountOtp(draft.email);
+      setMessage("A new verification code was sent.");
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to resend verification code.",
+      );
     }
-    setMessage("A new verification code was sent.");
   }
 
   async function patch(
