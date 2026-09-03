@@ -22,7 +22,9 @@ export const KORI_DEMO_DEAL = {
     "80d52c6a2d20a42994df7d4c45e097a252b6193766a1ebaa262723b10f88b311",
 } as const;
 
-export const KORI_DEMO_INVESTORS = [
+// Friendly labels for shared demo wallets. This list is not an allowlist:
+// the Testnet contract accepts funding from any authenticated investor wallet.
+export const KORI_NAMED_DEMO_INVESTORS = [
   {
     label: "Lionel Demo",
     address: "GDTMTVD7IMBV5MVYDA42KM7R4DZXOPNKH6Y7RUKJN3DXNSOBUS6CKEUQ",
@@ -37,11 +39,12 @@ export const KORI_DEMO_INVESTORS = [
   },
 ] as const;
 
-export function getDemoInvestor(address: string | null) {
+export function getNamedDemoInvestor(address: string | null) {
   if (!address) return null;
 
   return (
-    KORI_DEMO_INVESTORS.find((investor) => investor.address === address) ?? null
+    KORI_NAMED_DEMO_INVESTORS.find((investor) => investor.address === address) ??
+    null
   );
 }
 

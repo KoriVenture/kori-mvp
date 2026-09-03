@@ -3,7 +3,10 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import test from "node:test";
 
-import { KORI_DEMO_DEAL, KORI_DEMO_INVESTORS } from "./demo-config.ts";
+import {
+  KORI_DEMO_DEAL,
+  KORI_NAMED_DEMO_INVESTORS,
+} from "./demo-config.ts";
 
 type DeploymentManifest = {
   contractId: string;
@@ -42,7 +45,7 @@ test("the frontend configuration matches the committed Testnet manifest", () => 
     manifest.configuration.releaseDeadline,
   );
   assert.deepEqual(
-    KORI_DEMO_INVESTORS.map(({ address }) => address),
+    KORI_NAMED_DEMO_INVESTORS.map(({ address }) => address),
     manifest.demoInvestors.map(({ publicKey }) => publicKey),
   );
 });

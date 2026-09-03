@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   KORI_DEMO_DEAL,
   STELLAR_TESTNET,
-  getDemoInvestor,
+  getNamedDemoInvestor,
   shortStellarAddress,
 } from "@/lib/stellar/demo-config";
 import {
@@ -93,13 +93,13 @@ export function DealFundingPanel() {
     };
   }, []);
 
-  const investor = getDemoInvestor(walletAddress);
+  const investor = getNamedDemoInvestor(walletAddress);
   const isBusy = busyStages.has(stage);
   const remaining = snapshot
     ? snapshot.targetBaseUnits - snapshot.totalFundedBaseUnits
     : null;
   const fundingOpen = snapshot?.state === "FundingOpen";
-  const canFund = Boolean(investor && fundingOpen && !isBusy);
+  const canFund = Boolean(walletAddress && fundingOpen && !isBusy);
 
   const statusLabel = useMemo(() => {
     const labels: Record<FundingStage, string> = {
@@ -151,11 +151,7 @@ export function DealFundingPanel() {
 
       setWalletAddress(addressResult.address);
       setStage("idle");
-      setMessage(
-        getDemoInvestor(addressResult.address)
-          ? "Demo investor connected."
-          : "This account is not an approved Testnet demo investor.",
-      );
+      setMessage("Testnet investor wallet connected.");
     } catch (error) {
       setStage("error");
       setMessage(errorMessage(error));
@@ -163,9 +159,9 @@ export function DealFundingPanel() {
   }
 
   async function fundDeal() {
-    if (!walletAddress || !investor) {
+    if (!walletAddress) {
       setStage("error");
-      setMessage("Connect an approved Testnet demo investor before funding.");
+      setMessage("Connect a Testnet investor wallet before funding.");
       return;
     }
 
@@ -209,7 +205,7 @@ export function DealFundingPanel() {
       setConfirmedLedger(receipt.ledger);
       setStage("success");
       setMessage(
-        `${formatUsdc(baseUnits)} USDC funded by ${investor.label}.`,
+        `${formatUsdc(baseUnits)} USDC funded by ${investor?.label ?? shortStellarAddress(walletAddress)}.`,
       );
       await refreshSnapshot();
     } catch (error) {
@@ -276,7 +272,7 @@ export function DealFundingPanel() {
               <span>Wallet</span>
               <strong>
                 {walletAddress
-                  ? `${investor?.label ?? "Unsupported account"} · ${shortStellarAddress(walletAddress)}`
+                  ? `${investor?.label ?? "Testnet investor"} · ${shortStellarAddress(walletAddress)}`
                   : "Not connected"}
               </strong>
             </div>
@@ -312,13 +308,6 @@ export function DealFundingPanel() {
           >
             Simulate, sign and fund
           </button>
-
-          {!investor && walletAddress ? (
-            <p className="stellar-warning">
-              Select one of the approved Testnet-only demo accounts in
-              Freighter.
-            </p>
-          ) : null}
 
           {snapshotError ? (
             <p className="stellar-warning">On-chain read: {snapshotError}</p>

@@ -7,13 +7,13 @@ function source(relative: string) {
   return readFileSync(resolve(process.cwd(), relative), "utf8");
 }
 
-test("the funding panel requires Freighter Testnet and a known demo investor", () => {
+test("the funding panel accepts any Freighter wallet on Testnet", () => {
   const panel = source("src/components/stellar/DealFundingPanel.tsx");
 
   assert.match(panel, /getNetworkDetails/);
   assert.match(panel, /networkPassphrase !== STELLAR_TESTNET\.networkPassphrase/);
-  assert.match(panel, /getDemoInvestor\(addressResult\.address\)/);
-  assert.match(panel, /Connect an approved Testnet demo investor before funding/);
+  assert.match(panel, /Boolean\(walletAddress && fundingOpen && !isBusy\)/);
+  assert.doesNotMatch(panel, /approved Testnet demo investor/);
 });
 
 test("the funding path simulates, signs, submits, and displays confirmation", () => {

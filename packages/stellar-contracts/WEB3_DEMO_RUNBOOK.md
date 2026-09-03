@@ -14,9 +14,9 @@ This is the narrow frontend-to-Soroban demo path. It funds one active
 
 ## Run
 
-Requirements: Node.js `>=22.12`, an unlocked Freighter extension on **Testnet**,
-and an approved Testnet-only demo account selected in Freighter. Lionel's demo
-wallet `GDTM…KEUQ` was verified with the correct USDC trustline and funded with
+Requirements: Node.js `>=22.12` and an unlocked Freighter wallet on **Testnet**
+with XLM for fees, the Circle Testnet USDC trustline, and Testnet USDC. Lionel's
+demo wallet `GDTM…KEUQ` was verified with the correct trustline and funded with
 2 USDC in transaction [`59f92e…1910`](https://stellar.expert/explorer/testnet/tx/59f92e9f73e9594e01ac078440350918f7b93fd2e32d0d9d458463d26d431910).
 
 ```bash
@@ -29,7 +29,7 @@ Open `/demo/stellar` for the isolated presentation route, or complete investor
 onboarding and open `/dashboard`. Then:
 
 1. connect Freighter;
-2. confirm the wallet is on Testnet and is an approved demo account;
+2. confirm the wallet is on Testnet and has Circle Testnet USDC;
 3. enter an amount that does not exceed the remaining 5 USDC capacity;
 4. simulate, inspect, and sign the complete transaction in Freighter;
 5. wait for `Confirmed on Testnet`;
@@ -57,7 +57,7 @@ confirmed ledger.
 Implemented now:
 
 - live contract-state reads;
-- Freighter Testnet network/account checks;
+- Freighter Testnet network checks for any investor wallet;
 - exact seven-decimal USDC conversion;
 - simulation before signature;
 - signed `fund` submission;
