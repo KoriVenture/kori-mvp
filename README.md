@@ -63,11 +63,12 @@ npm run build
 
 The Testnet deal-escrow contract, product requirements, deployment evidence and
 developer guide live in [`packages/stellar-contracts`](./packages/stellar-contracts/README.md).
-The root application exposes three real Testnet SPVs and the full V1 cycle:
-funding, canonical evidence hashing, Fund Manager approval, weighted release,
-and permissionless deadline refund. Freighter signs locally; the app submits to
-Stellar RPC and displays only confirmed ledger state. No KYC or AI workflow is
-part of this demo. Follow the concise
+The root application maps three demo SPVs to real Testnet `DealEscrow`
+instances, one per irreversible checkpoint: Kingston/funding,
+Kigali/evidence-to-release, and Accra/refund. They cover every V1 branch and are
+not user types. Freighter signs locally; the app submits to Stellar RPC and
+displays only confirmed ledger state. No KYC or AI workflow is part of this
+demo. Follow the concise
 [`Web3 demo runbook`](./packages/stellar-contracts/WEB3_DEMO_RUNBOOK.md).
 
 The public `/demo/stellar` route is self-contained. The authenticated

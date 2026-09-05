@@ -17,9 +17,9 @@ nontechnical teammates.
   (normal path) or Kori Release Officer (recovery path). Lead + Kori is rejected.
 - After the applicable immutable deadline, anyone may advance the refund path;
   each refund can only return to its original investor.
-- Three deal-specific escrows back the application demo: Kigali is fully funded
-  and ready for evidence, Kingston is open for funding, and Accra is past its
-  funding deadline for the permissionless-refund demonstration.
+- Three Testnet `DealEscrow` instances map to demo SPVs and preserve irreversible
+  entry points: Kingston/funding, Kigali/evidence-to-release, and Accra/refund.
+  They are scenarios, not roles; more add no V1 behavior.
 - The root Next.js UI implements funding, evidence-manifest creation and hash
   anchoring, Fund Manager approval, weighted release-package signing, and
   refund opening/claiming. Browser source files are not uploaded.

@@ -86,9 +86,9 @@ when the SAC rejects a payout or refund.
 
 ## V1 Testnet application status
 
-- The Next.js application exposes three real deal-specific escrows: one ready
-  for evidence/release, one open for funding, and one ready for the timeout
-  refund branch.
+- The application maps three demo SPVs to separate `DealEscrow` instances, one
+  per irreversible checkpoint: funding, release, and refund. These are
+  scenarios, not roles.
 - `/demo/stellar` runs without Supabase; `/dashboard` exposes the same lifecycle
   after investor or founder onboarding.
 - Freighter supports live funding, startup evidence anchoring, Fund Manager
