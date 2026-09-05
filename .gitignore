@@ -17,6 +17,7 @@ node_modules/
 .turbo/
 .vite/
 coverage/
+.playwright-cli/
 *.tsbuildinfo
 
 # next.js

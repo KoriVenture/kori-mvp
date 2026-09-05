@@ -2368,4 +2368,328 @@ blockquote.pull cite {
   .stellar-secondary-button{width:100%}
 }
 
+/* LIVE STELLAR V1 LIFECYCLE */
+.stellar-workspace{
+  width:100%;
+  min-width:0;
+  display:grid;
+  grid-template-columns:230px minmax(0,1fr);
+  align-items:stretch;
+  background:#fff;
+}
+.stellar-deal-picker{
+  padding:24px 18px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  border-right:1px solid #e5dec9;
+  background:#f7f3ec;
+}
+.stellar-deal-picker>p{
+  margin:0 4px 4px;
+  color:#6d7777;
+  font:700 9px "IBM Plex Mono",monospace;
+  letter-spacing:.08em;
+}
+.stellar-deal-picker>button{
+  width:100%;
+  padding:12px;
+  display:grid;
+  gap:4px;
+  border:1px solid transparent;
+  border-radius:8px;
+  color:#172829;
+  background:transparent;
+  text-align:left;
+  cursor:pointer;
+}
+.stellar-deal-picker>button:hover,
+.stellar-deal-picker>button.active{
+  border-color:#d9d0bd;
+  background:#fff;
+}
+.stellar-deal-picker>button.active{box-shadow:inset 3px 0 #f5513e}
+.stellar-deal-picker button strong{font:700 12px/1.35 "Manrope",sans-serif}
+.stellar-deal-picker button span{color:#657171;font:500 10px "Manrope",sans-serif}
+.stellar-deal-picker button small{color:#087d80;font:700 8px "IBM Plex Mono",monospace;text-transform:uppercase}
+.stellar-demo-boundary{
+  margin-top:auto;
+  padding:13px;
+  display:grid;
+  gap:5px;
+  border:1px solid #d6e2df;
+  border-radius:8px;
+  background:#edf7f5;
+}
+.stellar-demo-boundary strong{color:#087d80;font:700 9px "IBM Plex Mono",monospace;text-transform:uppercase}
+.stellar-demo-boundary span{color:#4d6262;font:500 10px/1.5 "Manrope",sans-serif}
+.stellar-lifecycle-main{
+  min-width:0;
+  padding:30px;
+  display:grid;
+  gap:20px;
+}
+.stellar-deal-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+}
+.stellar-deal-header>div{min-width:0}
+.stellar-deal-header p{
+  margin:0 0 5px;
+  color:#087d80;
+  font:700 9px "IBM Plex Mono",monospace;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.stellar-deal-header h1{margin:0 0 7px;color:#07191a;font:500 27px/1.08 "Fraunces",serif}
+.stellar-deal-header span{display:block;max-width:700px;color:#566465;font:500 12px/1.55 "Manrope",sans-serif}
+.stellar-deal-header>a{
+  flex:0 0 auto;
+  padding:9px 12px;
+  border:1px solid #b7c9c6;
+  border-radius:6px;
+  color:#087d80;
+  background:#fff;
+  text-decoration:none;
+  font:700 9px "IBM Plex Mono",monospace;
+}
+.stellar-chain-summary{
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  border:1px solid #bcd5d1;
+  border-radius:10px;
+  background:#f0f8f6;
+}
+.stellar-chain-summary dl{
+  margin:0;
+  min-width:0;
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(110px,1fr));
+  gap:12px;
+}
+.stellar-chain-summary dl>div{min-width:0;display:grid;gap:4px}
+.stellar-chain-summary dt,
+.stellar-compact-facts dt{
+  color:#708080;
+  font:600 8px "IBM Plex Mono",monospace;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.stellar-chain-summary dd,
+.stellar-compact-facts dd{
+  margin:0;
+  overflow-wrap:anywhere;
+  color:#132728;
+  font:700 10px/1.35 "IBM Plex Mono",monospace;
+}
+.stellar-chain-summary>button,
+.stellar-wallet-bar>button,
+.stellar-action-card button,
+.stellar-file-button{
+  min-height:38px;
+  padding:9px 13px;
+  border:0;
+  border-radius:6px;
+  color:#fff;
+  background:#078f92;
+  font:700 9px/1.2 "IBM Plex Mono",monospace;
+  text-align:center;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  cursor:pointer;
+}
+.stellar-chain-summary>button{border:1px solid #90afab;color:#2e595a;background:#fff;text-transform:none}
+.stellar-chain-summary button:disabled,
+.stellar-wallet-bar button:disabled,
+.stellar-action-card button:disabled{opacity:.42;cursor:not-allowed}
+.stellar-timeline{
+  margin:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  list-style:none;
+}
+.stellar-timeline li{
+  min-width:0;
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:#7b8686;
+  font:700 9px "IBM Plex Mono",monospace;
+  text-transform:uppercase;
+}
+.stellar-timeline li:after{
+  content:"";
+  height:1px;
+  flex:1;
+  background:#d4dddb;
+}
+.stellar-timeline li:last-child:after{display:none}
+.stellar-timeline li>span{
+  width:22px;
+  height:22px;
+  flex:0 0 22px;
+  display:grid;
+  place-items:center;
+  border:1px solid #ccd7d5;
+  border-radius:50%;
+  background:#fff;
+}
+.stellar-timeline li.complete,.stellar-timeline li.current{color:#087d80}
+.stellar-timeline li.complete>span{border-color:#087d80;color:#fff;background:#087d80}
+.stellar-timeline li.current>span{border:2px solid #087d80}
+.stellar-timeline li.alternate{color:#a87530}
+.stellar-wallet-bar{
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  border:1px solid #ded7c7;
+  border-radius:9px;
+  background:#fbfaf7;
+}
+.stellar-wallet-bar>div{min-width:0;display:grid;gap:3px}
+.stellar-wallet-bar span{color:#7a8282;font:700 8px "IBM Plex Mono",monospace;letter-spacing:.06em}
+.stellar-wallet-bar strong{overflow:hidden;color:#152526;font:700 11px "IBM Plex Mono",monospace;text-overflow:ellipsis;white-space:nowrap}
+.stellar-wallet-bar small{color:#087d80;font:600 9px "Manrope",sans-serif}
+.stellar-alert{
+  margin:0;
+  padding:11px 14px;
+  border-left:3px solid;
+  border-radius:4px;
+  font:500 10px/1.45 "IBM Plex Mono",monospace;
+}
+.stellar-alert.success{border-color:#4b9f7b;color:#195f45;background:#effaf5}
+.stellar-alert.error{border-color:#e45b4b;color:#932f24;background:#fff3f1}
+.stellar-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.stellar-action-card{
+  min-width:0;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+  border:1px solid #e0dacd;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 8px 20px rgba(20,42,40,.04);
+}
+.stellar-action-card--wide{grid-column:1/-1}
+.stellar-action-card--refund{border-color:#e2cfb0;background:#fffaf2}
+.stellar-action-card>header{display:flex;gap:10px;align-items:flex-start}
+.stellar-action-card>header>span{
+  width:26px;
+  height:26px;
+  flex:0 0 26px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  color:#087d80;
+  background:#e9f6f3;
+  font:700 9px "IBM Plex Mono",monospace;
+}
+.stellar-action-card h2{margin:0 0 3px;color:#0a1d1e;font:600 17px "Fraunces",serif}
+.stellar-action-card header p,
+.stellar-action-card>.stellar-empty{margin:0;color:#657272;font:500 10px/1.45 "Manrope",sans-serif}
+.stellar-action-card>label{display:grid;gap:6px}
+.stellar-action-card label>span{color:#6d7979;font:700 8px "IBM Plex Mono",monospace;text-transform:uppercase}
+.stellar-action-card input,
+.stellar-action-card textarea,
+.stellar-action-card select{
+  width:100%;
+  min-width:0;
+  padding:10px 11px;
+  border:1px solid #cdd8d6;
+  border-radius:6px;
+  color:#142627;
+  background:#fff;
+  font:500 11px "Manrope",sans-serif;
+  outline:none;
+}
+.stellar-action-card textarea{min-height:80px;resize:vertical}
+.stellar-action-card input:focus,
+.stellar-action-card textarea:focus,
+.stellar-action-card select:focus{border-color:#078f92;box-shadow:0 0 0 3px rgba(7,143,146,.09)}
+.stellar-action-card button.secondary,
+.stellar-file-button.secondary{border:1px solid #9eb8b4;color:#365758;background:#fff}
+.stellar-button-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stellar-action-card code{
+  padding:9px;
+  overflow-wrap:anywhere;
+  border-radius:5px;
+  color:#365758;
+  background:#f2f6f5;
+  font:600 8px/1.45 "IBM Plex Mono",monospace;
+}
+.stellar-action-card>small{color:#86662d;font:500 9px/1.4 "Manrope",sans-serif}
+.stellar-file-button{display:block!important;position:relative;overflow:hidden}
+.stellar-file-button>span{color:inherit!important;font:inherit!important}
+.stellar-file-button>input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.stellar-file-button:has(input:disabled){opacity:.42;cursor:not-allowed}
+.stellar-compact-facts{margin:0;display:grid;gap:8px}
+.stellar-compact-facts>div{
+  padding-bottom:7px;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  border-bottom:1px dashed #d7dfdd;
+}
+.stellar-compact-facts dd{text-align:right}
+.stellar-reviewed-evidence{padding:11px;border:1px solid #b9d7cf;border-radius:6px;background:#f0faf6}
+.stellar-reviewed-evidence strong{color:#176b49;font:700 9px "IBM Plex Mono",monospace;text-transform:uppercase}
+.stellar-reviewed-evidence p{margin:6px 0;color:#294747;font:500 11px/1.5 "Manrope",sans-serif}
+.stellar-reviewed-evidence small{color:#5f7572;font:500 9px "IBM Plex Mono",monospace}
+.stellar-release-layout{display:grid;grid-template-columns:minmax(260px,1fr) minmax(300px,1fr);gap:18px}
+.stellar-release-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}
+.stellar-ledger-footer{
+  padding:16px;
+  display:grid;
+  gap:9px;
+  border:1px solid #d7e1df;
+  border-radius:8px;
+  color:#526464;
+  background:#f4f8f7;
+  font:500 9px/1.5 "IBM Plex Mono",monospace;
+}
+.stellar-ledger-footer>div{display:grid;grid-template-columns:145px minmax(0,1fr);gap:12px}
+.stellar-ledger-footer code{overflow-wrap:anywhere;color:#244b4c}
+.stellar-ledger-footer section{display:flex;flex-wrap:wrap;gap:8px}
+.stellar-ledger-footer section h2{width:100%;margin:0;color:#5f7070;font-size:9px;text-transform:uppercase}
+.stellar-ledger-footer section a{padding:5px 7px;border-radius:4px;color:#087d80;background:#fff;text-decoration:none}
+.stellar-ledger-footer p{margin:4px 0 0}
+
+@media(max-width:1050px){
+  .investor-dashboard-page{padding:24px}
+  .stellar-chain-summary{align-items:stretch;flex-direction:column}
+  .stellar-chain-summary dl{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:800px){
+  .investor-dashboard{min-width:0}
+  .investor-dashboard-topbar{align-items:flex-start;flex-wrap:wrap}
+  .dashboard-tabs{order:3;width:100%;overflow:auto}
+  .stellar-workspace{grid-template-columns:1fr}
+  .stellar-deal-picker{border-right:0;border-bottom:1px solid #e5dec9}
+  .stellar-demo-boundary{margin-top:8px}
+  .stellar-lifecycle-main{padding:20px}
+  .stellar-action-grid{grid-template-columns:1fr}
+  .stellar-action-card--wide{grid-column:auto}
+  .stellar-release-layout{grid-template-columns:1fr}
+}
+@media(max-width:540px){
+  .investor-dashboard-page,.stellar-demo-page{padding:12px}
+  .stellar-deal-header,.stellar-wallet-bar{align-items:stretch;flex-direction:column}
+  .stellar-deal-header>a,.stellar-wallet-bar>button{width:100%;text-align:center}
+  .stellar-chain-summary dl{grid-template-columns:1fr}
+  .stellar-timeline{overflow-x:auto;grid-template-columns:repeat(5,minmax(105px,1fr))}
+  .stellar-release-actions,.stellar-button-row{grid-template-columns:1fr}
+  .stellar-ledger-footer>div{grid-template-columns:1fr}
+}
+
 /* END KORI FIGMA PROFILE + INVESTOR DASHBOARD FIX */

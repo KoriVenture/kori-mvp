@@ -1,77 +1,64 @@
-# Kori Web3 Testnet demo
+# Kori V1 Testnet demo runbook
 
-This is the narrow frontend-to-Soroban demo path. It funds one active
-`DealEscrow` with Circle Testnet USDC and waits for confirmed ledger inclusion.
+The same live lifecycle is available at public `/demo/stellar` and, after Kori
+onboarding, at `/dashboard`. It uses three deployed `DealEscrow` contracts and
+official Circle Stellar Testnet USDC. There is no KYC or AI step.
 
-## Active deployment
+## Demo state
 
-- Contract: [`CA4R…FSYY`](https://stellar.expert/explorer/testnet/contract/CA4RSBPJUOOJCHGO77XEL3RURRPWOF6PPEU7CJXASYOL5P5Q7DDEFSYY)
-- Deployment transaction: [`80d52c…b311`](https://stellar.expert/explorer/testnet/tx/80d52c6a2d20a42994df7d4c45e097a252b6193766a1ebaa262723b10f88b311)
-- Target: `5 USDC`
-- Funding deadline: `2026-09-08 23:59 AST`
-- Release deadline: `2026-09-15 23:59 AST`
-- Manifest: [`deployments/testnet-web3-demo-v1.json`](./deployments/testnet-web3-demo-v1.json)
+| SPV | Contract | Intended starting point |
+| --- | --- | --- |
+| Logistic Transport Kigali | [`CC3X…HHGL`](https://stellar.expert/explorer/testnet/contract/CC3XSKZRZU773NVC7XXO2FVKN3GGPD63OX3BBWAOQCFJYKMUTNONHHGL) | `Funded`, 5/5 USDC; evidence → approval → release |
+| Solar Grid Kingston | [`CDIO…T75W`](https://stellar.expert/explorer/testnet/contract/CDIO5OOUS53NHT4IO6IVZDDK5VILKAKPTCVWFQDFPDYJSWIYESLOT75W) | `FundingOpen`, 1/5 USDC; open funding |
+| Agro-processing Accra | [`CAVX…SBQY`](https://stellar.expert/explorer/testnet/contract/CAVXSTQ53IEPBQMTPXQHPWE56KYHRK3VTOPHYT5DR4ZRCZUP7I4SSBQY) | Underfunded after deadline; refund path |
 
-## Run
+Exact addresses, transactions, roles, deadlines, and Wasm hash are in
+[`deployments/testnet-mvp-ui-v1.json`](./deployments/testnet-mvp-ui-v1.json).
 
-Requirements: Node.js `>=22.12` and an unlocked Freighter wallet on **Testnet**
-with XLM for fees, the Circle Testnet USDC trustline, and Testnet USDC. Lionel's
-demo wallet `GDTM…KEUQ` was verified with the correct trustline and funded with
-2 USDC in transaction [`59f92e…1910`](https://stellar.expert/explorer/testnet/tx/59f92e9f73e9594e01ac078440350918f7b93fd2e32d0d9d458463d26d431910).
+## Start locally
 
 ```bash
+nvm use
 npm ci
 cp .env.example .env.local
 npm run dev
 ```
 
-Open `/demo/stellar` for the isolated presentation route, or complete investor
-onboarding and open `/dashboard`. Then:
+Open `http://localhost:3000/demo/stellar`. Supabase is not required for this
+route. Requirements for transactions: unlocked Freighter on **Testnet**, XLM
+for fees, and—when funding—the Circle Testnet USDC trustline and balance.
 
-1. connect Freighter;
-2. confirm the wallet is on Testnet and has Circle Testnet USDC;
-3. enter an amount that does not exceed the remaining 5 USDC capacity;
-4. simulate, inspect, and sign the complete transaction in Freighter;
-5. wait for `Confirmed on Testnet`;
-6. open the transaction link and compare the displayed ledger with Stellar.
+## Run the cycle
 
-The app never receives a wallet secret key. A successful UI result requires an
-RPC `SUCCESS`, not merely transaction submission.
+1. **Fund:** select Kingston, connect any Testnet wallet, enter an amount within
+   remaining capacity, then sign. The UI waits for `SUCCESS` and refreshes the
+   contract and SAC balances.
+2. **Evidence:** select Kigali and connect its configured startup wallet. Write
+   a statement, optionally choose files, build/download the canonical manifest,
+   then sign `submit_evidence`. Files are hashed locally and never uploaded.
+3. **Approve:** send the manifest JSON to the configured Fund Manager. They
+   connect, import it, verify the anchored SHA-256 hash, and sign approval.
+4. **Release:** prepare the exact 15-minute XDR package. Fadjiah + Lionel is
+   the normal signer pair; Kori + Lionel is recovery. Exchange/import the JSON
+   package between signers, then submit after verified weight reaches 3/3.
+5. **Refund:** select Accra. Any connected Testnet wallet may open refunds or
+   return the recorded contribution to its original investor address; the
+   caller cannot redirect it.
 
-## Verification status
+Each successful action appears under **Confirmed this session** with a
+transaction hash and ledger link. A wallet prompt, signature, or submitted hash
+alone is not success.
 
-Verified on `2026-09-02`:
+## Boundaries
 
-- the page loaded `FundingOpen` and `0 / 5 USDC` from the live contract;
-- Freighter connected `GDTM…KEUQ` on Testnet as `Lionel Demo`;
-- a `1 USDC` call was successfully simulated and reached Freighter's signature
-  screen;
-- desktop and mobile layouts rendered correctly.
+- One immutable escrow per SPV; one milestone and one full release per escrow.
+- Exact target funding is enforced by each contract, not by frontend copy.
+- Role-restricted actions require the exact configured G-account.
+- Private keys are never stored in this repository or sent to Kori.
+- Evidence sharing is manual for this demo. Supabase object storage and the
+  idempotent event/indexer projection are deferred.
+- Testnet success is not a security audit or Mainnet approval.
 
-The final Freighter approval remains a manual wallet action. Do not describe a
-frontend funding transaction as confirmed until the UI displays its hash and
-confirmed ledger.
-
-## Demo boundary
-
-Implemented now:
-
-- live contract-state reads;
-- Freighter Testnet network checks for any investor wallet;
-- exact seven-decimal USDC conversion;
-- simulation before signature;
-- signed `fund` submission;
-- `PENDING` to `SUCCESS`/`FAILED` polling;
-- transaction hash and confirmed ledger display.
-
-Deferred to the next application iteration:
-
-- durable Supabase transaction projection;
-- idempotent contract-event ingestion and replay;
-- background recovery when the browser closes after submission;
-- deal deployment orchestration/factory;
-- evidence, approval, release, and refund screens.
-
-Stellar RPC retains only a bounded recent history. Before production work, add
-`contract_deployments`, `chain_transactions`, and `chain_events` projections,
-deduplicate events by their unique event ID, and persist the ingestion cursor.
+Run the automated checks with `npm test` and the contract checks documented in
+[`README.md`](./README.md). See [`TESTNET_MVP_UI_REPORT.md`](./TESTNET_MVP_UI_REPORT.md)
+for verified results and known limitations.

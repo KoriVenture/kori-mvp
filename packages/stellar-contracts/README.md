@@ -1,6 +1,6 @@
 # Kori Stellar Contracts
 
-Soroban V1 for one deal, one milestone and one exact USDC release. It
+Soroban V1 for one deal per contract, one milestone and one exact USDC release. It
 implements the on-chain core of the current [Stellar architecture](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data)
 while retaining EVM material only as historical context. See the
 [Stellar/Soroban PRD](./PRD.md) for the complete target, current gaps and build
@@ -17,18 +17,18 @@ is in [`FIGMA_REFERENCE.md`](./FIGMA_REFERENCE.md).
 
 1. An investor authenticates `fund`; the pinned official Testnet USDC SAC
    transfers assets into DealEscrow.
-2. The exact target closes funding; Kori builds a canonical source-evidence
-   manifest and the startup submits its hash.
-3. AI review and human decision records reference the confirmed hash/version;
-   they never alter the manifest hash. The Fund Manager/Lead Investor approves
-   that exact manifest version.
+2. The exact target closes funding; the browser builds a canonical
+   source-evidence manifest and the startup submits its hash.
+3. The Fund Manager/Lead Investor reviews that exact exported manifest and
+   approves its confirmed hash/version.
 4. A weighted account requires the Investor Representative plus either the Lead
    or Kori Release Officer to authorize the exact payout.
 5. If a deadline expires, anyone may trigger per-investor refunds to the
    original addresses; the caller cannot redirect funds.
 
-AI, evidence documents, and human decision reasons remain off-chain. The
-contract stores only the source-manifest digest and its version.
+Evidence documents and human decision reasons remain off-chain. The contract
+stores only the source-manifest digest and its version. AI advisory is not
+implemented in the V1 demo.
 
 ## Prerequisites
 
@@ -84,7 +84,24 @@ versioning, authorization, exact release, accounting deficits, terminal states,
 multi-investor permissionless refunds, typed event payloads, and atomic rollback
 when the SAC rejects a payout or refund.
 
-## V1 Testnet bootstrap status
+## V1 Testnet application status
+
+- The Next.js application exposes three real deal-specific escrows: one ready
+  for evidence/release, one open for funding, and one ready for the timeout
+  refund branch.
+- `/demo/stellar` runs without Supabase; `/dashboard` exposes the same lifecycle
+  after investor or founder onboarding.
+- Freighter supports live funding, startup evidence anchoring, Fund Manager
+  approval, weighted release-package exchange, and permissionless refunds.
+- Live amounts, state, immutable contract roles, deadlines, and escrow balance
+  are read from Stellar. The reviewed release-signer policy is recorded in the
+  deployment manifest and enforced by the Stellar G-account. Evidence files
+  stay local and only their canonical manifest hash is anchored.
+- See [`WEB3_DEMO_RUNBOOK.md`](./WEB3_DEMO_RUNBOOK.md),
+  [`TESTNET_MVP_UI_REPORT.md`](./TESTNET_MVP_UI_REPORT.md), and
+  [`deployments/testnet-mvp-ui-v1.json`](./deployments/testnet-mvp-ui-v1.json).
+
+## Broader Testnet assurance
 
 - Official Testnet USDC SAC is pinned in the contract; deployment on a network
   other than Stellar Testnet is rejected.
@@ -104,7 +121,7 @@ when the SAC rejects a payout or refund.
   private signing material is not included in the active reference tree.
 - Five live escrows exercised normal release, multi-investor refunds, recovery
   release, evidence replacement/surplus isolation, and failed-payout recovery.
-- An untouched 5 USDC team sandbox is live at
+- A prior untouched 5 USDC team sandbox is live at
   `CA7VZWOWBPMCCZ32QAY254PGCGZJALP4AU7ZGHG4RU3ZG64D2JNT333Y` until the
   documented deadlines.
 

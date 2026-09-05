@@ -128,21 +128,25 @@ export function ProfileView({
     role === "investor" && investor?.investor_classification
       ? investor.investor_classification
       : "Not configured";
+  const dashboardHref =
+    role === "founder"
+      ? "/dashboard?role=founder"
+      : "/dashboard?role=investor";
 
   return (
     <main className="kori-onboarding profile-page">
       <aside className="profile-nav">
         <img src="/assets/onboarding/shared/kori-logo.svg" alt="Kori" />
         <nav aria-label="Profile navigation">
-          <a href="/dashboard">Home</a>
-          <a className="active" href="/dashboard#discover">Discover</a>
-          <a href="/dashboard#deals">Deals</a>
-          <a href="/dashboard#communities">Communities</a>
-          <a href="/dashboard#portfolio">Portfolio</a>
-          <a href="/dashboard#wallet">Wallet</a>
-          <a href="/dashboard#messages">Messages</a>
+          <a href={dashboardHref}>Home</a>
+          <a className="active" href={`${dashboardHref}#discover`}>Discover</a>
+          <a href={`${dashboardHref}#deals`}>Deals</a>
+          <a href={`${dashboardHref}#communities`}>Communities</a>
+          <a href={`${dashboardHref}#portfolio`}>Portfolio</a>
+          <a href={`${dashboardHref}#wallet`}>Wallet</a>
+          <a href={`${dashboardHref}#messages`}>Messages</a>
         </nav>
-        <a className="profile-nav-back" href="/dashboard">
+        <a className="profile-nav-back" href={dashboardHref}>
           ← Back to dashboard
         </a>
       </aside>
@@ -290,8 +294,7 @@ export function ProfileView({
                   </span>
                   Email {profile.email_verified ? "Verified" : "Pending"}
                 </p>
-                <p><span className="deferred">•</span> Identity Deferred</p>
-                <p><span className="deferred">•</span> KYC Deferred</p>
+                <p><span className="neutral">•</span> Role {roleName(role)}</p>
                 <p><span className="neutral">•</span> Classification {classification}</p>
                 <p><span className="neutral">•</span> Funding Not connected</p>
               </div>

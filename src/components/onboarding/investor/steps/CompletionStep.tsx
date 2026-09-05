@@ -22,7 +22,7 @@ export function CompletionStep({ firstName }: { firstName: string }) {
           <h2>ONBOARDING CHECKLIST</h2>
           <div><span>Account secured</span><b className="ok">● Complete</b></div>
           <div><span>Investor profile</span><b className="ok">● Complete</b></div>
-          <div><span>Identity verification</span><b className="deferred">● Deferred</b></div>
+          <div><span>Email verification</span><b className="ok">● Complete</b></div>
           <div><span>Investment eligibility</span><b className="determined">● Determined</b></div>
           <div><span>Funding method</span><b className="pending">● Not connected</b></div>
         </section>
@@ -41,15 +41,15 @@ export function CompletionStep({ firstName }: { firstName: string }) {
             <img src="/assets/onboarding/investor/wallet.svg" alt="" />
             <span>
               <strong>Prepare to invest</strong>
-              <small>Funding and investment execution remain separate future capabilities.</small>
+              <small>Connect Freighter and execute the live Stellar Testnet deal lifecycle.</small>
             </span>
             <img src="/assets/onboarding/investor/arrow-right.svg" alt="" />
           </div>
         </section>
       </div>
 
-      <a className="ko-profile-button" href="/profile?role=investor">
-        My profile
+      <a className="ko-profile-button" href="/dashboard?role=investor">
+        Open deal workspace
       </a>
 
       <footer className="ko-completion__footer">

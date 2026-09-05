@@ -8,7 +8,7 @@ function repositorySource(relative: string) {
   return existsSync(path) ? readFileSync(path, "utf8") : "";
 }
 
-test("the investor dashboard route renders the authenticated Figma shell", () => {
+test("the dashboard route renders the authenticated multi-role Stellar workspace", () => {
   const route = repositorySource("src/app/dashboard/page.tsx");
   const view = repositorySource(
     "src/components/dashboard/InvestorDashboardView.tsx",
@@ -16,14 +16,16 @@ test("the investor dashboard route renders the authenticated Figma shell", () =>
 
   assert.match(route, /supabase\.auth\.getUser\(\)/);
   assert.match(route, /roles\.includes\("investor"\)/);
-  assert.match(route, /onboarding_status !== "completed"/);
+  assert.match(route, /roles\.includes\("founder"\)/);
+  assert.match(route, /investorComplete/);
+  assert.match(route, /founderComplete/);
   assert.match(route, /<InvestorDashboardView/);
 
   assert.match(view, /className="investor-dashboard"/);
-  assert.match(view, />Diligence</);
-  assert.match(view, /className="dashboard-detail-grid"/);
-  assert.match(view, /Evidence Log/i);
-  assert.match(view, /SPV Progress/i);
+  assert.match(view, /KORI · STELLAR TESTNET/);
+  assert.match(view, /Fund Manager/);
+  assert.match(view, /Startup Founder/);
+  assert.match(view, /<DealLifecycleWorkspace/);
   assert.match(view, /profilePhotoUrl\(profile\.photo_path\)/);
 });
 
@@ -38,10 +40,12 @@ test("the live profile renders investor preferences with neutral MVP claims", ()
 
   assert.match(view, /investor\?: InvestorProfile \| null/);
   assert.match(view, /Investment Thesis & Expertise/);
-  assert.match(view, /Identity Deferred/);
-  assert.match(view, /KYC Deferred/);
+  assert.match(view, /Role \{roleName\(role\)\}/);
   assert.match(view, /Funding Not connected/);
-  assert.doesNotMatch(view, /KYC Completed|Identity Verified|Wallet Connected/);
+  assert.doesNotMatch(
+    view,
+    /KYC Deferred|KYC Completed|Identity Verified|Wallet Connected/,
+  );
 });
 
 test("profile and dashboard desktop geometry keeps the extracted numeric contract", () => {
@@ -64,8 +68,9 @@ test("profile and dashboard desktop geometry keeps the extracted numeric contrac
     css,
     /\.profile-grid\{[\s\S]*?grid-template-columns:minmax\(0,1\.7fr\) minmax\(280px,1fr\);[\s\S]*?gap:24px;/,
   );
-  assert.match(css, /\.investor-dashboard\{[\s\S]*?height:680px;/);
-  assert.match(css, /\.dashboard-sidebar\{[\s\S]*?width:240px;/);
-  assert.match(css, /\.dashboard-main\{[\s\S]*?padding:32px;/);
-  assert.match(css, /\.dashboard-progress-track\{[\s\S]*?height:6px;/);
+  assert.match(css, /\.investor-dashboard\{[\s\S]*?min-height:/);
+  assert.match(css, /\.stellar-workspace\{[\s\S]*?grid-template-columns:/);
+  assert.match(css, /\.stellar-deal-picker\{[\s\S]*?padding:/);
+  assert.match(css, /\.stellar-lifecycle-main\{[\s\S]*?padding:/);
+  assert.match(css, /\.stellar-timeline li>span\{[\s\S]*?width:/);
 });
