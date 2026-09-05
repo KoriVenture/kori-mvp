@@ -422,10 +422,15 @@ export function InvestorOnboarding() {
     setMessage("");
 
     try {
+      if (!draft.securityMethod) {
+        await finishSecurityStep();
+        return;
+      }
+
       if (draft.securityMethod === "passkey") {
         if (!passkeysEnabled()) {
           throw new Error(
-            "Passkeys are not enabled for this environment. Configure Authentication > Passkeys in Supabase, then set NEXT_PUBLIC_ENABLE_PASSKEYS=true.",
+            "Passkeys are not available right now. You can skip this step and configure security later.",
           );
         }
 
@@ -446,7 +451,7 @@ export function InvestorOnboarding() {
       if (draft.securityMethod === "sms") {
         if (!phoneMfaEnabled()) {
           throw new Error(
-            "SMS Backup requires Supabase Advanced MFA Phone and is not available on the current Supabase Free plan. Choose Passkey or Authenticator App.",
+            "SMS security is not available right now. You can skip this step and configure security later.",
           );
         }
 
@@ -454,14 +459,39 @@ export function InvestorOnboarding() {
         return;
       }
 
-      throw new Error(
-        "Select a sign-in safeguard before continuing.",
-      );
     } catch (error) {
       setMessage(
         error instanceof Error
           ? error.message
-          : "Unable to secure the account.",
+          : "Unable to configure account security.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function skipSecurity() {
+    if (!draft.emailVerified) {
+      setMessage(
+        "Verify your email before continuing.",
+      );
+      return;
+    }
+
+    setBusy(true);
+    setMessage("");
+
+    try {
+      set("securityMethod", null);
+      setSecurityDialogMethod(null);
+      setTotpEnrollment(null);
+
+      await finishSecurityStep();
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to continue onboarding.",
       );
     } finally {
       setBusy(false);
@@ -701,6 +731,7 @@ export function InvestorOnboarding() {
           onResend={resendOtp}
           onChangeEmail={() => setStep(0)}
           onContinue={secureAndContinue}
+          onSkipSecurity={skipSecurity}
           onSaveExit={saveExit}
         />
 

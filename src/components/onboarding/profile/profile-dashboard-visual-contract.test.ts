@@ -64,7 +64,18 @@ test("profile and dashboard desktop geometry keeps the extracted numeric contrac
     css,
     /\.profile-grid\{[\s\S]*?grid-template-columns:minmax\(0,1\.7fr\) minmax\(280px,1fr\);[\s\S]*?gap:24px;/,
   );
-  assert.match(css, /\.investor-dashboard\{[\s\S]*?height:680px;/);
+  assert.match(
+    css,
+    /@media\s*\(min-width:1101px\)[\s\S]*?\.investor-dashboard\s*\{[\s\S]*?height:auto;[\s\S]*?min-height:680px;/,
+  );
+  assert.match(
+    css,
+    /@media\s*\(min-width:1101px\)[\s\S]*?\.dashboard-main\s*\{[\s\S]*?overflow:visible;/,
+  );
+  assert.match(
+    css,
+    /@media\s*\(min-width:1280px\)[\s\S]*?\.investor-dashboard\s*\{[\s\S]*?min-width:1000px;/,
+  );
   assert.match(css, /\.dashboard-sidebar\{[\s\S]*?width:240px;/);
   assert.match(css, /\.dashboard-main\{[\s\S]*?padding:32px;/);
   assert.match(css, /\.dashboard-progress-track\{[\s\S]*?height:6px;/);

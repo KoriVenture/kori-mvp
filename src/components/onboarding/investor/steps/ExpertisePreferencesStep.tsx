@@ -42,7 +42,7 @@ export function ExpertisePreferencesStep({
         </header>
 
         <div className="ko-form ko-long-form">
-          <OnboardingProgress label="STEP 03 OF 06 · PREFERENCES" width={360} />
+          <OnboardingProgress label="STEP 03 OF 06 · PREFERENCES" progress={64.285714} />
           <div className="ko-intro">
             <h1>What informs your investment perspective?</h1>
             <p>Kori uses your interests and expertise to surface relevant opportunities, people, and diligence conversations. These preferences do not automatically authorize investments.</p>

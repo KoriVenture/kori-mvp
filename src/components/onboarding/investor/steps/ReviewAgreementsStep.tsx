@@ -63,7 +63,7 @@ export function ReviewAgreementsStep({
           <button type="button" className="ko-link ko-link--coral" onClick={onSaveExit}>Save and exit</button>
         </header>
         <div className="ko-form ko-long-form">
-          <OnboardingProgress label="STEP 06 OF 06 · REVIEW" width={560} />
+          <OnboardingProgress label="STEP 06 OF 06 · REVIEW" progress={100} />
           <div className="ko-intro"><h1>Review your investor account.</h1></div>
 
           <div className="ko-review-stack">

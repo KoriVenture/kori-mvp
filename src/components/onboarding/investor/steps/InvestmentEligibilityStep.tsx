@@ -38,7 +38,7 @@ export function InvestmentEligibilityStep({
         </header>
 
         <div className="ko-form ko-long-form">
-          <OnboardingProgress label="STEP 04 OF 06 · ELIGIBILITY" width={380} />
+          <OnboardingProgress label="STEP 04 OF 06 · ELIGIBILITY" progress={67.857143} />
           <div className="ko-intro">
             <h1>Help us understand which opportunities you may access.</h1>
             <p>Investment eligibility depends on your country, investor classification, and the requirements of each opportunity. Your answers help Kori show you the appropriate next steps.</p>

@@ -80,7 +80,9 @@ export async function POST(request: Request) {
       storage_path: path,
       mime_type: file.type,
       size_bytes: file.size,
-    });
+    })
+    .select("id,created_at")
+    .single();
 
   if (saved.error) {
     await auth.supabase.storage
@@ -94,7 +96,19 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json(
-    { ok: true, path },
+    {
+      ok: true,
+      path,
+      document: {
+        id: saved.data?.id ?? null,
+        title: check.data.title,
+        documentType: check.data.documentType,
+        storagePath: path,
+        mimeType: file.type,
+        sizeBytes: file.size,
+        createdAt: saved.data?.created_at ?? new Date().toISOString(),
+      },
+    },
     { status: 201 },
   );
 }

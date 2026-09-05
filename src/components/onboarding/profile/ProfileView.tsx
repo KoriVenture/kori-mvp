@@ -135,12 +135,28 @@ export function ProfileView({
         <img src="/assets/onboarding/shared/kori-logo.svg" alt="Kori" />
         <nav aria-label="Profile navigation">
           <a href="/dashboard">Home</a>
-          <a className="active" href="/dashboard#discover">Discover</a>
-          <a href="/dashboard#deals">Deals</a>
-          <a href="/dashboard#communities">Communities</a>
-          <a href="/dashboard#portfolio">Portfolio</a>
-          <a href="/dashboard#wallet">Wallet</a>
-          <a href="/dashboard#messages">Messages</a>
+          <a
+            className="active"
+            href="/dashboard#discover"
+          >
+            Discover
+          </a>
+          <a href="/dashboard#discover">Deals</a>
+          <a href={`/dashboard/diligence?view=${role}`}>Diligence</a>
+          <a href="/communities">Communities</a>
+          <a href="/profile?role=investor">Portfolio</a>
+          <a
+            href="/dashboard#wallet"
+            title="Wallet workspace is not implemented yet"
+          >
+            Wallet
+          </a>
+          <a
+            href="/dashboard#messages"
+            title="Messaging workspace is not implemented yet"
+          >
+            Messages
+          </a>
         </nav>
         <a className="profile-nav-back" href="/dashboard">
           ← Back to dashboard

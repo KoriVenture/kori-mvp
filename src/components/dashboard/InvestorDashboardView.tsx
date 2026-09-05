@@ -106,7 +106,7 @@ export function InvestorDashboardView({
 
           <nav className="dashboard-tabs" aria-label="Investor workspace">
             <a href="#discover">Discover</a>
-            <a className="active" href="#diligence">Diligence</a>
+            <a className="active" href="/dashboard/diligence">Diligence</a>
             <a href="#invest">Invest</a>
             <a href="#monitor">Monitor</a>
           </nav>
@@ -144,6 +144,12 @@ export function InvestorDashboardView({
               <p>• Technical Feasibility</p>
               <p className="active-room">• Off-take Agreement</p>
               <p>• Sovereign Risk Audit</p>
+              <a
+                className="dashboard-opportunity"
+                href="/dashboard/diligence"
+              >
+                Open diligence workspace →
+              </a>
             </section>
           </aside>
 

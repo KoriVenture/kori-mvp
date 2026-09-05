@@ -26,6 +26,7 @@ export function VerifySecureStep({
   onResend,
   onChangeEmail,
   onContinue,
+  onSkipSecurity,
   onSaveExit,
 }: {
   draft: InvestorOnboardingDraft;
@@ -40,11 +41,14 @@ export function VerifySecureStep({
   onResend: () => Promise<void>;
   onChangeEmail: () => void;
   onContinue: () => Promise<void>;
+  onSkipSecurity: () => Promise<void>;
   onSaveExit: () => void;
 }) {
   const [otp, setOtp] = useState("");
   const [seconds, setSeconds] = useState(45);
   const lastAttemptedOtp = useRef("");
+
+  const showOtp = otpRequired && !draft.emailVerified;
 
   useEffect(() => {
     if (seconds <= 0) return;
@@ -56,13 +60,15 @@ export function VerifySecureStep({
   }, [seconds]);
 
   useEffect(() => {
-    if (shouldAttemptEmailOtp({
-      otp,
-      otpRequired,
-      emailVerified: draft.emailVerified,
-      busy,
-      lastAttemptedOtp: lastAttemptedOtp.current,
-    })) {
+    if (
+      shouldAttemptEmailOtp({
+        otp,
+        otpRequired,
+        emailVerified: draft.emailVerified,
+        busy,
+        lastAttemptedOtp: lastAttemptedOtp.current,
+      })
+    ) {
       lastAttemptedOtp.current = otp;
       void onVerifyOtp(otp);
     }
@@ -88,7 +94,7 @@ export function VerifySecureStep({
           <div className="ko-intro">
             <h1>Let&apos;s secure your account.</h1>
             <p>
-              {otpRequired ? (
+              {showOtp ? (
                 <>
                   We sent a verification code to{" "}
                   <strong>{maskEmail(draft.email)}</strong>. Enter it below to
@@ -96,14 +102,14 @@ export function VerifySecureStep({
                 </>
               ) : (
                 <>
-                  Your email <strong>{draft.email}</strong> was confirmed
-                  through your social sign-in provider.
+                  Your email <strong>{draft.email}</strong> is verified. Extra
+                  account security is optional for now.
                 </>
               )}
             </p>
           </div>
 
-          {otpRequired ? (
+          {showOtp ? (
             <div className="ko-verify-block">
               <OtpInput
                 value={otp}
@@ -138,47 +144,62 @@ export function VerifySecureStep({
             </div>
           ) : null}
 
-          <section className="ko-security-choices">
-            <div>
-              <h2>Choose how you sign in</h2>
-              <p>
-                Kori accounts hold sensitive financial data. Select a robust
-                primary sign-in safeguard.
-              </p>
-            </div>
+          {draft.emailVerified ? (
+            <>
+              <section className="ko-security-choices">
+                <div>
+                  <h2>Add extra account security (optional)</h2>
+                  <p>
+                    You can configure an additional sign-in safeguard now, or
+                    skip this step and configure it later.
+                  </p>
+                </div>
 
-            <Choice
-              title="Passkey"
-              badge="RECOMMENDED"
-              description="Biometrics like FaceID, TouchID, or security keys."
-              icon="/assets/onboarding/investor/key.svg"
-              selected={draft.securityMethod === "passkey"}
-              onClick={() => choose("passkey")}
-            />
-            <Choice
-              title="Authenticator App"
-              description="Use Google Authenticator, 1Password, or Authy."
-              icon="/assets/onboarding/investor/smartphone.svg"
-              selected={draft.securityMethod === "totp"}
-              onClick={() => choose("totp")}
-            />
-            <Choice
-              title="SMS Backup"
-              description="Secure mobile phone delivery of verification codes."
-              icon="/assets/onboarding/investor/mail.svg"
-              selected={draft.securityMethod === "sms"}
-              onClick={() => choose("sms")}
-            />
-          </section>
+                <Choice
+                  title="Passkey"
+                  badge="RECOMMENDED"
+                  description="Biometrics like FaceID, TouchID, or security keys."
+                  icon="/assets/onboarding/investor/key.svg"
+                  selected={draft.securityMethod === "passkey"}
+                  onClick={() => choose("passkey")}
+                />
+                <Choice
+                  title="Authenticator App"
+                  description="Use Google Authenticator, 1Password, or Authy."
+                  icon="/assets/onboarding/investor/smartphone.svg"
+                  selected={draft.securityMethod === "totp"}
+                  onClick={() => choose("totp")}
+                />
+                <Choice
+                  title="SMS Backup"
+                  description="Secure mobile phone delivery of verification codes."
+                  icon="/assets/onboarding/investor/mail.svg"
+                  selected={draft.securityMethod === "sms"}
+                  onClick={() => choose("sms")}
+                />
+              </section>
 
-          <button
-            type="button"
-            className="ko-primary"
-            disabled={busy || !draft.emailVerified}
-            onClick={() => void onContinue()}
-          >
-            {busy ? "Securing account…" : "Continue to profile"}
-          </button>
+              <div className="ko-actions">
+                <button
+                  type="button"
+                  className="ko-secondary"
+                  disabled={busy}
+                  onClick={() => void onSkipSecurity()}
+                >
+                  Skip for now
+                </button>
+
+                <button
+                  type="button"
+                  className="ko-primary"
+                  disabled={busy}
+                  onClick={() => void onContinue()}
+                >
+                  {busy ? "Securing account…" : "Continue to profile"}
+                </button>
+              </div>
+            </>
+          ) : null}
 
           {message ? <p className="ko-message" role="status">{message}</p> : null}
         </div>
