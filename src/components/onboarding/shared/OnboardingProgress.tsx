@@ -1,10 +1,12 @@
 export function OnboardingProgress({
   label,
-  width,
+  progress,
 }: {
   label: string;
-  width: number;
+  progress: number;
 }) {
+  const value = Math.max(0, Math.min(100, progress));
+
   return (
     <div className="ko-progress-block">
       <div className="ko-progress-meta">
@@ -12,7 +14,7 @@ export function OnboardingProgress({
         <span>Onboarding Progress</span>
       </div>
       <div className="ko-progress-track">
-        <span style={{ width: `${width}px` }} />
+        <span style={{ width: `${value}%` }} />
       </div>
     </div>
   );

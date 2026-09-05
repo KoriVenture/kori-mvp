@@ -459,7 +459,7 @@ export function FounderOnboarding() {
 
   if (loading) {
     return (
-      <main className="completion">
+      <main className="kori-onboarding ko-loading">
         <p>Loading onboarding…</p>
       </main>
     );
@@ -472,10 +472,10 @@ export function FounderOnboarding() {
   if (step === 0) {
     body = (
       <>
-        <div className="role-banner">
+        <div className="ko-role-banner">
           Joining as: <b>Founder</b>
         </div>
-        <div className="social-row">
+        <div className="ko-social-row">
           <button type="button" onClick={() => void social("google")}>
             <img src="/assets/onboarding/shared/google.svg" alt="" /> Google
           </button>
@@ -510,7 +510,7 @@ export function FounderOnboarding() {
           ]}
           onChange={(value) => set("country", value)}
         />
-        <div className="consents">
+        <div className="ko-consents">
           <label>
             <input
               type="checkbox"
@@ -536,7 +536,7 @@ export function FounderOnboarding() {
     );
   } else if (step === 1) {
     body = (
-      <section className="form-section">
+      <section className="ko-founder-card">
         <h3>Email verification</h3>
         {otpRequired && !draft.emailVerified ? (
           <>
@@ -544,7 +544,7 @@ export function FounderOnboarding() {
             <OtpInput value={otp} onChange={setOtp} />
             <button
               type="button"
-              className="secondary-button full"
+              className="ko-secondary ko-full-width"
               disabled={busy}
               onClick={() => void verifyEmailOtp()}
             >
@@ -552,7 +552,7 @@ export function FounderOnboarding() {
             </button>
             <button
               type="button"
-              className="text-button"
+              className="ko-link"
               onClick={() => void resendOtp()}
             >
               Resend code
@@ -561,7 +561,7 @@ export function FounderOnboarding() {
         ) : (
           <p>Email verified: {draft.email}</p>
         )}
-        <div className="notice">
+        <div className="ko-guidance">
           <b>Passkey</b>
           <p>
             When enabled for this environment, Continue enrolls a Supabase
@@ -572,8 +572,8 @@ export function FounderOnboarding() {
     );
   } else if (step === 2) {
     body = (
-      <section className="form-section">
-        <div className="two-columns">
+      <section className="ko-founder-card">
+        <div className={"ko-two-columns"}>
           <Field
             label="Legal first name"
             required
@@ -613,7 +613,7 @@ export function FounderOnboarding() {
     );
   } else if (step === 3) {
     body = (
-      <section className="form-section">
+      <section className="ko-founder-card">
         <Field
           label="Legal company name"
           required
@@ -671,7 +671,7 @@ export function FounderOnboarding() {
     );
   } else if (step === 4) {
     body = (
-      <section className="form-section">
+      <section className="ko-founder-card">
         <h3>Startup Documents</h3>
         <p>
           Upload a Pitch deck, Company overview, or Supporting document. Files
@@ -686,7 +686,7 @@ export function FounderOnboarding() {
         />
         <button
           type="button"
-          className="secondary-button full"
+          className="ko-secondary ko-full-width"
           disabled={!startupFile || !draft.startupId || busy}
           onClick={() => void uploadDocument()}
         >
@@ -698,23 +698,23 @@ export function FounderOnboarding() {
   } else {
     body = (
       <>
-        <section className="review-card">
+        <section className="ko-review-card">
           <h3>Founder Information</h3>
           <p>
             {draft.legalFirstName} {draft.legalLastName}
           </p>
         </section>
-        <section className="review-card">
+        <section className="ko-review-card">
           <h3>Startup Information</h3>
           <p>{draft.displayName || draft.legalName}</p>
         </section>
-        <section className="review-card">
+        <section className="ko-review-card">
           <h3>Startup Documents</h3>
           <p>
             {documentUploaded ? "Document submitted" : "No document submitted"}
           </p>
         </section>
-        <section className="form-section">
+        <section className="ko-founder-card">
           <h3>Platform Agreements</h3>
           {(
             [
@@ -759,7 +759,7 @@ export function FounderOnboarding() {
   return (
     <div className="kori-onboarding">
       {message ? (
-        <p role="status" className="onboarding-error">
+        <p role="status" className="ko-message ko-founder-status">
           {message}
         </p>
       ) : null}

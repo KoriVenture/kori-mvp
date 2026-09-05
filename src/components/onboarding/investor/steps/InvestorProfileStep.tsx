@@ -49,7 +49,7 @@ export function InvestorProfileStep({
         </header>
 
         <div className="ko-form ko-long-form">
-          <OnboardingProgress label="STEP 02 OF 06 · PROFILE" width={180} />
+          <OnboardingProgress label="STEP 02 OF 06 · PROFILE" progress={32.142857} />
           <div className="ko-intro">
             <h1>Tell us who you are.</h1>
             <p>Your profile helps other investors, fund managers, and experts understand the perspective you bring. You control what is visible to others.</p>
