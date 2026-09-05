@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "environment": "stellar-testnet",
+  "purpose": "Kori frontend-to-Soroban funding demonstration",
+  "deployedAtUtc": "2026-09-02",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "contractId": "CA4RSBPJUOOJCHGO77XEL3RURRPWOF6PPEU7CJXASYOL5P5Q7DDEFSYY",
+  "wasmSha256": "c997029a0f411837ad0f09b48b390b84ec4a40cc98df3173ec122971b9b09263",
+  "deploymentTransaction": "80d52c6a2d20a42994df7d4c45e097a252b6193766a1ebaa262723b10f88b311",
+  "asset": {
+    "code": "USDC",
+    "sacAddress": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA"
+  },
+  "configuration": {
+    "startup": "GDOZZLZU7I4P7CFPNE46PB6ZLLDBSIHJEIWLNCEXHGLBR5BYZ6KNNCDN",
+    "fundManager": "GC2ESKS3DNBYODUMPKI6LSQOFLD2ACVNBW6WKDB323YDLEVRFXZCXFAB",
+    "releaseAuthority": "GDRXLRJLFK7REVAGORYI7NLX6Q2XE5RUS5IXUER7YJDCHEAAEPEWQTP5",
+    "targetAmountBaseUnits": "50000000",
+    "fundingDeadline": 1788926340,
+    "releaseDeadline": 1789531140
+  },
+  "demoInvestors": [
+    {
+      "label": "Lionel Demo",
+      "publicKey": "GDTMTVD7IMBV5MVYDA42KM7R4DZXOPNKH6Y7RUKJN3DXNSOBUS6CKEUQ",
+      "verifiedUsdcBalanceAtSetup": "2.0000000",
+      "walletFundingTransaction": "59f92e9f73e9594e01ac078440350918f7b93fd2e32d0d9d458463d26d431910"
+    },
+    {
+      "label": "Investor A",
+      "publicKey": "GDDWS25MKDXHW3FNRSKGT4G6LODA7UL5F7NDXDI4LS7HCSABVFYLRBTF",
+      "verifiedUsdcBalanceAtSetup": "16.5000000"
+    },
+    {
+      "label": "Investor B",
+      "publicKey": "GDX5SVXQL5DXHJ3R5ZVDHAN7N5CY2Y74N4MX67OHQIJIOM2SXQBQPC2V",
+      "verifiedUsdcBalanceAtSetup": "17.0000000"
+    }
+  ],
+  "initialVerification": {
+    "state": "FundingOpen",
+    "totalFundedBaseUnits": "0",
+    "configurationReadBack": true
+  },
+  "signingMaterial": {
+    "includedHere": false,
+    "rule": "Use Freighter for the UI or existing secure-store aliases for automated Testnet checks. Never expose a secret key through NEXT_PUBLIC variables."
+  }
+}

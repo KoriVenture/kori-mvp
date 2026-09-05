@@ -2165,4 +2165,210 @@ blockquote.pull cite {
   .investor-dashboard-page{padding:20px}
 }
 
+/* STELLAR TESTNET FUNDING DEMO */
+.stellar-demo-page{
+  min-height:100vh;
+  padding:56px max(24px,calc((100vw - 1080px)/2));
+  background:#e9efed;
+}
+.stellar-demo-intro{max-width:720px;margin-bottom:28px}
+.stellar-demo-intro p{
+  margin:0 0 10px;
+  color:#087d80;
+  font:700 10px "IBM Plex Mono",monospace;
+  letter-spacing:.12em;
+}
+.stellar-demo-intro h1{
+  margin:0 0 10px;
+  color:#07191a;
+  font:700 clamp(30px,5vw,52px)/1 "IBM Plex Mono",monospace;
+  letter-spacing:-.06em;
+}
+.stellar-demo-intro span{color:#526565;font-size:13px;line-height:1.6}
+.stellar-funding-panel{
+  margin-top:24px;
+  border:1px solid #b8c7c7;
+  border-radius:12px;
+  background:#f8fbfa;
+  box-shadow:0 12px 28px rgba(8,42,44,.08);
+  overflow:hidden;
+}
+.stellar-funding-header{
+  padding:22px 24px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+  border-bottom:1px solid #d7e1df;
+  background:linear-gradient(135deg,#e9f8f5 0%,#f9fbfa 70%);
+}
+.stellar-funding-header h2{
+  margin:4px 0 6px;
+  color:#07191a;
+  font:700 20px "IBM Plex Mono",monospace;
+  letter-spacing:-.04em;
+}
+.stellar-funding-header p:not(.stellar-eyebrow){
+  max-width:620px;
+  color:#506162;
+  font-size:12px;
+  line-height:1.55;
+}
+.stellar-eyebrow{
+  margin:0;
+  color:#087d80;
+  font:700 10px "IBM Plex Mono",monospace;
+  letter-spacing:.12em;
+}
+.stellar-stage{
+  flex:0 0 auto;
+  padding:7px 10px;
+  border:1px solid #8fb8b5;
+  border-radius:999px;
+  background:#fff;
+  color:#176a6c;
+  font:700 9px "IBM Plex Mono",monospace;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.stellar-stage--error{border-color:#efa79e;color:#b72d20;background:#fff6f4}
+.stellar-stage--success{border-color:#78b99c;color:#176b49;background:#f1fff8}
+.stellar-funding-grid{
+  display:grid;
+  grid-template-columns:minmax(220px,.8fr) minmax(320px,1.2fr);
+  gap:24px;
+  padding:24px;
+}
+.stellar-deal-facts{
+  margin:0;
+  display:grid;
+  gap:13px;
+}
+.stellar-deal-facts>div{
+  padding-bottom:11px;
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  border-bottom:1px dashed #c8d4d2;
+}
+.stellar-deal-facts dt{
+  color:#6a7979;
+  font:500 10px "IBM Plex Mono",monospace;
+  text-transform:uppercase;
+}
+.stellar-deal-facts dd{
+  margin:0;
+  color:#152526;
+  font:700 10px "IBM Plex Mono",monospace;
+  text-align:right;
+}
+.stellar-deal-facts a,.stellar-transaction-result a{
+  color:#087d80;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.stellar-funding-action{
+  padding:18px;
+  display:grid;
+  gap:15px;
+  border:1px solid #d1dddb;
+  border-radius:10px;
+  background:#fff;
+}
+.stellar-wallet-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.stellar-wallet-row div{
+  min-width:0;
+  display:grid;
+  gap:4px;
+}
+.stellar-wallet-row span,.stellar-amount-field>span:first-child{
+  color:#697777;
+  font:500 9px "IBM Plex Mono",monospace;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.stellar-wallet-row strong{
+  overflow:hidden;
+  color:#172829;
+  font:700 11px "IBM Plex Mono",monospace;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.stellar-secondary-button,.stellar-primary-button{
+  border:0;
+  border-radius:6px;
+  font:700 10px "IBM Plex Mono",monospace;
+  cursor:pointer;
+}
+.stellar-secondary-button{
+  padding:9px 12px;
+  border:1px solid #9db5b3;
+  background:#fff;
+  color:#365758;
+}
+.stellar-primary-button{
+  min-height:42px;
+  padding:11px 16px;
+  background:#07989b;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.stellar-secondary-button:disabled,.stellar-primary-button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+.stellar-amount-field{display:grid;gap:7px}
+.stellar-amount-control{
+  min-height:43px;
+  display:flex;
+  align-items:center;
+  border:1px solid #b6c7c5;
+  border-radius:6px;
+  overflow:hidden;
+}
+.stellar-amount-control input{
+  min-width:0;
+  flex:1;
+  border:0;
+  padding:10px 12px;
+  color:#07191a;
+  background:transparent;
+  font:700 15px "IBM Plex Mono",monospace;
+  outline:none;
+}
+.stellar-amount-control strong{
+  padding:0 12px;
+  color:#087d80;
+  font:700 10px "IBM Plex Mono",monospace;
+}
+.stellar-message,.stellar-error,.stellar-warning,.stellar-transaction-result{
+  margin:0;
+  font:500 10px/1.5 "IBM Plex Mono",monospace;
+}
+.stellar-message{color:#176b49}
+.stellar-error{color:#b72d20}
+.stellar-warning{color:#98610c}
+.stellar-transaction-result{color:#405455;overflow-wrap:anywhere}
+.stellar-funding-footer{
+  padding:12px 24px;
+  border-top:1px solid #d7e1df;
+  background:#eff5f3;
+  color:#637372;
+  font:500 9px/1.5 "IBM Plex Mono",monospace;
+}
+@media(max-width:900px){
+  .stellar-funding-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .stellar-funding-header,.stellar-wallet-row{align-items:stretch;flex-direction:column}
+  .stellar-funding-grid{padding:16px}
+  .stellar-secondary-button{width:100%}
+}
+
 /* END KORI FIGMA PROFILE + INVESTOR DASHBOARD FIX */
