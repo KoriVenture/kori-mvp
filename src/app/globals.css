@@ -1847,7 +1847,7 @@ blockquote.pull cite {
 .investor-dashboard{
   width:100%;
   min-width:1000px;
-  height:680px;
+  min-height:680px;
   position:relative;
   overflow:hidden;
   border:1px solid #e5dec9;
@@ -1936,14 +1936,12 @@ blockquote.pull cite {
 }
 .investor-dashboard-body{
   width:100%;
-  height:calc(680px - 69px);
-  min-height:0;
+  min-height:calc(680px - 69px);
   display:flex;
   align-items:stretch;
 }
 .dashboard-sidebar{
   width:240px;
-  height:100%;
   flex:0 0 240px;
   padding:24px;
   display:flex;
@@ -1995,7 +1993,6 @@ blockquote.pull cite {
   display:flex;
   flex-direction:column;
   gap:24px;
-  overflow:hidden;
 }
 .dashboard-room-header{
   width:100%;
