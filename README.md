@@ -37,10 +37,18 @@ The current design depends on exact files including:
 
 ## Install
 
+Use Node.js `>=22.12` (`nvm use` reads the repository `.nvmrc`).
+
 ```bash
-npm install
+npm ci
+cp .env.example .env.local
 npm run dev
 ```
+
+Open `http://localhost:3000/demo/stellar` for the standalone Testnet demo; it
+does not require Supabase credentials. Authenticated application routes require
+the team's Supabase URL and publishable key in `.env.local`. Never commit that
+file.
 
 ## Validate
 
@@ -55,8 +63,11 @@ npm run build
 
 The Testnet deal-escrow contract, product requirements, deployment evidence and
 developer guide live in [`packages/stellar-contracts`](./packages/stellar-contracts/README.md).
-The root Next.js application does not yet call the contract; application and
-data integration remains a required V1 Gate E deliverable in the
+The root Next.js application includes a narrow Testnet funding path: Freighter
+connects any Testnet investor wallet, the app simulates and signs `fund`,
+submits it to Stellar RPC, waits for confirmed inclusion, and displays the
+transaction and ledger. Follow the [`Web3 demo runbook`](./packages/stellar-contracts/WEB3_DEMO_RUNBOOK.md).
+Durable data projection and event ingestion remain Gate E follow-up work in the
 [`Stellar/Soroban PRD`](./packages/stellar-contracts/PRD.md).
 
 Validate the contract independently from the application:

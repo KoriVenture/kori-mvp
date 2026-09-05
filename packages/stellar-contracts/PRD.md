@@ -712,6 +712,14 @@ balances, events, and known limitations are published in a Testnet runbook.
 
 ### Gate E: application and data integration
 
+**Current demo slice:** the root Next.js investor dashboard now reads the active
+Testnet escrow, connects Freighter, simulates and signs `fund`, submits through
+Stellar RPC, polls to a final result, and displays the transaction hash and
+confirmed ledger. The deployment is recorded in
+[`deployments/testnet-web3-demo-v1.json`](./deployments/testnet-web3-demo-v1.json).
+This does not complete the evidence, approval, release, refund, projection, or
+indexer work below.
+
 - Add Stellar wallet/client support to the root Next.js application through a
   server-enforced adapter under `src/lib` and narrowly scoped UI components.
 - Simulate before requesting signatures; assemble using RPC results.

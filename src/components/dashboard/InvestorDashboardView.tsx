@@ -1,3 +1,5 @@
+import { DealFundingPanel } from "@/components/stellar/DealFundingPanel";
+
 type DashboardProfile = {
   legal_first_name?: string | null;
   legal_last_name?: string | null;
@@ -196,6 +198,8 @@ export function InvestorDashboardView({
                 </div>
               </section>
             </div>
+
+            <DealFundingPanel />
           </section>
         </div>
       </section>
