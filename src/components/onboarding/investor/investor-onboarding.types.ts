@@ -6,7 +6,7 @@ export type InvestorOnboardingDraft = {
   country: string;
   accountTerms: boolean;
   newsletter: boolean;
-  securityMethod: SecurityMethod;
+  securityMethod: SecurityMethod | null;
   emailVerified: boolean;
   legalFirstName: string;
   legalLastName: string;
@@ -46,7 +46,7 @@ export const initialInvestorDraft: InvestorOnboardingDraft = {
   country: "",
   accountTerms: false,
   newsletter: false,
-  securityMethod: "passkey",
+  securityMethod: null,
   emailVerified: false,
   legalFirstName: "",
   legalLastName: "",

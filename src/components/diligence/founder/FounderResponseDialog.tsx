@@ -1,0 +1,10 @@
+"use client";
+
+import { useState } from "react";
+import type { FounderDiligenceRoomDTO } from "@/lib/diligence/founder/types";
+
+export function FounderResponseDialog({ request, onClose, onSaved }: { request: FounderDiligenceRoomDTO["requests"][number]; onClose: () => void; onSaved: () => Promise<void> }) {
+  const [body, setBody] = useState(""); const [busy, setBusy] = useState(false); const [error, setError] = useState("");
+  async function submit() { setBusy(true); setError(""); try { const response = await fetch(`/api/diligence/requests/${request.id}/founder-response`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ body }) }); if (!response.ok) throw new Error("Unable to submit response."); await onSaved(); onClose(); } catch (caught) { setError(caught instanceof Error ? caught.message : "Unable to submit response."); } finally { setBusy(false); } }
+  return <div className="dd-founder-modal-backdrop"><section className="dd-founder-modal" role="dialog" aria-modal="true"><button className="close" type="button" onClick={onClose}>×</button><p className="eyebrow">Question</p><h2>{request.title}</h2><p>{request.question}</p>{request.whyItMatters ? <p><b>Why it matters:</b> {request.whyItMatters}</p> : null}<div className="dd-founder-thread">{request.messages.map((message) => <article key={message.id}><b>{message.authorName}</b><small>{message.messageType}</small><p>{message.body}</p></article>)}</div><textarea value={body} onChange={(event) => setBody(event.target.value)} placeholder={request.status === "clarification_requested" ? "Respond to the clarification" : "Write a clear response"} /><div className="dd-founder-modal-actions"><button type="button" onClick={onClose}>Cancel</button><button type="button" className="primary" disabled={busy || !body.trim()} onClick={() => void submit()}>{busy ? "Submitting…" : request.status === "clarification_requested" ? "Submit clarification response" : "Submit response"}</button></div>{error ? <p className="error" role="alert">{error}</p> : null}</section></div>;
+}

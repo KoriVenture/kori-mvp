@@ -1,0 +1,10 @@
+"use client";
+
+import { useState } from "react";
+import type { FounderDiligenceRoomDTO } from "@/lib/diligence/founder/types";
+
+export function FounderEvidenceDialog({ request, documents, onClose, onSaved }: { request: FounderDiligenceRoomDTO["requests"][number]; documents: FounderDiligenceRoomDTO["startupDocuments"]; onClose: () => void; onSaved: () => Promise<void> }) {
+  const [documentId, setDocumentId] = useState(documents[0]?.id ?? ""); const [claim, setClaim] = useState(""); const [busy, setBusy] = useState(false); const [error, setError] = useState("");
+  async function submit() { setBusy(true); setError(""); try { const response = await fetch(`/api/diligence/requests/${request.id}/evidence`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ startupDocumentId: documentId, claim: claim || null }) }); if (!response.ok) throw new Error("Unable to attach evidence."); await onSaved(); onClose(); } catch (caught) { setError(caught instanceof Error ? caught.message : "Unable to attach evidence."); } finally { setBusy(false); } }
+  return <div className="dd-founder-modal-backdrop"><section className="dd-founder-modal" role="dialog" aria-modal="true"><button className="close" type="button" onClick={onClose}>×</button><p className="eyebrow">Evidence</p><h2>Attach evidence</h2><p>{request.title}</p>{documents.length ? <><label>Startup document<select value={documentId} onChange={(event) => setDocumentId(event.target.value)}>{documents.map((document) => <option value={document.id} key={document.id}>{document.title}</option>)}</select></label><label>Claim or context<textarea value={claim} onChange={(event) => setClaim(event.target.value)} /></label></> : <p>No startup documents are available yet.</p>}<div className="dd-founder-modal-actions"><button type="button" onClick={onClose}>Cancel</button><button type="button" className="primary" disabled={busy || !documentId} onClick={() => void submit()}>{busy ? "Attaching…" : "Attach selected evidence"}</button></div>{error ? <p className="error" role="alert">{error}</p> : null}</section></div>;
+}

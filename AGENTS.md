@@ -132,13 +132,22 @@ startup_documents.uploaded_by_user_id = auth.uid()
 
 Never solve an RLS problem by disabling RLS. Never use a service-role key in browser code.
 
-## 8. Migration discipline
+## 8. Database governance boundary
 
-Database migration history is immutable after it has been applied to a shared environment. Do not rewrite, rename, or delete an already-applied migration merely because its architecture was later superseded. Use a new forward migration to restore/change schema state.
+- kori-mvp ne possède pas le lifecycle du schéma PostgreSQL.
+- aucun SQL/DDL/migration n’est stocké dans ce repo.
+- le repo consomme un Database Contract logique.
+- les changements de schéma sont appliqués hors de l’application.
+- RLS reste obligatoire.
 
-Migrations must preserve existing UUID identities where valid, fail safely on identity ambiguity, never auto-link accounts only because email addresses match, avoid destructive data loss, and include post-migration checks when identity/RLS changes.
+## 9. Collaborative Due Diligence visual contract
 
-## 9. KYC/KYB status
+- The visible Due Diligence contract is locked by repository tests and the implementation specification.
+- Do not reinterpret, redesign, normalize, modernize, or replace visible .dd-* controls.
+- Preserve the exact copy, DOM order, CSS values, responsive behavior and interaction states.
+- No external design source is required to maintain this feature.
+
+## 10. KYC/KYB status
 
 KYC/KYB is deferred for the current MVP onboarding implementation.
 
@@ -158,7 +167,7 @@ verification_status = deferred
 
 Eligibility self-declarations are not identity verification.
 
-## 10. Investor onboarding visual source of truth
+## 11. Investor onboarding visual source of truth
 
 For the current Investor onboarding refactor, `kori-u-supa.md` contains the complete extracted visual implementation contract.
 
@@ -171,13 +180,13 @@ When that specification is the active task:
 
 The canonical desktop baseline is 1440px wide with a 520px editorial panel, a 920px form panel, 48px editorial padding, 80px right-panel horizontal padding and a 560px form width. Screen-specific heights and positions are defined in `kori-u-supa.md`.
 
-## 11. Onboarding assets
+## 12. Onboarding assets
 
 Use only the local assets listed by the active execution specification. For new vector assets whose complete source is embedded in the specification, create the local SVG files exactly from that source.
 
 Do not add temporary or external design-asset URLs to application code. Do not discover replacement assets when the specification already provides them. Network connector lines for the Investor onboarding are CSS primitives as specified.
 
-## 12. Styling
+## 13. Styling
 
 There is one handwritten application stylesheet:
 
@@ -213,7 +222,7 @@ Investor onboarding uses progress orange `#FF9815`; do not normalize it to anoth
 
 Fonts: Manrope, Fraunces, IBM Plex Mono, and Caveat where the existing public design uses it.
 
-## 13. TypeScript and React
+## 14. TypeScript and React
 
 Application source under `src/` is TypeScript: `.ts` and `.tsx`. Do not add `.js` application modules under `src/`.
 
@@ -221,13 +230,13 @@ Keep strict TypeScript behavior. Server Components are the default. Add `"use cl
 
 Keep server-only secrets and server-only database authorization out of Client Components.
 
-## 14. Next.js
+## 15. Next.js
 
 Current framework: Next.js 16 App Router, React 19, root-level application, and `src/proxy.ts` for proxy/session work.
 
 Use App Router conventions: `page.tsx`, `layout.tsx`, `route.ts`, and explicit server/client boundaries. Do not recreate Pages Router API routes.
 
-## 15. Package management
+## 16. Package management
 
 Use npm.
 
@@ -246,13 +255,13 @@ Do not add pnpm, Yarn, Turborepo, or workspace configuration unless explicitly a
 
 Do not hand-edit `package-lock.json` after dependency changes. Regenerate it with npm. Remove obsolete packages when their final runtime/source reference is removed.
 
-## 16. Public-site runtime files
+## 17. Public-site runtime files
 
 Files under `public/` may be active runtime assets even when they are JavaScript. The `.ts/.tsx` rule applies to application source under `src/`, not public static scripts.
 
 Before deleting an asset or script, verify references. Preserve the current public marketing-site animation/form behavior unless the task explicitly changes it.
 
-## 17. API authorization
+## 18. API authorization
 
 Every authenticated API route must derive the current user from Supabase Auth, derive ownership from server-side data, validate request payloads, enforce the required Kori business role, and reject cross-user resource access.
 
@@ -262,45 +271,45 @@ Use status semantics consistently: 400 invalid input, 401 unauthenticated, 403 u
 
 Do not leak secrets or raw database internals in API error responses.
 
-## 18. Validation
+## 19. Validation
 
 Use Zod for non-trivial API payload validation. Validate enums, maximum lengths, URLs, arrays, agreement state, document MIME types and sizes, and role values.
 
 Client validation improves UX; server validation is authoritative.
 
-## 19. Storage
+## 20. Storage
 
 `profile-photos` permits public read in the current MVP and authenticated owner-only write/delete under the user's UUID folder. Validate PNG/JPEG and maximum size before upload.
 
 `startup-data-room` is private. A Founder may access only their owned namespace/startup data. Verify startup ownership before upload, validate MIME type and size, and never generate public URLs for private documents.
 
-## 20. Security
+## 21. Security
 
 Never commit service-role keys, OAuth client secrets, SMTP credentials, private API keys, or production tokens. Only browser-safe values may use `NEXT_PUBLIC_*`.
 
 Do not log passwords, full tokens, secrets, private document contents, or sensitive identity material.
 
-## 21. Financial and compliance claims
+## 22. Financial and compliance claims
 
 Do not imply that current MVP screens execute investments, custody funds, connect live capital rails, guarantee eligibility, perform regulatory verification, or provide investment advice.
 
 Do not publish a security certification, encryption claim, compliance status, or regulatory status unless it is substantiated for the deployed product.
 
-## 22. Accessibility
+## 23. Accessibility
 
 Preserve semantic controls and keyboard accessibility while matching the embedded visual contract. Interactive elements must use buttons/links appropriately, have visible focus states and usable labels, preserve keyboard order, and avoid inaccessible fake controls.
 
-## 23. Responsive implementation
+## 24. Responsive implementation
 
 Where the execution specification provides exact responsive geometry, reproduce it. Where it provides only the 1440px desktop baseline, preserve that desktop contract and use the specified conservative responsive fallback without claiming invented mobile geometry is source-exact.
 
-## 24. Testing
+## 25. Testing
 
 Auth/onboarding changes require authentication tests, authorization/RLS tests, onboarding persistence tests, two-user isolation tests, upload ownership tests where applicable, and numeric visual-contract verification for Investor screens.
 
 A build passing is not enough to prove RLS or visual fidelity.
 
-## 25. Verification before completion
+## 26. Verification before completion
 
 Before declaring a scoped implementation complete, run as applicable:
 
@@ -315,7 +324,7 @@ Also search for stale architecture references after a migration. Runtime source 
 
 Inspect actual command output before reporting success.
 
-## 26. Change discipline
+## 27. Change discipline
 
 Keep unrelated public pages and functionality unchanged.
 
@@ -325,13 +334,13 @@ Do not leave dead imports, parallel auth flows, compatibility shims for removed 
 
 If a file is replaced by a new authoritative implementation, remove the old implementation rather than leaving two competing paths.
 
-## 27. Completion report
+## 28. Completion report
 
 For an execution task, report files created, files replaced, files deleted, packages added/removed/upgraded, migrations added, commands executed, exact lint/typecheck/test/build results, external Dashboard/manual actions still required, and concrete blockers if any.
 
 Do not substitute a new plan for this report.
 
-## 28. Current Stellar reference
+## 29. Current Stellar reference
 
 New blockchain work targets Stellar/Soroban. Before changing blockchain code or
 application integration, read:

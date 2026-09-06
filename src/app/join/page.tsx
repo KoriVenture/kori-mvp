@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { SiteFrame } from "@/components/SiteFrame";
+import { JoinNetworkForm } from "@/components/join/JoinNetworkForm";
 
 export const metadata: Metadata = {
   title: "Join the network · Kori",
@@ -72,197 +72,7 @@ export default function JoinPage() {
                 </p>
               </div>
 
-              <form className="network-form" id="network-form" noValidate>
-                <div className="form-grid">
-                  <div className="form-field">
-                    <label htmlFor="first-name">
-                      First name <span aria-hidden="true">*</span>
-                    </label>
-                    <input
-                      id="first-name"
-                      name="firstName"
-                      type="text"
-                      autoComplete="given-name"
-                      required
-                      aria-describedby="first-name-error"
-                    />
-                    <p
-                      className="field-error"
-                      id="first-name-error"
-                      aria-live="polite"
-                    />
-                  </div>
-
-                  <div className="form-field">
-                    <label htmlFor="last-name">
-                      Last name <span aria-hidden="true">*</span>
-                    </label>
-                    <input
-                      id="last-name"
-                      name="lastName"
-                      type="text"
-                      autoComplete="family-name"
-                      required
-                      aria-describedby="last-name-error"
-                    />
-                    <p
-                      className="field-error"
-                      id="last-name-error"
-                      aria-live="polite"
-                    />
-                  </div>
-
-                  <div className="form-field">
-                    <label htmlFor="email">
-                      Email address <span aria-hidden="true">*</span>
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      inputMode="email"
-                      required
-                      aria-describedby="email-helper email-error"
-                    />
-                    <p className="field-helper" id="email-helper">
-                      Use the address where Kori should contact you.
-                    </p>
-                    <p
-                      className="field-error"
-                      id="email-error"
-                      aria-live="polite"
-                    />
-                  </div>
-
-                  <div className="form-field">
-                    <label htmlFor="role">
-                      I am joining as <span aria-hidden="true">*</span>
-                    </label>
-                    <select
-                      id="role"
-                      name="role"
-                      required
-                      aria-describedby="role-error"
-                      defaultValue=""
-                    >
-                      <option value="">Select your role</option>
-                      <option value="founder">Founder</option>
-                      <option value="investor">Investor</option>
-                      <option value="community">Community lead</option>
-                      <option value="expert">Expert or operator</option>
-                      <option value="partner">Ecosystem partner</option>
-                      <option value="other">Other</option>
-                    </select>
-                    <p
-                      className="field-error"
-                      id="role-error"
-                      aria-live="polite"
-                    />
-                  </div>
-
-                  <div className="form-field">
-                    <label htmlFor="country">
-                      Country <span aria-hidden="true">*</span>
-                    </label>
-                    <input
-                      id="country"
-                      name="country"
-                      type="text"
-                      autoComplete="country-name"
-                      required
-                      aria-describedby="country-error"
-                    />
-                    <p
-                      className="field-error"
-                      id="country-error"
-                      aria-live="polite"
-                    />
-                  </div>
-
-                  <div className="form-field form-field--wide">
-                    <label htmlFor="linkedin">
-                      LinkedIn profile <span className="optional">Optional</span>
-                    </label>
-                    <input
-                      id="linkedin"
-                      name="linkedin"
-                      type="url"
-                      inputMode="url"
-                      placeholder="https://www.linkedin.com/in/…"
-                      aria-describedby="linkedin-error"
-                    />
-                    <p
-                      className="field-error"
-                      id="linkedin-error"
-                      aria-live="polite"
-                    />
-                  </div>
-
-                  <div className="form-field form-field--wide">
-                    <label htmlFor="interest">
-                      What brings you to Kori?{" "}
-                      <span className="optional">Optional</span>
-                    </label>
-                    <textarea
-                      id="interest"
-                      name="interest"
-                      rows={6}
-                      maxLength={800}
-                      aria-describedby="interest-helper interest-error"
-                    />
-                    <div className="textarea-meta">
-                      <p className="field-helper" id="interest-helper">
-                        Tell us what you want to invest in, build, understand or
-                        contribute.
-                      </p>
-                      <span id="interest-count">0 / 800</span>
-                    </div>
-                    <p
-                      className="field-error"
-                      id="interest-error"
-                      aria-live="polite"
-                    />
-                  </div>
-
-                  <div className="form-field form-field--wide consent-field">
-                    <label>
-                      <input
-                        id="consent"
-                        name="consent"
-                        type="checkbox"
-                        required
-                        aria-describedby="consent-error"
-                      />
-                      <span>
-                        I agree that Kori may use these details to respond to my
-                        expression of interest.{" "}
-                        <span aria-hidden="true">*</span>
-                      </span>
-                    </label>
-                    <p
-                      className="field-error"
-                      id="consent-error"
-                      aria-live="polite"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-submit-row">
-                  <p>Your information is securely submitted to Kori.</p>
-                  <button className="button" type="submit">
-                    Submit interest →
-                  </button>
-                </div>
-
-                <div
-                  className="form-status"
-                  id="form-status"
-                  role="status"
-                  aria-live="polite"
-                  tabIndex={-1}
-                />
-              </form>
+              <JoinNetworkForm />
             </div>
           </div>
         </section>
@@ -294,8 +104,6 @@ export default function JoinPage() {
           </div>
         </section>
       </SiteFrame>
-
-      <Script src="/join-form.js" strategy="afterInteractive" />
     </>
   );
 }

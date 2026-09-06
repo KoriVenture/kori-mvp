@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import Script from "next/script";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
+import { SiteEffects } from "./site/SiteEffects";
 
 type ActivePage =
   | "how-kori-works"
@@ -39,6 +39,7 @@ export function SiteFrame({
       ) : null}
       <div id="cur" aria-hidden="true" />
       <div id="progress" aria-hidden="true" />
+      <SiteEffects />
 
       <SiteHeader
         active={
@@ -49,7 +50,6 @@ export function SiteFrame({
       <main id="main">{children}</main>
 
       <SiteFooter active={active} />
-      <Script src="/kori.js" strategy="afterInteractive" />
     </div>
   );
 }
