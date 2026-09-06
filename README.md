@@ -63,11 +63,19 @@ npm run build
 
 The Testnet deal-escrow contract, product requirements, deployment evidence and
 developer guide live in [`packages/stellar-contracts`](./packages/stellar-contracts/README.md).
-The root Next.js application includes a narrow Testnet funding path: Freighter
-connects any Testnet investor wallet, the app simulates and signs `fund`,
-submits it to Stellar RPC, waits for confirmed inclusion, and displays the
-transaction and ledger. Follow the [`Web3 demo runbook`](./packages/stellar-contracts/WEB3_DEMO_RUNBOOK.md).
-Durable data projection and event ingestion remain Gate E follow-up work in the
+The root application maps three demo SPVs to real Testnet `DealEscrow`
+instances, one per irreversible checkpoint: Kingston/funding,
+Kigali/evidence-to-release, and Accra/refund. They cover every V1 branch and are
+not user types. Freighter signs locally; the app submits to Stellar RPC and
+displays only confirmed ledger state. No KYC or AI workflow is part of this
+demo. Follow the concise
+[`Web3 demo runbook`](./packages/stellar-contracts/WEB3_DEMO_RUNBOOK.md).
+
+The public `/demo/stellar` route is self-contained. The authenticated
+`/dashboard` uses the same live component but requires the team Supabase
+configuration. Evidence files stay local to the browser and are exchanged as a
+hashed JSON manifest; durable object storage and idempotent event projection are
+documented follow-up work in the
 [`Stellar/Soroban PRD`](./packages/stellar-contracts/PRD.md).
 
 Validate the contract independently from the application:

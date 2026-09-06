@@ -11,6 +11,7 @@ const SAFE_REDIRECTS = new Set([
   "/onboarding/investor",
   "/onboarding/founder",
   "/profile",
+  "/dashboard",
 ]);
 
 export function safeRedirectPath(value: string | null | undefined) {

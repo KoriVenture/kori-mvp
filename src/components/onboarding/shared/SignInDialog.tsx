@@ -7,10 +7,7 @@ import {
   useState,
 } from "react";
 
-import {
-  signInEmailPassword,
-  startSocialSignIn,
-} from "@/lib/auth/account";
+import { SignInForm } from "./SignInForm";
 
 export function SignInDialog({
   open,
@@ -19,10 +16,7 @@ export function SignInDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
   const dialogRef = useRef<HTMLElement | null>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
 
@@ -50,53 +44,6 @@ export function SignInDialog({
   }, [open]);
 
   if (!open) return null;
-
-  async function emailSignIn() {
-    setBusy(true);
-    setMessage("");
-
-    try {
-      if (!email.trim()) {
-        throw new Error("Email is required.");
-      }
-
-      if (!password) {
-        throw new Error("Password is required.");
-      }
-
-      await signInEmailPassword({
-        email,
-        password,
-      });
-
-      window.location.assign("/profile");
-    } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to sign in.",
-      );
-      setBusy(false);
-    }
-  }
-
-  async function social(
-    provider: "google" | "linkedin_oidc",
-  ) {
-    setBusy(true);
-    setMessage("");
-
-    try {
-      await startSocialSignIn(provider);
-    } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to start social sign-in.",
-      );
-      setBusy(false);
-    }
-  }
 
   function handleDialogKeyDown(
     event: KeyboardEvent<HTMLElement>,
@@ -171,74 +118,7 @@ export function SignInDialog({
           </button>
         </header>
 
-        <div className="ko-social-row">
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => void social("google")}
-          >
-            <img
-              src="/assets/onboarding/shared/google.svg"
-              alt=""
-            />
-            Google
-          </button>
-
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => void social("linkedin_oidc")}
-          >
-            <img
-              src="/assets/onboarding/shared/linkedin.svg"
-              alt=""
-            />
-            LinkedIn
-          </button>
-        </div>
-
-        <div className="ko-divider">
-          <span>OR CONTINUE WITH EMAIL</span>
-        </div>
-
-        <label className="ko-field">
-          <span>Email</span>
-          <input
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(event) =>
-              setEmail(event.target.value)
-            }
-          />
-        </label>
-
-        <label className="ko-field">
-          <span>Password</span>
-          <input
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(event) =>
-              setPassword(event.target.value)
-            }
-          />
-        </label>
-
-        <button
-          type="button"
-          className="ko-primary"
-          disabled={busy}
-          onClick={() => void emailSignIn()}
-        >
-          {busy ? "Signing in…" : "Sign in"}
-        </button>
-
-        {message ? (
-          <p className="ko-message" role="status">
-            {message}
-          </p>
-        ) : null}
+        <SignInForm onBusyChange={setBusy} />
       </section>
     </div>
   );

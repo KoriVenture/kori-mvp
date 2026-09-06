@@ -30,10 +30,11 @@ Add these repository sources:
 2. [`PRD.md`](./PRD.md)
 3. [`contracts/kori-deal-escrow/src/lib.rs`](./contracts/kori-deal-escrow/src/lib.rs)
 4. [`contracts/kori-deal-escrow/src/test.rs`](./contracts/kori-deal-escrow/src/test.rs)
-5. [`deployments/testnet-v1.json`](./deployments/testnet-v1.json)
-6. [`TESTNET_ASSURANCE_REPORT.md`](./TESTNET_ASSURANCE_REPORT.md)
-7. [`FIGMA_REFERENCE.md`](./FIGMA_REFERENCE.md)
-8. [`ARCHITECTURE_MIGRATION.md`](./ARCHITECTURE_MIGRATION.md)
+5. [`deployments/testnet-mvp-ui-v1.json`](./deployments/testnet-mvp-ui-v1.json)
+6. [`TESTNET_MVP_UI_REPORT.md`](./TESTNET_MVP_UI_REPORT.md)
+7. [`WEB3_DEMO_RUNBOOK.md`](./WEB3_DEMO_RUNBOOK.md)
+8. [`TESTNET_ASSURANCE_REPORT.md`](./TESTNET_ASSURANCE_REPORT.md)
+9. [`FIGMA_REFERENCE.md`](./FIGMA_REFERENCE.md)
 
 Attach the exact files above and refresh them whenever their repository revision
 changes. A Space answer must cite the source revision it relied on.

@@ -8,9 +8,7 @@ Keep answers concise, evidence-based, and explicit about uncertainty.
 - For Stellar questions, read
   [`packages/stellar-contracts/AI_CONTEXT.md`](../packages/stellar-contracts/AI_CONTEXT.md)
   before answering or changing code.
-- New blockchain work targets Stellar/Soroban. Treat EVM/Sepolia/Safe material
-  as historical unless the task explicitly asks for comparison or migration
-  history.
+- Blockchain work targets Stellar/Soroban only.
 
 ## Separate four kinds of claims
 
@@ -27,9 +25,8 @@ For implementation status, prefer:
 1. `packages/stellar-contracts/deployments/testnet-v1.json` and
    `packages/stellar-contracts/TESTNET_ASSURANCE_REPORT.md`
 2. the exact deployed Wasm hash, contract source, and tests
-3. `PRD.md` and `ARCHITECTURE_MIGRATION.md`
+3. `PRD.md`
 4. `FIGMA_REFERENCE.md` and the FigJam board
-5. historical EVM material
 
 The PRD is authoritative for accepted product intent. The FigJam board is a
 visual explanation, not proof of deployed behavior. If sources conflict, state

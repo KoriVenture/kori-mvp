@@ -459,36 +459,54 @@ export function FounderOnboarding() {
 
   if (loading) {
     return (
-      <main className="completion">
-        <p>Loading onboarding…</p>
+      <main className="kori-onboarding ko-loading">
+        Loading founder onboarding…
       </main>
     );
   }
 
-  if (step === 6) return <Completion founder />;
+  if (step === 6) {
+    return <Completion founder firstName={draft.legalFirstName} />;
+  }
 
   let body;
 
   if (step === 0) {
     body = (
       <>
-        <div className="role-banner">
-          Joining as: <b>Founder</b>
+        <div className="ko-role-banner">
+          <img src="/assets/onboarding/shared/user.svg" alt="" />
+          <span>Joining as: <strong>Founder</strong></span>
+          <a
+            className="ko-role-banner__change"
+            href="/onboarding/investor"
+          >
+            (CHANGE)
+          </a>
         </div>
-        <div className="social-row">
-          <button type="button" onClick={() => void social("google")}>
+        <div className="ko-social-row">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void social("google")}
+          >
             <img src="/assets/onboarding/shared/google.svg" alt="" /> Google
           </button>
           <button
             type="button"
+            disabled={busy}
             onClick={() => void social("linkedin_oidc")}
           >
             <img src="/assets/onboarding/shared/linkedin.svg" alt="" /> LinkedIn
           </button>
         </div>
+        <div className="ko-divider">
+          <span>OR CONTINUE WITH EMAIL</span>
+        </div>
         <Field
-          label="Email"
+          label="Work or personal email"
           type="email"
+          autoComplete="email"
           required
           value={draft.email}
           onChange={(event) => set("email", event.target.value)}
@@ -498,7 +516,7 @@ export function FounderOnboarding() {
           onChange={(value) => set("password", value)}
         />
         <SelectField
-          label="Country"
+          label="Country of residence"
           value={draft.country}
           options={[
             "Canada",
@@ -508,9 +526,10 @@ export function FounderOnboarding() {
             "United States",
             "Other",
           ]}
+          required
           onChange={(value) => set("country", value)}
         />
-        <div className="consents">
+        <div className="ko-consents">
           <label>
             <input
               type="checkbox"
@@ -519,7 +538,17 @@ export function FounderOnboarding() {
                 set("accountTerms", event.target.checked)
               }
             />
-            I accept the Terms of Use and Privacy Policy.
+            <span>
+              I agree to Kori&apos;s{" "}
+              <a className="ko-inline-legal-link" href="/terms" target="_blank" rel="noreferrer">
+                Terms of Use
+              </a>{" "}
+              and{" "}
+              <a className="ko-inline-legal-link" href="/privacy" target="_blank" rel="noreferrer">
+                Privacy Policy
+              </a>
+              .
+            </span>
           </label>
           <label>
             <input
@@ -529,22 +558,25 @@ export function FounderOnboarding() {
                 set("newsletter", event.target.checked)
               }
             />
-            Send me occasional Kori updates.
+            <span>Keep me updated on platform and funding opportunities.</span>
           </label>
         </div>
       </>
     );
   } else if (step === 1) {
     body = (
-      <section className="form-section">
-        <h3>Email verification</h3>
+      <section className="ko-section">
+        <div className="ko-section-intro">
+          <h2>Email verification</h2>
+          <p>Confirm the email address attached to this founder account.</p>
+        </div>
         {otpRequired && !draft.emailVerified ? (
           <>
             <p>Enter the six-digit code sent to {draft.email}.</p>
             <OtpInput value={otp} onChange={setOtp} />
             <button
               type="button"
-              className="secondary-button full"
+              className="ko-secondary"
               disabled={busy}
               onClick={() => void verifyEmailOtp()}
             >
@@ -552,7 +584,8 @@ export function FounderOnboarding() {
             </button>
             <button
               type="button"
-              className="text-button"
+              className="ko-link ko-link--coral"
+              disabled={busy}
               onClick={() => void resendOtp()}
             >
               Resend code
@@ -561,19 +594,26 @@ export function FounderOnboarding() {
         ) : (
           <p>Email verified: {draft.email}</p>
         )}
-        <div className="notice">
-          <b>Passkey</b>
-          <p>
-            When enabled for this environment, Continue enrolls a Supabase
-            passkey.
-          </p>
+        <div className="ko-why ko-why--stacked">
+          <img src="/assets/onboarding/investor/key.svg" alt="" />
+          <div>
+            <b>Account safeguard</b>
+            <p>
+              Email confirmation is required. When passkeys are enabled for
+              this environment, Continue also enrolls one.
+            </p>
+          </div>
         </div>
       </section>
     );
   } else if (step === 2) {
     body = (
-      <section className="form-section">
-        <div className="two-columns">
+      <section className="ko-section">
+        <div className="ko-section-intro">
+          <h2>Founder identity</h2>
+          <p>This profile identifies the person representing the startup.</p>
+        </div>
+        <div className="ko-two-columns">
           <Field
             label="Legal first name"
             required
@@ -613,7 +653,11 @@ export function FounderOnboarding() {
     );
   } else if (step === 3) {
     body = (
-      <section className="form-section">
+      <section className="ko-section">
+        <div className="ko-section-intro">
+          <h2>Startup identity</h2>
+          <p>The legal company and the deal-specific Stellar wallet remain distinct records.</p>
+        </div>
         <Field
           label="Legal company name"
           required
@@ -626,7 +670,7 @@ export function FounderOnboarding() {
           onChange={(event) => set("displayName", event.target.value)}
         />
         <SelectField
-          label="Country"
+          label="Startup country"
           value={draft.startupCountry}
           options={[
             "Canada",
@@ -636,6 +680,7 @@ export function FounderOnboarding() {
             "United States",
             "Other",
           ]}
+          required
           onChange={(value) => set("startupCountry", value)}
         />
         <Field
@@ -671,51 +716,63 @@ export function FounderOnboarding() {
     );
   } else if (step === 4) {
     body = (
-      <section className="form-section">
-        <h3>Startup Documents</h3>
-        <p>
-          Upload a Pitch deck, Company overview, or Supporting document. Files
-          remain private.
-        </p>
-        <input
-          type="file"
-          accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-          onChange={(event) =>
-            setStartupFile(event.target.files?.[0] ?? null)
-          }
-        />
-        <button
-          type="button"
-          className="secondary-button full"
-          disabled={!startupFile || !draft.startupId || busy}
-          onClick={() => void uploadDocument()}
-        >
-          {busy ? "Uploading…" : "Upload document"}
-        </button>
-        {documentUploaded ? <p>Document submitted.</p> : null}
+      <section className="ko-section">
+        <div className="ko-section-intro">
+          <h2>Startup documents</h2>
+          <p>
+            Add a pitch deck, company overview, or supporting document. This
+            private profile upload is separate from the browser-local milestone
+            evidence manifest used in the Testnet demo.
+          </p>
+        </div>
+        <div className="ko-founder-upload">
+          <label className="ko-field">
+            <span>Choose a private startup document</span>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+              onChange={(event) =>
+                setStartupFile(event.target.files?.[0] ?? null)
+              }
+            />
+          </label>
+          <button
+            type="button"
+            className="ko-secondary"
+            disabled={!startupFile || !draft.startupId || busy}
+            onClick={() => void uploadDocument()}
+          >
+            {busy ? "Uploading…" : "Upload document"}
+          </button>
+          <small>
+            {documentUploaded
+              ? "A private startup document is recorded."
+              : "Optional for this Testnet MVP."}
+          </small>
+        </div>
       </section>
     );
   } else {
     body = (
       <>
-        <section className="review-card">
-          <h3>Founder Information</h3>
-          <p>
-            {draft.legalFirstName} {draft.legalLastName}
-          </p>
+        <section className="ko-review-stack">
+          <article className="ko-review-card">
+            <header><strong>Founder information</strong><span className="ko-status-info">READY</span></header>
+            <p>{draft.legalFirstName} {draft.legalLastName}</p>
+            <p>{draft.professionalTitle || "Professional title not added"}</p>
+          </article>
+          <article className="ko-review-card">
+            <header><strong>Startup information</strong><span className="ko-status-info">READY</span></header>
+            <p>{draft.displayName || draft.legalName}</p>
+            <p>{draft.sector} · {draft.startupCountry}</p>
+          </article>
+          <article className="ko-review-card">
+            <header><strong>Startup documents</strong><span className="ko-status-info">PRIVATE</span></header>
+            <p>{documentUploaded ? "Document submitted" : "No optional document submitted"}</p>
+          </article>
         </section>
-        <section className="review-card">
-          <h3>Startup Information</h3>
-          <p>{draft.displayName || draft.legalName}</p>
-        </section>
-        <section className="review-card">
-          <h3>Startup Documents</h3>
-          <p>
-            {documentUploaded ? "Document submitted" : "No document submitted"}
-          </p>
-        </section>
-        <section className="form-section">
-          <h3>Platform Agreements</h3>
+        <section className="ko-section ko-agreement-stack">
+          <h2>Platform agreements</h2>
           {(
             [
               ["terms", "Terms of Use"],
@@ -723,21 +780,31 @@ export function FounderOnboarding() {
               ["platform", "Platform Agreement"],
             ] as const
           ).map(([key, label]) => (
-            <label key={key}>
-              <input
-                type="checkbox"
-                checked={draft[key]}
-                onChange={(event) => set(key, event.target.checked)}
-              />
-              I accept the {label}.
+            <label className="ko-agreement" key={key}>
+              <span>
+                <strong>{label}</strong>
+                <small>Required to use the Kori demonstration platform.</small>
+              </span>
+              <span className="ko-agreement__check">
+                <input
+                  type="checkbox"
+                  checked={draft[key]}
+                  onChange={(event) => set(key, event.target.checked)}
+                />
+                Accept
+              </span>
             </label>
           ))}
-          <Field
-            label="Electronic signature"
-            required
-            value={draft.signatureName}
-            onChange={(event) => set("signatureName", event.target.value)}
-          />
+          <div className="ko-signature-card">
+            <h2>Electronic signature</h2>
+            <Field
+              label="Full legal name"
+              required
+              value={draft.signatureName}
+              onChange={(event) => set("signatureName", event.target.value)}
+            />
+            <p>This confirms the platform agreements only. It does not sign a Stellar transaction.</p>
+          </div>
         </section>
       </>
     );
@@ -767,12 +834,17 @@ export function FounderOnboarding() {
         step={step}
         total={6}
         title={title}
-        subtitle={step === 0 ? "Joining as: Founder" : undefined}
+        subtitle={
+          step === 0
+            ? "Create the person and startup profiles required to enter a deal workspace."
+            : undefined
+        }
         founder
         next={() => void next()}
         back={step ? () => setStep((current) => current - 1) : undefined}
         save={saveExit}
         action={step === 5 ? "Complete onboarding" : "Continue"}
+        busy={busy}
       >
         {body}
       </Shell>

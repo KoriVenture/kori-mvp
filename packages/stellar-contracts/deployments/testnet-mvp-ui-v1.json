@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "environment": "stellar-testnet",
+  "purpose": "Kori V1 three-deal application demonstration",
+  "deployedAtUtc": "2026-09-06",
+  "verifiedAtLedger": 4526523,
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "wasmSha256": "c997029a0f411837ad0f09b48b390b84ec4a40cc98df3173ec122971b9b09263",
+  "asset": {
+    "code": "USDC",
+    "issuer": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5",
+    "sacAddress": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+    "decimals": 7
+  },
+  "readSource": "GABM3A6KELVDZ7ZW37FCU6JVDK3I3MKQSIIIOZH6DXKFX7OAHDK3PCG7",
+  "releasePolicy": {
+    "account": "GD2TZUYYRP2RN5KOWN2NFNVSHYZR26UYHA2ADEF5BYDSI3BAKVHOY7RB",
+    "masterWeight": 0,
+    "lowThreshold": 1,
+    "mediumThreshold": 3,
+    "highThreshold": 4,
+    "signers": [
+      {
+        "role": "lead_investor",
+        "publicKey": "GB3ON5BVTZWFAECLLXY53AHJV63SNOXDXKATZ4RSOLOSVNANY3ECDNGP",
+        "weight": 1
+      },
+      {
+        "role": "investor_representative",
+        "publicKey": "GDTMTVD7IMBV5MVYDA42KM7R4DZXOPNKH6Y7RUKJN3DXNSOBUS6CKEUQ",
+        "weight": 2
+      },
+      {
+        "role": "kori_release_officer",
+        "publicKey": "GCERD6HEUD3RZ6VQBLDBLFIN3KMB3KKA7W7NQPAXX57AGRCZCWYSITRJ",
+        "weight": 1
+      }
+    ],
+    "configurationTransactions": [
+      "5d45aee7d63c5aa5de72313c8ce06be3a132c5622bcfa66b05b791e438c54fe2",
+      "a60f88c0120606e75886381a985d64cf3dcb48f1d7936a693d8ed844d68c47b4",
+      "c13dc7ef7ea768528da6cc0056243b74c13200cf0146e136decc2c87b507cbbd",
+      "4f06edfd4ffba334e3485198815fa634afb2bb8d46c2a855feca900aee6c1dcf"
+    ]
+  },
+  "deals": [
+    {
+      "id": "kigali-transport",
+      "contractId": "CBFWI4HBRQUXCARAADDGIYK355CQB3LUGC5EBX5LSC4EVWTRWYO2OJTV",
+      "startup": "GDOZZLZU7I4P7CFPNE46PB6ZLLDBSIHJEIWLNCEXHGLBR5BYZ6KNNCDN",
+      "fundManager": "GB3ON5BVTZWFAECLLXY53AHJV63SNOXDXKATZ4RSOLOSVNANY3ECDNGP",
+      "releaseAuthority": "GD2TZUYYRP2RN5KOWN2NFNVSHYZR26UYHA2ADEF5BYDSI3BAKVHOY7RB",
+      "targetAmountBaseUnits": "50000000",
+      "fundingDeadline": 1789856000,
+      "releaseDeadline": 1790460800,
+      "deploymentTransaction": "787b112e43a3de89cac92d1ebddf5716087a409b7665ece19be4d325bc63c01a",
+      "bootstrapTransactions": [
+        "bb2f788853048fb5c017c5156a9b8bb43e0b4fb8d3427905cd9ec7cf3f9b1be6"
+      ],
+      "bootstrapState": "Funded"
+    },
+    {
+      "id": "kingston-solar",
+      "contractId": "CDIO5OOUS53NHT4IO6IVZDDK5VILKAKPTCVWFQDFPDYJSWIYESLOT75W",
+      "startup": "GB6SZQEQMUF3D3VRMZAHLBMUUVGLRP42MSJK4LIDQFJGXBF2XHKTNRSC",
+      "fundManager": "GB3ON5BVTZWFAECLLXY53AHJV63SNOXDXKATZ4RSOLOSVNANY3ECDNGP",
+      "releaseAuthority": "GD2TZUYYRP2RN5KOWN2NFNVSHYZR26UYHA2ADEF5BYDSI3BAKVHOY7RB",
+      "targetAmountBaseUnits": "50000000",
+      "fundingDeadline": 1789856000,
+      "releaseDeadline": 1790460800,
+      "deploymentTransaction": "13c4d7ecaa71686d9c09b6c085bd7ba2a805c556fb4c3042fbea526052f6a797",
+      "bootstrapTransactions": [
+        "95d43cb98e4fd1ee14e37a1cf5998215397eac460e02b7e2bd6b16b0ae275f35"
+      ],
+      "bootstrapState": "FundingOpen"
+    },
+    {
+      "id": "accra-agro",
+      "contractId": "CAVXSTQ53IEPBQMTPXQHPWE56KYHRK3VTOPHYT5DR4ZRCZUP7I4SSBQY",
+      "startup": "GBLGQLHVEFZUSXGMALCE65MYEL3YJHJY2C3MYI6R7NQGOESPPO7HJFXB",
+      "fundManager": "GB3ON5BVTZWFAECLLXY53AHJV63SNOXDXKATZ4RSOLOSVNANY3ECDNGP",
+      "releaseAuthority": "GD2TZUYYRP2RN5KOWN2NFNVSHYZR26UYHA2ADEF5BYDSI3BAKVHOY7RB",
+      "targetAmountBaseUnits": "50000000",
+      "fundingDeadline": 1788647200,
+      "releaseDeadline": 1788733200,
+      "deploymentTransaction": "268b5570e5b120ca44a82fbb9486cbe1ecf64f7fe3e035843989b77e40a0ae37",
+      "bootstrapTransactions": [
+        "785b7516b57eba385479b3263a3a9c684323be141c33ed075a85df952798722f"
+      ],
+      "bootstrapState": "FundingOpen"
+    }
+  ],
+  "signingMaterial": {
+    "includedHere": false,
+    "rule": "Team members sign with their own Freighter accounts. Operator-only Testnet identities stay in the local Stellar secure store."
+  }
+}

@@ -4,16 +4,15 @@
 
 | Field             | Value                                                          |
 | ----------------- | -------------------------------------------------------------- |
-| Status            | Approved V1 contract specification and implementation handoff  |
+| Status            | Approved V1 Testnet contract and application demo handoff      |
 | Audience          | Kori developers, reviewers, and coding agents                  |
 | Scope             | Stellar/Soroban blockchain path and its application boundaries |
-| Last verified     | 2026-08-27                                                     |
+| Last verified     | 2026-09-06                                                     |
 | Target network    | Stellar Testnet only for the MVP                               |
 | Production status | Not production-ready; no real funds                            |
 
-This document is the blockchain product and implementation reference. It
-supersedes older blockchain sections that prescribe Ethereum Sepolia, MetaMask,
-or Safe. It does not turn an item marked **OPEN** or **PROPOSED** into an
+This document is the authoritative Stellar/Soroban product and implementation
+reference. It does not turn an item marked **OPEN** or **PROPOSED** into an
 approved product decision.
 
 ## 1. How to use this PRD
@@ -33,17 +32,15 @@ Source precedence:
    [FigJam architecture](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data?node-id=0-1).
 2. Contract code and tests for implementation truth, not product intent.
 3. Latest relevant team meetings and reviewed product flows.
-4. [Architecture migration notes](./ARCHITECTURE_MIGRATION.md).
-5. Older Sepolia/EVM documents, which are historical references only.
+4. Official Stellar documentation for network and tooling details.
 
 When sources conflict, do not silently choose one. Record the conflict here and
 obtain a decision from the responsible product, blockchain, or legal owner.
 
 ### Agent/developer boot sequence
 
-1. Read [`AGENTS.md`](../../AGENTS.md), this PRD, the package
-   [README](./README.md), and the
-   [architecture migration notes](./ARCHITECTURE_MIGRATION.md).
+1. Read [`AGENTS.md`](../../AGENTS.md), this PRD, and the package
+   [README](./README.md).
 2. Inspect `git status`, the current branch, and recent commits. Preserve
    unrelated or pre-existing changes.
 3. Read the [contract](./contracts/kori-deal-escrow/src/lib.rs) and
@@ -58,9 +55,10 @@ obtain a decision from the responsible product, blockchain, or legal owner.
 ## 2. Executive summary
 
 Kori demonstrates milestone-based private-market investment funding. Investors
-fund a deal-specific escrow, a startup submits milestone evidence, AI provides
-off-chain advice, a Fund Manager makes the human evidence decision, and a
-separate release quorum authorizes the payout.
+fund a deal-specific escrow, a startup submits milestone evidence, a Fund
+Manager makes the human evidence decision, and a separate release quorum
+authorizes the payout. AI advisory is a future off-chain capability and is not
+implemented in the V1 demo.
 
 The selected Stellar model is:
 
@@ -70,8 +68,8 @@ The selected Stellar model is:
 3. Reaching the exact target closes funding; overfunding is rejected.
 4. Kori hashes a canonical source-evidence manifest, and the startup signs
    submission of that manifest hash.
-5. AI and human-review records are stored separately off-chain and reference the
-   confirmed manifest hash and version; they never change its preimage.
+5. Any future AI and human-review records remain separate off-chain references
+   to the confirmed manifest hash/version; they never change its preimage.
 6. The Fund Manager/Lead Investor approves that exact manifest hash and version.
 7. The Investor Representative plus either the Lead Investor or Kori Release
    Officer authorizes the exact payout through a weighted Stellar G-account.
@@ -87,11 +85,11 @@ mislabelled as funded capital.
 
 | ID     | Status      | Decision                                                                                                                                                                                                                           |
 | ------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AD-001 | **DECIDED** | New blockchain work targets Stellar/Soroban. EVM remains a historical reference implementation.                                                                                                                                    |
+| AD-001 | **DECIDED** | The blockchain implementation targets Stellar/Soroban only.                                                                                                                                                                       |
 | AD-002 | **DECIDED** | Each deal uses contract custody: USDC is held at the `DealEscrow` C-address.                                                                                                                                                       |
 | AD-003 | **DECIDED** | Investor funding is an actual SAC transfer, not a deferred `approve`/allowance or delegated wallet pull.                                                                                                                           |
 | AD-004 | **DECIDED** | The MVP accepts one configured USDC SAC; asset identity includes the network and contract address.                                                                                                                                 |
-| AD-005 | **DECIDED** | MVP scope is one deal, one startup, one milestone, and one full release.                                                                                                                                                           |
+| AD-005 | **DECIDED** | Each V1 escrow links to one SPV and covers one deal, startup, milestone, and full release. Three deployments preserve the funding, release, and refund checkpoints; these are scenarios, not roles.                                   |
 | AD-006 | **DECIDED** | Fund Manager is a contextual community/deal role held by an investor, not a global `User.isFundManager` identity.                                                                                                                  |
 | AD-007 | **DECIDED** | Human evidence approval and financial release authorization are separate responsibilities.                                                                                                                                         |
 | AD-008 | **DECIDED** | AI is advisory only and has no on-chain address, key, approval, or release power.                                                                                                                                                  |
@@ -106,6 +104,7 @@ mislabelled as funded capital.
 | AD-017 | **DECIDED** | V1 uses `minimum = target = maximum`; target is the full release amount and contributions above it are rejected.                                                                                                                   |
 | AD-018 | **DECIDED** | If the Lead disappears before approval, the startup is not paid; the deal becomes refundable at the release deadline.                                                                                                              |
 | AD-019 | **DECIDED** | The on-chain evidence hash commits only to the canonical source-evidence manifest. AI review and Fund Manager decision records are downstream, append-only references to that hash/version and are never included in its preimage. |
+| AD-020 | **DECIDED** | Each demo startup payout/evidence account is distinct from the Fund Manager, release authority, and every release signer.                                                                                                          |
 
 ## 4. Product boundary
 
@@ -234,15 +233,22 @@ account configuration enforces the underlying pair.
 
 ### Kori off-chain platform
 
-- Web application and API.
-- Wallet connection, transaction simulation, assembly, signing, and submission.
-- Operational database containing projections, not an alternative money ledger.
-- Private evidence object store and canonical, versioned evidence manifests.
-- Separate append-only AI review and human decision records that reference a
-  manifest hash/version.
+Implemented for V1:
+
+- Web application and authenticated/public deal workspaces.
+- Wallet connection, transaction simulation, assembly, signing, submission,
+  confirmation polling, and direct ledger reads.
+- Browser-local/exportable canonical evidence manifests.
+- Product roles and self-declared investment eligibility; no KYC workflow.
+
+Deferred platform hardening:
+
+- Operational database projections, never an alternative money ledger.
+- Private evidence object storage and shared manifest persistence.
+- Append-only AI review and human decision records that reference a manifest
+  hash/version.
 - AI advisory service with no wallet or on-chain authority.
 - Stellar event indexer with replay and deduplication.
-- Eligibility controls and role assignments.
 
 ### Legal/compliance
 
@@ -284,7 +290,8 @@ are solved.
 8. A contribution exceeding the target is rejected; reaching the target moves
    the deal atomically to `Funded`.
 9. DealEscrow emits `Funded` and, when applicable, `FundingCompleted`.
-10. The indexer records events only after successful confirmed execution.
+10. A future indexer records events only after successful confirmed execution;
+    V1 reads confirmed state directly through Soroban RPC.
 11. The UI derives “funded” from confirmed chain evidence, never from a pending
     database row, allowance, signature request, or commitment.
 
@@ -296,14 +303,15 @@ are solved.
 3. The app reads the current chain version. The startup signs
    `submit_evidence(manifest_hash)`; a confirmed invocation assigns the next
    on-chain evidence version.
-4. Kori records the confirmed hash, version, transaction, and ledger. A failed
-   or stale submission remains an unanchored draft and is not current evidence.
-5. AI may read the exact anchored source package and write an append-only
+4. V1 displays the confirmed hash/version and transaction in the active browser
+   session. Durable shared recording is deferred. A failed or stale submission
+   remains an unanchored draft and is not current evidence.
+5. In a future iteration, AI may read the exact anchored source package and write an append-only
    `AIReviewRecord` referencing the same hash/version. An AI failure or omission
    does not block human review, approval, release timeout, or refunds.
-6. The Fund Manager inspects the source evidence and any matching advisory
-   record, then writes a separate append-only `HumanDecisionRecord` referencing
-   that hash/version.
+6. The Fund Manager inspects the matching exported manifest and source files.
+   Durable `HumanDecisionRecord` persistence and any advisory record are
+   deferred; neither is required for the V1 on-chain approval.
 7. A rejection remains off-chain and may lead to a new evidence revision. An
    approval requires the Fund Manager to sign
    `approve_milestone(manifest_hash, evidence_version)`.
@@ -322,7 +330,8 @@ are solved.
    recipient, and current state.
 4. DealEscrow marks the terminal state and transfers USDC atomically.
 5. DealEscrow emits `Released` with the amount and evidence reference.
-6. The indexer projects the confirmed state and transaction identifiers.
+6. V1 refreshes confirmed state directly through Soroban RPC. A future indexer
+   projects transaction identifiers and history durably.
 
 The approval is immutable and the release authorization is bound to the exact
 contract invocation. Kori cannot create the prerequisite Lead approval.
@@ -470,7 +479,18 @@ hash/version. No later record is part of its preimage.
 | `HumanDecisionRecord` | After human inspection             | manifest hash/version, Fund Manager, decision, reason, optional AI review ID/output hash, timestamp                                                   |
 | `MilestoneApproval`   | After `approve_milestone` confirms | manifest hash/version, Fund Manager, exact release amount, transaction, ledger, timestamp                                                             |
 
-V1 manifest hashing requirements:
+Current V1 browser-manifest requirements:
+
+- include schema version, deal/contract/milestone identifiers, submitter,
+  statement, fixed creation time, and sorted file name/MIME/size/SHA-256 records;
+- canonicalize object keys and file ordering deterministically, then hash the
+  UTF-8 JSON with SHA-256 into the contract's `BytesN<32>`;
+- bound statements, identifiers, file count, aggregate source size, and imported
+  JSON size before processing;
+- permit approval only after the imported manifest matches the current on-chain
+  hash and the selected deal, milestone, and startup.
+
+Durable post-demo manifest requirements:
 
 - encode the manifest as UTF-8 JSON canonicalized with RFC 8785 JCS;
 - hash the canonical bytes with SHA-256 into the contract's `BytesN<32>`;
@@ -496,31 +516,12 @@ Evidence URIs must not expose private documents publicly, and deleting a
 document must follow the legal retention policy rather than silently breaking
 the audit trail.
 
-**Status:** this non-circular model is **DECIDED** and **REQUIRED** for the app,
-database, and AI integration. The current contract is compatible because it
-stores the digest as opaque data, but the application implementation is still
-deferred.
+**Status:** the non-circular hash boundary and bounded browser manifest are
+**IMPLEMENTED**. Shared object storage, prior-manifest lineage, durable AI/human
+records, and database enforcement of the full post-demo model are **DEFERRED**.
+The contract is compatible because it stores the digest as opaque data.
 
-## 13. EVM-to-Stellar mapping
-
-| EVM mental model                       | Stellar/Soroban model                                         | Kori implication                                                                              |
-| -------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| ERC-20 token contract                  | Stellar Asset Contract (SAC) implementing SEP-41              | Configure the exact USDC SAC per network.                                                     |
-| `approve` then `transferFrom`          | `require_auth` plus nested SAC transfer in one invocation     | One investor signing interaction can produce real funding; no standing allowance is required. |
-| EOA                                    | G-account                                                     | Investor, startup, and native multisig use G-addresses.                                       |
-| Contract address                       | C-address                                                     | DealEscrow holds USDC at its C-address.                                                       |
-| `msg.sender` checks                    | `Address::require_auth()`                                     | Host verifies authorization and replay protection.                                            |
-| Safe as authorized caller              | Native Stellar G-account with signer weights/medium threshold | Multisig account authorizes `release`; it need not hold the funds.                            |
-| Solidity revert                        | Soroban error/panic with atomic rollback                      | Storage and SAC calls revert together.                                                        |
-| Hardhat/Anvil node                     | Quickstart                                                    | Full local RPC/Core/Horizon/Friendbot integration requires Quickstart.                        |
-| Foundry unit test                      | Soroban embedded host plus mock ledger                        | Fast contract-level tests are not proof of network/client integration.                        |
-| Persistent contract storage assumption | Instance/Persistent storage with TTL and archival             | Add TTL maintenance and restoration operations.                                               |
-| Long-lived event provider              | RPC with bounded event retention                              | Run an indexer and deduplicate events.                                                        |
-
-Do not assume EVM USDC's six decimals. Use SAC base units and verify the
-configured token's `decimals()` value in client and integration tests.
-
-## 14. Current implementation truth
+## 13. Current implementation truth
 
 ### Code baseline
 
@@ -537,6 +538,17 @@ configured token's `decimals()` value in client and integration tests.
   refunds, recovery release, evidence replacement/surplus isolation, and
   failed-payout rollback followed by public timeout recovery. Evidence is in
   [`TESTNET_ASSURANCE_REPORT.md`](./TESTNET_ASSURANCE_REPORT.md).
+- Three additional deal-specific escrows back the application UI: Kigali is
+  fully funded, Kingston is open for funding, and Accra is deliberately
+  underfunded past its deadline. Their immutable configuration and bootstrap
+  transactions are in
+  [`deployments/testnet-mvp-ui-v1.json`](./deployments/testnet-mvp-ui-v1.json).
+- Kigali was redeployed with a dedicated startup account and live-funded to
+  5/5 USDC; no startup account overlaps an approval or release signer.
+- The root Next.js workspace implements live chain reads and all five V1
+  actions through Freighter: funding, evidence submission, approval, weighted
+  release, and permissionless refunds. Its verified boundary is documented in
+  [`TESTNET_MVP_UI_REPORT.md`](./TESTNET_MVP_UI_REPORT.md).
 
 ### Implemented API
 
@@ -588,12 +600,12 @@ account works end-to-end.
 | Area                                           | Score | Reason                                                                                                       |
 | ---------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------ |
 | Selected custody/authority design for the demo | 9/10  | V1 policy, recovery/refund behavior, and live weighted-account authorization are explicit and verified.      |
-| Current code coverage of the FigJam target     | 8/10  | On-chain V1 core is implemented; off-chain evidence, indexer, UI, and E2E integration remain.                |
+| Current code coverage of the FigJam V1 target  | 9/10  | Contract and interactive UI cover the full transaction cycle; durable evidence/event projection remains.    |
 | Raw Testnet deployment readiness               | 10/10 | The exact Wasm, USDC SAC, weighted accounts, deployments, transactions, and balances are live-verified.      |
-| Complete Testnet demo readiness                | 8/10  | On-chain flows are verified and a clean sandbox is live; frontend/indexer integration remains.               |
+| Interactive Testnet demo readiness             | 8/10  | Three staged escrows and the complete Freighter surface are ready; a fresh multi-wallet UI rehearsal remains a presenter action. |
 | Production readiness                           | 3/10  | Testnet contract hardening improved; audit, legal model, operations, and Mainnet controls remain unresolved. |
 
-## 15. Required test strategy
+## 14. Required test strategy
 
 ### Level 1: embedded host
 
@@ -624,7 +636,7 @@ Run the same business sequence with the verified Testnet USDC SAC, record every
 address and transaction, and verify balances independently. Testnet success is
 not a security audit or Mainnet approval.
 
-## 16. Development and validation
+## 15. Development and validation
 
 Run from `packages/stellar-contracts`:
 
@@ -654,7 +666,7 @@ stellar container start local
 stellar container stop local
 ```
 
-## 17. Build plan and acceptance gates
+## 16. Build plan and acceptance gates
 
 ### Gate A: resolve product/security inputs
 
@@ -712,27 +724,37 @@ balances, events, and known limitations are published in a Testnet runbook.
 
 ### Gate E: application and data integration
 
-**Current demo slice:** the root Next.js investor dashboard now reads the active
-Testnet escrow, connects Freighter, simulates and signs `fund`, submits through
-Stellar RPC, polls to a final result, and displays the transaction hash and
-confirmed ledger. The deployment is recorded in
-[`deployments/testnet-web3-demo-v1.json`](./deployments/testnet-web3-demo-v1.json).
-This does not complete the evidence, approval, release, refund, projection, or
-indexer work below.
+**Status: IMPLEMENTED; final multi-wallet browser rehearsal pending.**
 
-- Add Stellar wallet/client support to the root Next.js application through a
-  server-enforced adapter under `src/lib` and narrowly scoped UI components.
-- Simulate before requesting signatures; assemble using RPC results.
-- Display exact network, asset, amount, contract, and recipient.
-- Implement private evidence storage and the Section 12 canonical manifest
-  pipeline.
-- Implement separate `AIReviewRecord` and `HumanDecisionRecord` persistence with
-  provenance and strict manifest hash/version matching.
-- Implement indexer, deduplication, reorg/result handling, and DB projection.
-- Replace misleading EVM/Safe simulator language in the active Stellar flow.
+- **DONE:** Three selectable SPVs map to three real Testnet `DealEscrow`
+  contracts through public environment-overridable IDs.
+- **DONE:** The UI reads contract state/config/accounting and the live USDC SAC
+  escrow balance; no displayed blockchain metric is a frontend mock.
+- **DONE:** Any Testnet investor can simulate, sign, submit, and confirm `fund`.
+- **DONE:** The configured startup builds a deterministic source-evidence
+  manifest locally, hashes files, exports the manifest, and anchors its hash.
+- **DONE:** The Fund Manager imports and hash-verifies the exact manifest before
+  signing approval.
+- **DONE:** Release packages are bound to the selected contract, approved
+  hash/version, exact amount, release source account, one invocation, and a
+  15-minute time bound. The client rejects altered transaction bodies, memos,
+  operation-source overrides, excessive fees, and overlong/expired packages.
+  Signer weight derives from cryptographically verified transaction signatures.
+- **DONE:** Any connected wallet can open or claim an eligible refund, but funds
+  can only return to the original contributor.
+- **DONE:** Submission waits for RPC `SUCCESS`, refreshes ledger state, and
+  displays the transaction hash and ledger.
+- **DEFERRED:** Supabase evidence-file storage, shared manifest persistence,
+  durable transaction/event projection, idempotent ingestion/replay, and
+  closed-browser recovery.
+- **DEFERRED:** `AIReviewRecord` integration; AI is not part of the V1 demo and
+  cannot block the human or timeout paths.
 
-**Exit:** the UI executes the real Testnet flow and clearly labels mocked versus
-live components.
+**Exit:** code, deterministic tests, live reads, and non-wallet browser QA are
+complete. Before presenting the UI path as fully rehearsed, the team must run
+the role-wallet steps through Freighter once on the staged contracts. Durable
+backend projection is a post-demo iteration and must not be represented as
+implemented.
 
 ### Gate F: production consideration
 
@@ -760,7 +782,7 @@ These items must not alter V1 acceptance criteria:
 - community deal-selection voting, production eligibility controls, fee
   sponsorship, TTL automation, and advanced multi-deal indexer operations.
 
-## 18. Testnet configuration reference
+## 17. Testnet configuration reference
 
 As verified from official Stellar documentation on 2026-08-25:
 
@@ -771,8 +793,9 @@ As verified from official Stellar documentation on 2026-08-25:
 | SEP-41/SAC address | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` |
 
 Re-verify these values before every deployment. Asset code alone is not an
-identity. Testnet may reset and clear accounts, trustlines, balances, contracts,
-and history; deployment must be reproducible.
+identity. Read the configured SAC's `decimals()` value instead of hardcoding
+display precision. Testnet may reset and clear accounts, trustlines, balances,
+contracts, and history; deployment must be reproducible.
 
 After explicit deployment authorization, the standard account bootstrap is:
 
@@ -788,7 +811,7 @@ production. Any historically exposed Testnet fixture is permanently
 compromised. Add an audited deployment script/runbook before relying on copied
 terminal history.
 
-## 19. Security, custody, and legal constraints
+## 18. Security, custody, and legal constraints
 
 - Contract custody is still custody/control by code; do not call it
   “non-custodial” without a precise legal and technical definition.
@@ -804,7 +827,7 @@ terminal history.
 - AI findings must be labelled advisory, traceable, and reviewable by the human
   approver.
 
-## 20. Remaining decision register
+## 19. Remaining decision register
 
 | Decision                                                          | Owner                   | Blocking                        |
 | ----------------------------------------------------------------- | ----------------------- | ------------------------------- |
@@ -818,28 +841,30 @@ terminal history.
 | SPV-to-deal legal relationship and authoritative ownership ledger | Legal                   | Production consideration        |
 | Community deal-selection voting/quorum                            | Product + Backend       | Community governance flow       |
 
-## 21. Definition of done for the Testnet MVP
+## 20. Definition of done for the Testnet MVP
 
-The MVP is done only when:
+The interactive blockchain MVP is done when:
 
-- one reviewed escrow is reproducibly deployed to Testnet;
+- three reviewed deal-specific escrows are reproducibly identified on Testnet;
 - one or more investors fund it with verified Testnet USDC through signed
   invocations;
-- confirmed contributions reconcile with SAC transfers and indexed events;
-- a founder evidence package is stored privately and its canonical source-only
-  manifest hash/version is confirmed on-chain;
-- when AI review is enabled, it produces a separate advisory record bound to
-  that exact hash/version without becoming a release prerequisite;
-- the assigned Fund Manager records a separate decision and approves that exact
-  manifest hash/version;
+- confirmed contributions reconcile with SAC transfers and direct chain reads;
+- a founder creates and exports a canonical source-only evidence manifest and
+  its hash/version is confirmed on-chain;
+- the assigned Fund Manager verifies that exact manifest and approves its
+  hash/version;
 - the verified weighted G-account authorizes the exact release;
 - the contract pays the immutable startup address once and cannot replay;
-- the UI and database show confirmed network state and transaction references;
+- the UI shows confirmed network state and transaction references;
 - failure paths and any approved refund path are demonstrated;
 - all validation commands pass and a clean-machine runbook reproduces the flow;
 - every screen and document states Testnet/demo limitations accurately.
 
-## 22. Change protocol for humans and agents
+Shared evidence storage, database projection, and AI advisory are not V1 demo
+acceptance criteria. They remain explicitly deferred and must be completed
+before claiming durable multi-user application operations.
+
+## 21. Change protocol for humans and agents
 
 Every blockchain pull request must state:
 
@@ -856,18 +881,18 @@ only when the relevant deterministic test passes and documentation reflects the
 actual behavior. A Git push is not proof of deployment, and a deployment is not
 proof of application integration or production readiness.
 
-## 23. References
+## 22. References
 
 ### Kori sources
 
 - [Current Stellar custody, governance, and data FigJam](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data?node-id=0-1)
+- [Product ERD and investor, Fund Manager, and founder flows](https://www.figma.com/board/lwcnxVqOFU8Nys8OBTykYC/Kori-%E2%80%94-ERD-du-noyau-d%E2%80%99investissement?node-id=0-1)
 - [MVP user-flow meeting — 2026-07-23](https://app.fireflies.ai/view/01KY2H5EJH7N7FPRT1NXSVTJMZ)
 - [Kori team meeting — 2026-08-15](https://app.fireflies.ai/view/01M03GVGWMKS5693AV2HQ0QJR2)
 - [Kori Standup — 2026-08-17](https://app.fireflies.ai/view/01M08XMKEP2EPQ9GVX48FXZY61)
 - [Smart contract meeting — 2026-08-19](https://app.fireflies.ai/view/01M0E54WP3C6NE0XWRHQVPGCQH)
 - [Allocation/transaction worksheet](https://docs.google.com/spreadsheets/d/1RMGdhWMD8l1NyNhiEonpSnoI0LrQFO2rLUqFsrwbMVo/edit?gid=0#gid=0) — access-controlled supplemental context; not used as an authoritative live source in this verification pass.
 - [Stellar package README](./README.md)
-- [EVM-to-Stellar migration notes](./ARCHITECTURE_MIGRATION.md)
 - [Soroban contract](./contracts/kori-deal-escrow/src/lib.rs)
 - [Soroban tests](./contracts/kori-deal-escrow/src/test.rs)
 
@@ -883,9 +908,3 @@ proof of application integration or production readiness.
 - [State archival and TTL](https://developers.stellar.org/docs/learn/fundamentals/contract-development/storage/state-archival)
 - [RPC event retention](https://developers.stellar.org/docs/data/apis/rpc/api-reference/methods/getEvents)
 - [Event ingestion](https://developers.stellar.org/docs/build/guides/events/ingest)
-
-### Historical implementation context
-
-Historical EVM, Sepolia, MetaMask, and Safe material may remain in Git history
-or external project notes. It is comparison material and must not override this
-PRD for active blockchain implementation.

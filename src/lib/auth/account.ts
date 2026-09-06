@@ -12,7 +12,8 @@ export type KoriOnboardingPath =
 export type KoriAuthRedirectPath =
   | "/onboarding/investor"
   | "/onboarding/founder"
-  | "/profile";
+  | "/profile"
+  | "/dashboard";
 
 type EmailAccountInput = {
   email: string;
@@ -142,6 +143,7 @@ export async function signInEmailPassword({
 
 export async function startSocialSignIn(
   provider: KoriSocialProvider,
+  next: KoriAuthRedirectPath = "/dashboard",
 ) {
   const supabase = createClient();
 
@@ -149,7 +151,7 @@ export async function startSocialSignIn(
     "/auth/callback",
     window.location.origin,
   );
-  redirect.searchParams.set("next", "/profile");
+  redirect.searchParams.set("next", next);
 
   const result = await supabase.auth.signInWithOAuth({
     provider,

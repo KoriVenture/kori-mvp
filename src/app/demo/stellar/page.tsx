@@ -1,8 +1,8 @@
-import { DealFundingPanel } from "@/components/stellar/DealFundingPanel";
+import { DealLifecycleWorkspace } from "@/components/stellar/DealLifecycleWorkspace";
 
 export const metadata = {
   title: "Stellar Testnet demo · Kori",
-  description: "Fund the Kori DealEscrow with signed Testnet USDC.",
+  description: "Run the complete Kori deal lifecycle on Stellar Testnet.",
 };
 
 export default function StellarDemoPage() {
@@ -10,13 +10,13 @@ export default function StellarDemoPage() {
     <main className="stellar-demo-page">
       <header className="stellar-demo-intro">
         <p>KORI · BLOCKCHAIN DEMONSTRATION</p>
-        <h1>Investor funding on Stellar</h1>
+        <h1>Three SPVs. One complete on-chain lifecycle.</h1>
         <span>
-          This isolated route exposes the same live funding component used in
-          the authenticated investor dashboard.
+          Fund, anchor evidence, approve, co-sign a release, or exercise the
+          deterministic refund path without relying on mock blockchain data.
         </span>
       </header>
-      <DealFundingPanel />
+      <DealLifecycleWorkspace />
     </main>
   );
 }
