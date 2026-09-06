@@ -13,9 +13,9 @@ import {
 const manifest: EvidenceManifest = {
   schemaVersion: 1,
   dealId: "kigali-transport",
-  contractId: "CC3XSKZRZU773NVC7XXO2FVKN3GGPD63OX3BBWAOQCFJYKMUTNONHHGL",
+  contractId: "CBFWI4HBRQUXCARAADDGIYK355CQB3LUGC5EBX5LSC4EVWTRWYO2OJTV",
   milestone: "Signed off-take agreement",
-  submitter: "GDTMTVD7IMBV5MVYDA42KM7R4DZXOPNKH6Y7RUKJN3DXNSOBUS6CKEUQ",
+  submitter: "GDOZZLZU7I4P7CFPNE46PB6ZLLDBSIHJEIWLNCEXHGLBR5BYZ6KNNCDN",
   statement: "The signed agreement and revenue proof are attached.",
   createdAt: "2026-09-05T18:00:00.000Z",
   files: [

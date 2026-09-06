@@ -1,10 +1,9 @@
 # Kori Stellar Contracts
 
 Soroban V1 for one deal per contract, one milestone and one exact USDC release. It
-implements the on-chain core of the current [Stellar architecture](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data)
-while retaining EVM material only as historical context. See the
-[Stellar/Soroban PRD](./PRD.md) for the complete target, current gaps and build
-order.
+implements the on-chain core of the current [Stellar architecture](https://www.figma.com/board/FlcuMidYV5TAuMDfBc8l6o/Kori-Stellar-Architecture-%E2%80%94-Custody--Governance-and-Data).
+See the [Stellar/Soroban PRD](./PRD.md) for the complete target, current gaps and
+build order.
 
 For fast AI-assisted or nontechnical exploration, start with
 the [Kori Blockchain Copilot Space](https://github.com/copilot/spaces/KoriVenture/2)
@@ -64,12 +63,12 @@ target/wasm32v1-none/release/kori_deal_escrow.wasm
 | Quickstart local network | Full local Stellar Core, RPC, Horizon and Friendbot          | Stellar CLI + Docker                  |
 | Public Testnet           | Shared network with real G/C addresses and transactions      | Stellar CLI + funded Testnet accounts |
 
-### EVM developer mental model
+### Soroban local test model
 
 `cargo test` runs contracts against Soroban's embedded host and a programmable
-mock ledger. It is the fast, contract-level equivalent of Foundry unit tests,
-not an Anvil/Hardhat node: there is no RPC, consensus, transaction propagation
-or persistent chain. Use Quickstart for full local-network integration.
+mock ledger. It is a fast contract-level environment, not a full Stellar node:
+there is no RPC, consensus, transaction propagation, or persistent chain. Use
+Quickstart for full local-network integration.
 
 The repository currently automates only the first level. Quickstart is available
 but is not wired into Kori scripts yet:
@@ -89,6 +88,8 @@ when the SAC rejects a payout or refund.
 - The application maps three demo SPVs to separate `DealEscrow` instances, one
   per irreversible checkpoint: funding, release, and refund. These are
   scenarios, not roles.
+- Every demo startup account is distinct from the Fund Manager, release
+  authority, and release signers.
 - `/demo/stellar` runs without Supabase; `/dashboard` exposes the same lifecycle
   after investor or founder onboarding.
 - Freighter supports live funding, startup evidence anchoring, Fund Manager
@@ -142,5 +143,5 @@ or send Mainnet assets to its address. Treat any historically exposed Testnet
 fixture as permanently compromised. Stellar keys are not cryptographically
 restricted to one network.
 
-See [ARCHITECTURE_MIGRATION.md](./ARCHITECTURE_MIGRATION.md) for implemented
-invariants and deferred work. Do not use real funds or deploy to Mainnet.
+See the [PRD](./PRD.md) for implemented invariants and deferred work. Do not use
+real funds or deploy to Mainnet.

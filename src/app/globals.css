@@ -65,11 +65,13 @@
   background: var(--ko-ivory);
 }
 .ko-screen--create { min-height: 1042px; }
+.ko-screen--login { min-height: 900px; }
 .ko-screen--secure { min-height: 900px; }
 .ko-screen--profile { min-height: 1328px; }
 .ko-screen--preferences { min-height: 1460px; }
 .ko-screen--eligibility { min-height: 1520px; }
 .ko-screen--review { min-height: 1564px; }
+.ko-screen--founder { min-height: 1240px; }
 
 .ko-editorial {
   min-height: 100%;
@@ -236,6 +238,9 @@
 }
 .ko-create-form { gap: 20px; }
 .ko-long-form { gap: 32px; }
+.ko-login-form { margin-block: auto; gap: 28px; }
+.ko-sign-in-form { display: flex; flex-direction: column; gap: 20px; }
+.ko-founder-form { padding-bottom: 64px; }
 .ko-intro h1 {
   margin: 0;
   color: var(--ko-midnight);
@@ -375,6 +380,7 @@
   color: var(--ko-midnight);
 }
 .ko-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ko-actions--single { grid-template-columns: 1fr; }
 .ko-disclaimer { color: var(--ko-copy); font-size: 11px; line-height: 1.4; }
 .ko-consents { display: flex; flex-direction: column; gap: 12px; }
 .ko-consents label {
@@ -419,6 +425,7 @@
 .ko-security-choices { display: flex; flex-direction: column; gap: 12px; }
 .ko-security-choices h2 { margin: 0; font-size: 16px; }
 .ko-security-choices p { margin: 4px 0 0; color: var(--ko-copy); font-size: 13px; }
+.ko-section > p { margin: 0; color: var(--ko-copy); font-size: 13px; line-height: 1.5; }
 .ko-choice {
   width: 100%;
   padding: 16px;
@@ -535,6 +542,8 @@
 }
 .ko-why img { width: 16px; height: 16px; }
 .ko-why p { margin: 0; color: var(--ko-copy); line-height: 1.4; }
+.ko-why--stacked { grid-template-columns: auto 1fr; }
+.ko-why--stacked > div { display: grid; gap: 4px; }
 .ko-choice-list { display: flex; flex-direction: column; gap: 8px; }
 .ko-guidance { padding: 14px; border-radius: 6px; background: rgba(4,156,159,.1); color: var(--ko-teal); font-size: 13px; line-height: 1.4; }
 .ko-segmented { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
@@ -576,6 +585,16 @@
 .ko-signature-date { display: flex; justify-content: space-between; color: var(--ko-copy); font-size: 12px; }
 .ko-signature-date code { color: var(--ko-midnight); font: 12px "IBM Plex Mono", monospace; }
 .ko-signature-card > p { margin: 0; color: var(--ko-muted); font-size: 12px; line-height: 1.4; }
+.ko-founder-upload {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid var(--ko-border);
+  border-radius: 8px;
+  background: #fff;
+}
+.ko-founder-upload > small { color: var(--ko-copy); font-size: 12px; }
 
 .ko-completion { min-height: 900px; padding: 64px; background: var(--ko-midnight); color: #fff; display: flex; flex-direction: column; gap: 48px; align-items: center; }
 .ko-completion__mark { display: flex; flex-direction: column; gap: 24px; align-items: center; }
@@ -2455,6 +2474,42 @@ blockquote.pull cite {
   text-decoration:none;
   font:700 9px "IBM Plex Mono",monospace;
 }
+.stellar-scenario-guide{
+  padding:18px;
+  display:grid;
+  grid-template-columns:minmax(220px,.8fr) minmax(320px,1.4fr);
+  gap:16px 24px;
+  border:1px solid #e5dec9;
+  border-left:4px solid #f5513e;
+  border-radius:9px;
+  background:#fffaf5;
+}
+.stellar-scenario-guide header{display:grid;gap:7px;align-content:start}
+.stellar-scenario-guide header>span{
+  color:#f5513e;
+  font:700 8px "IBM Plex Mono",monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.stellar-scenario-guide header>strong{color:#172829;font:700 13px/1.45 "Manrope",sans-serif}
+.stellar-scenario-guide header>small{color:#596a6a;font:500 10px/1.45 "Manrope",sans-serif}
+.stellar-scenario-guide ol{
+  margin:0;
+  padding-left:20px;
+  display:grid;
+  gap:7px;
+  color:#3f5050;
+  font:500 10px/1.5 "Manrope",sans-serif;
+}
+.stellar-scenario-guide>p{
+  grid-column:1/-1;
+  margin:0;
+  padding-top:11px;
+  border-top:1px solid #eadfd1;
+  color:#3f5050;
+  font:500 10px/1.5 "Manrope",sans-serif;
+}
+.stellar-scenario-guide>p strong{color:#087d80}
 .stellar-chain-summary{
   padding:14px 16px;
   display:flex;
@@ -2629,6 +2684,14 @@ blockquote.pull cite {
   font:600 8px/1.45 "IBM Plex Mono",monospace;
 }
 .stellar-action-card>small{color:#86662d;font:500 9px/1.4 "Manrope",sans-serif}
+.stellar-action-card>.stellar-action-hint{
+  margin-top:auto;
+  padding:9px 10px;
+  border-radius:5px;
+  color:#526464;
+  background:#f4f8f7;
+  font:600 9px/1.45 "IBM Plex Mono",monospace;
+}
 .stellar-file-button{display:block!important;position:relative;overflow:hidden}
 .stellar-file-button>span{color:inherit!important;font:inherit!important}
 .stellar-file-button>input{position:absolute;inset:0;opacity:0;cursor:pointer}
@@ -2678,6 +2741,8 @@ blockquote.pull cite {
   .stellar-deal-picker{border-right:0;border-bottom:1px solid #e5dec9}
   .stellar-demo-boundary{margin-top:8px}
   .stellar-lifecycle-main{padding:20px}
+  .stellar-scenario-guide{grid-template-columns:1fr}
+  .stellar-scenario-guide>p{grid-column:auto}
   .stellar-action-grid{grid-template-columns:1fr}
   .stellar-action-card--wide{grid-column:auto}
   .stellar-release-layout{grid-template-columns:1fr}

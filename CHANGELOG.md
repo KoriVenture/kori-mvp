@@ -12,13 +12,18 @@ Release entries below are based on the repository state and Git history availabl
 
 - Stellar/Soroban V1 deal escrow with exact-target funding, versioned evidence,
   weighted release authorization, and permissionless per-investor refunds.
+- Two public onboarding paths, a shared returning-user login, three guided
+  Testnet SPV scenarios, and the complete Freighter transaction workspace.
 - Contract tests, Testnet deployment evidence, assurance report, product
   requirements, FigJam mapping, and AI/Copilot source-of-truth guidance.
 
 ### Changed
 
-- New blockchain work now targets Stellar/Soroban; EVM/Sepolia/Safe material is
-  retained only as historical implementation context.
+- Blockchain implementation and documentation are consolidated on
+  Stellar/Soroban.
+- Kigali now uses a dedicated startup account that is separate from every
+  approval and release signer.
+- The test command now discovers every application test under `src/`.
 
 ### Security
 
@@ -63,8 +68,7 @@ Release entries below are based on the repository state and Git history availabl
 - Kori variants for shared Button, Card, Badge, StatusBadge, and Progress components.
 - Validated Kori light/dark transparent logo assets for the localized web application.
 - Vitest and Testing Library configuration covering locales, message parity, routing, shared styles, and UI variants.
-- Internal package foundations for domain logic, Supabase access, AI/document analysis, Web3/Safe clients, observability, and shared configuration.
-- Hardhat 3 project with `MockUSDC`, `KoriEscrow`, local escrow-flow tests, and retained sample Counter files.
+- Internal package foundations for domain logic, Supabase access, AI/document analysis, observability, and shared configuration.
 - Architecture, audit-fidelity, design-system, project-context, and implementation-plan documentation.
 - Faithful eleven-block Kori landing page, localized Stories and map-less Capital Map pages, and historical HTML redirects.
 - Addressable Fund Manager, Angel Investor, and Startup Founder dashboard shells with all 16 canonical subviews.

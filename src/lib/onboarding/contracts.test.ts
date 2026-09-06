@@ -16,6 +16,7 @@ test("public signup never accepts admin", () => {
 
 test("callback redirects are allowlisted", () => {
   assert.equal(safeRedirectPath("/onboarding/founder"), "/onboarding/founder");
+  assert.equal(safeRedirectPath("/dashboard"), "/dashboard");
   assert.equal(safeRedirectPath("https://evil.example"), "/profile");
 });
 

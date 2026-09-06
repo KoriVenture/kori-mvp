@@ -8,7 +8,7 @@ official Circle Stellar Testnet USDC. There is no KYC or AI step.
 
 | SPV | Contract | Intended starting point |
 | --- | --- | --- |
-| Logistic Transport Kigali | [`CC3X…HHGL`](https://stellar.expert/explorer/testnet/contract/CC3XSKZRZU773NVC7XXO2FVKN3GGPD63OX3BBWAOQCFJYKMUTNONHHGL) | `Funded`, 5/5 USDC; evidence → approval → release |
+| Logistic Transport Kigali | [`CBFW…OJTV`](https://stellar.expert/explorer/testnet/contract/CBFWI4HBRQUXCARAADDGIYK355CQB3LUGC5EBX5LSC4EVWTRWYO2OJTV) | `Funded`, 5/5 USDC; evidence → approval → release |
 | Solar Grid Kingston | [`CDIO…T75W`](https://stellar.expert/explorer/testnet/contract/CDIO5OOUS53NHT4IO6IVZDDK5VILKAKPTCVWFQDFPDYJSWIYESLOT75W) | `FundingOpen`, 1/5 USDC; open funding |
 | Agro-processing Accra | [`CAVX…SBQY`](https://stellar.expert/explorer/testnet/contract/CAVXSTQ53IEPBQMTPXQHPWE56KYHRK3VTOPHYT5DR4ZRCZUP7I4SSBQY) | Underfunded after deadline; refund path |
 

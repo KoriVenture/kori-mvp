@@ -10,7 +10,11 @@ type DashboardInvestor = {
   investor_type?: string | null;
 };
 
-type DashboardPersona = "Investor" | "Fund Manager" | "Startup Founder";
+type DashboardPersona =
+  | "Investor"
+  | "Fund Manager"
+  | "Startup Founder"
+  | "Kori Operator";
 
 function profilePhotoUrl(path: string | null | undefined) {
   if (!path) return null;
@@ -24,11 +28,13 @@ export function InvestorDashboardView({
   investor,
   persona,
   profileRole = "investor",
+  profileRoles = [],
 }: {
   profile: DashboardProfile;
   investor: DashboardInvestor | null;
   persona?: DashboardPersona;
-  profileRole?: "investor" | "founder";
+  profileRole?: "investor" | "founder" | "admin";
+  profileRoles?: string[];
 }) {
   const name = [profile.legal_first_name, profile.legal_last_name]
     .filter(Boolean)
@@ -78,7 +84,9 @@ export function InvestorDashboardView({
             </a>
           </div>
         </header>
-        <DealLifecycleWorkspace />
+        <DealLifecycleWorkspace
+          appPersona={`${activePersona}${profileRoles.length > 1 ? ` · ${profileRoles.join(" + ")}` : ""}`}
+        />
       </section>
     </main>
   );

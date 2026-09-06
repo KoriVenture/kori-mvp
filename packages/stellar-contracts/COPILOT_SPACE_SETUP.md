@@ -35,7 +35,6 @@ Add these repository sources:
 7. [`WEB3_DEMO_RUNBOOK.md`](./WEB3_DEMO_RUNBOOK.md)
 8. [`TESTNET_ASSURANCE_REPORT.md`](./TESTNET_ASSURANCE_REPORT.md)
 9. [`FIGMA_REFERENCE.md`](./FIGMA_REFERENCE.md)
-10. [`ARCHITECTURE_MIGRATION.md`](./ARCHITECTURE_MIGRATION.md)
 
 Attach the exact files above and refresh them whenever their repository revision
 changes. A Space answer must cite the source revision it relied on.

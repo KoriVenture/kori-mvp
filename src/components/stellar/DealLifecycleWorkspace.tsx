@@ -160,7 +160,11 @@ function lifecycleStepState(
   return "pending";
 }
 
-export function DealLifecycleWorkspace() {
+export function DealLifecycleWorkspace({
+  appPersona = "Public demo",
+}: {
+  appPersona?: string;
+}) {
   const [selectedDealId, setSelectedDealId] =
     useState<DemoDealId>("kigali-transport");
   const deal = getDemoDeal(selectedDealId);
@@ -703,6 +707,51 @@ export function DealLifecycleWorkspace() {
       investorPosition.refundableBaseUnits > 0n &&
       !isBusy,
   );
+  const fundingHint = !snapshot
+    ? "Waiting for the latest ledger state."
+    : !configurationMatches
+      ? "Blocked because the contract configuration does not match this SPV."
+      : !walletAddress
+        ? "Connect any Stellar Testnet wallet to fund this deal."
+        : snapshot.state !== "FundingOpen"
+          ? `Unavailable while the on-chain state is ${STATE_LABELS[snapshot.state]}.`
+          : deadlinePassed
+            ? "The immutable funding deadline has passed."
+            : `Ready for this wallet. Remaining capacity: ${formatUsdc(remaining ?? 0n)} USDC.`;
+  const evidenceHint = !snapshot
+    ? "Waiting for the latest ledger state."
+    : !["Funded", "EvidenceSubmitted"].includes(snapshot.state)
+      ? "Available after the escrow reaches its exact funding target."
+      : walletAddress !== snapshot.startup
+        ? `Switch Freighter to the configured startup wallet ${shortStellarAddress(snapshot.startup)}.`
+        : "Ready: build, export, then anchor the canonical source-evidence manifest."
+  const approvalHint = !snapshot
+    ? "Waiting for the latest ledger state."
+    : snapshot.state !== "EvidenceSubmitted"
+      ? "Available after the startup anchors an evidence manifest."
+      : walletAddress !== snapshot.fundManager
+        ? `Switch Freighter to the assigned Fund Manager ${shortStellarAddress(snapshot.fundManager)}.`
+        : !evidenceMatches
+          ? "Import the exact exported manifest before signing approval."
+          : "Ready: the imported manifest matches the current on-chain hash and version.";
+  const releaseHint = !snapshot
+    ? "Waiting for the latest ledger state."
+    : snapshot.state !== "Approved"
+      ? "Available after the Fund Manager approval is confirmed on-chain."
+      : !releasePackage
+        ? "Prepare one exact release package, then collect Fadjiah + Lionel or Kori + Lionel."
+        : signedWeight < KORI_MVP_RELEASE_THRESHOLD
+          ? `Collect another valid signature. Verified weight: ${signedWeight} / ${KORI_MVP_RELEASE_THRESHOLD}.`
+          : "Threshold reached. Any holder of this verified package may submit it before expiry.";
+  const refundHint = !snapshot
+    ? "Waiting for the latest ledger state."
+    : !refundEligible
+      ? "Available only after the applicable immutable deadline."
+      : !walletAddress
+        ? "Connect any Testnet wallet; the caller cannot redirect the refund."
+        : investorPosition && investorPosition.refundableBaseUnits > 0n
+          ? `Ready to return ${formatUsdc(investorPosition.refundableBaseUnits)} USDC to the selected original investor.`
+          : "Select an original contributor with an unclaimed refundable balance.";
 
   return (
     <section className="stellar-workspace" aria-live="polite">
@@ -743,6 +792,20 @@ export function DealLifecycleWorkspace() {
           </a>
         </header>
 
+        <section className="stellar-scenario-guide" aria-labelledby={`scenario-${deal.id}`}>
+          <header>
+            <span>SCENARIO TO RUN · {deal.scenario}</span>
+            <strong id={`scenario-${deal.id}`}>{deal.guide.goal}</strong>
+            <small>Who acts: {deal.guide.actor}</small>
+          </header>
+          <ol>
+            {deal.guide.steps.map((instruction) => (
+              <li key={instruction}>{instruction}</li>
+            ))}
+          </ol>
+          <p><strong>Expected:</strong> {deal.guide.expectedResult}</p>
+        </section>
+
         <div className="stellar-chain-summary">
           <dl>
             <div><dt>On-chain state</dt><dd>{snapshot ? STATE_LABELS[snapshot.state] : "Loading…"}</dd></div>
@@ -775,7 +838,9 @@ export function DealLifecycleWorkspace() {
                 ? `${walletName?.label ?? "Testnet account"} · ${shortStellarAddress(walletAddress)}`
                 : "Not connected"}
             </strong>
-            <small>{walletRoles.join(" · ") || "Connect to resolve on-chain roles"}</small>
+            <small>
+              Platform profile: {appPersona} · On-chain role: {walletRoles.join(" · ") || "connect to resolve"}
+            </small>
           </div>
           <button type="button" onClick={connectWallet} disabled={isBusy}>
             {walletAddress ? "Reconnect / switch" : "Connect Freighter"}
@@ -794,7 +859,7 @@ export function DealLifecycleWorkspace() {
               <input value={amount} onChange={(event) => setAmount(event.target.value)} inputMode="decimal" disabled={isBusy} />
             </label>
             <button type="button" onClick={fundDeal} disabled={!canFund}>Sign and fund</button>
-            {!canFund && snapshot?.state === "FundingOpen" && deadlinePassed ? <small>Funding closed: the immutable deadline has passed.</small> : null}
+            <small className="stellar-action-hint">{fundingHint}</small>
           </article>
 
           <article id="evidence" className="stellar-action-card">
@@ -813,6 +878,7 @@ export function DealLifecycleWorkspace() {
             </div>
             {preparedEvidence ? <code>SHA-256 {preparedEvidence.hashHex}</code> : null}
             <button type="button" onClick={anchorEvidence} disabled={!canAnchorEvidence}>Sign and anchor hash</button>
+            <small className="stellar-action-hint">{evidenceHint}</small>
           </article>
 
           <article id="approval" className="stellar-action-card">
@@ -830,7 +896,7 @@ export function DealLifecycleWorkspace() {
             </label>
             {reviewedEvidence ? <div className="stellar-reviewed-evidence"><strong>Integrity verified</strong><p>{reviewedEvidence.manifest.statement}</p><small>{reviewedEvidence.manifest.files.length} source file hash(es)</small></div> : null}
             <button type="button" onClick={approveEvidence} disabled={!canApprove}>Sign approval</button>
-            {snapshot?.state === "EvidenceSubmitted" && !evidenceMatches ? <small>Import the matching manifest to enable approval.</small> : null}
+            <small className="stellar-action-hint">{approvalHint}</small>
           </article>
 
           <article id="release" className="stellar-action-card stellar-action-card--wide">
@@ -853,6 +919,7 @@ export function DealLifecycleWorkspace() {
                 <button type="button" onClick={submitRelease} disabled={!configurationMatches || !releasePackage || signedWeight < KORI_MVP_RELEASE_THRESHOLD || isBusy}>Submit release</button>
               </div>
             </div>
+            <small className="stellar-action-hint">{releaseHint}</small>
           </article>
 
           <article id="refund" className="stellar-action-card stellar-action-card--refund">
@@ -882,6 +949,7 @@ export function DealLifecycleWorkspace() {
               <button type="button" className="secondary" onClick={() => executeWalletAction("Open refunds", (wallet) => prepareOpenRefundsXdr(deal, wallet), "Refunds are open on-chain.")} disabled={!canOpenRefunds}>Open refunds</button>
               <button type="button" onClick={() => executeWalletAction("Claim refund", (wallet) => prepareClaimRefundXdr(deal, wallet, refundInvestor), "The contribution was returned to its original investor address.")} disabled={!canClaimRefund}>Return contribution</button>
             </div>
+            <small className="stellar-action-hint">{refundHint}</small>
           </article>
         </div>
 

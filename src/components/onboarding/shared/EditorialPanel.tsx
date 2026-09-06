@@ -2,7 +2,10 @@ type Variant =
   | "network-basic"
   | "network-alignment"
   | "eligibility"
-  | "review";
+  | "review"
+  | "founder-basic"
+  | "founder-profile"
+  | "founder-review";
 
 type EditorialCopy = {
   title: [string, string];
@@ -53,6 +56,35 @@ const copy: Record<Variant, EditorialCopy> = {
     footer: "FINAL ACCOUNT REVIEW",
     cardA: ["SECURITY", "Security controls enabled"],
     cardB: ["COMPLIANCE", "Information submitted"],
+  },
+  "founder-basic": {
+    title: ["Build with context.", "Grow with aligned capital."],
+    paragraph:
+      "Create your founder and startup profile in a trusted, evidence-led network.",
+    chipA: "Founder Network",
+    footer: "STARTUP READINESS",
+    cardA: ["REGIONAL", "Caribbean - Africa corridor"],
+    cardB: ["CAPITAL", "Aligned investor network"],
+  },
+  "founder-profile": {
+    title: ["Tell the story.", "Anchor the evidence."],
+    paragraph:
+      "Give investors the business context they need before a milestone reaches the blockchain workflow.",
+    chipA: "Founder Network",
+    chipB: "Evidence Ready",
+    footer: "DEAL PREPARATION",
+    cardA: ["PROFILE", "Founder context"],
+    cardB: ["STARTUP", "Source evidence"],
+  },
+  "founder-review": {
+    title: ["One clear profile.", "One accountable startup."],
+    paragraph:
+      "Review the information that connects your startup to its deal-specific Testnet escrow.",
+    chipA: "Founder Network",
+    chipB: "Review & Sign",
+    footer: "FINAL ACCOUNT REVIEW",
+    cardA: ["IDENTITY", "Email confirmed"],
+    cardB: ["WORKFLOW", "Founder role ready"],
   },
 };
 

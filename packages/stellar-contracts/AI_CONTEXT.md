@@ -53,7 +53,6 @@ flowchart LR
 | What happened on Testnet?            | [`TESTNET_MVP_UI_REPORT.md`](./TESTNET_MVP_UI_REPORT.md), [`deployments/testnet-mvp-ui-v1.json`](./deployments/testnet-mvp-ui-v1.json), and the broader [`TESTNET_ASSURANCE_REPORT.md`](./TESTNET_ASSURANCE_REPORT.md) |
 | What does the contract enforce?      | [`contracts/kori-deal-escrow/src/lib.rs`](./contracts/kori-deal-escrow/src/lib.rs) and [`test.rs`](./contracts/kori-deal-escrow/src/test.rs) |
 | What has the team decided?           | [`PRD.md`](./PRD.md)                                                                                                                         |
-| What changed from EVM?               | [`ARCHITECTURE_MIGRATION.md`](./ARCHITECTURE_MIGRATION.md)                                                                                   |
 | How should the system be visualized? | [`FIGMA_REFERENCE.md`](./FIGMA_REFERENCE.md) and the linked FigJam board                                                                     |
 | Which public demo identities exist?  | [`deployments/testnet-mvp-ui-v1.json`](./deployments/testnet-mvp-ui-v1.json); private signing material is excluded from the active reference tree |
 

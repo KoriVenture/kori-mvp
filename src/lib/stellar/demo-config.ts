@@ -36,6 +36,12 @@ export type DemoDeal = {
   contractId: string;
   deploymentTransaction: string;
   scenario: "Ready for evidence" | "Open funding" | "Deadline refund";
+  guide: {
+    actor: string;
+    goal: string;
+    steps: readonly string[];
+    expectedResult: string;
+  };
   startup: string;
   fundManager: string;
   releaseAuthority: string;
@@ -53,6 +59,8 @@ const KORI_RELEASE_OFFICER =
   "GCERD6HEUD3RZ6VQBLDBLFIN3KMB3KKA7W7NQPAXX57AGRCZCWYSITRJ";
 const INVESTOR_A = "GDDWS25MKDXHW3FNRSKGT4G6LODA7UL5F7NDXDI4LS7HCSABVFYLRBTF";
 const INVESTOR_B = "GDX5SVXQL5DXHJ3R5ZVDHAN7N5CY2Y74N4MX67OHQIJIOM2SXQBQPC2V";
+const KIGALI_STARTUP =
+  "GDOZZLZU7I4P7CFPNE46PB6ZLLDBSIHJEIWLNCEXHGLBR5BYZ6KNNCDN";
 
 export const KORI_MVP_RELEASE_SIGNERS = [
   {
@@ -91,14 +99,26 @@ export const KORI_DEMO_DEALS = [
       "A collaborative diligence case prepared for the complete evidence, approval and release demonstration.",
     contractId:
       process.env.NEXT_PUBLIC_STELLAR_KIGALI_ESCROW_ID?.trim() ||
-      "CC3XSKZRZU773NVC7XXO2FVKN3GGPD63OX3BBWAOQCFJYKMUTNONHHGL",
+      "CBFWI4HBRQUXCARAADDGIYK355CQB3LUGC5EBX5LSC4EVWTRWYO2OJTV",
     deploymentTransaction:
-      "747335d4c96bd670449d0b516c722205174b7f5492b94b24bfd72f397351a177",
+      "787b112e43a3de89cac92d1ebddf5716087a409b7665ece19be4d325bc63c01a",
     scenario: "Ready for evidence",
-    startup: LIONEL,
+    guide: {
+      actor: "Startup founder → Fund Manager → two release signers",
+      goal: "Demonstrate the complete milestone evidence, approval, and USDC release path.",
+      steps: [
+        "Connect the configured startup wallet, create the evidence manifest, download it, then sign and anchor its hash.",
+        "Switch to Fadjiah's Fund Manager wallet, import the exact manifest, verify the hash, and sign approval.",
+        "Prepare the release package. Fadjiah signs first, then exports it to Lionel.",
+        "Lionel imports, co-signs, and submits the package once verified weight reaches 3.",
+      ],
+      expectedResult:
+        "The state becomes Funds released and exactly the escrow target reaches the immutable startup wallet.",
+    },
+    startup: KIGALI_STARTUP,
     fundManager: FADJIAH,
     releaseAuthority: RELEASE_AUTHORITY,
-    knownContributors: [INVESTOR_B],
+    knownContributors: [INVESTOR_A],
     releaseSigners: KORI_MVP_RELEASE_SIGNERS,
   },
   {
@@ -118,6 +138,18 @@ export const KORI_DEMO_DEALS = [
     deploymentTransaction:
       "13c4d7ecaa71686d9c09b6c085bd7ba2a805c556fb4c3042fbea526052f6a797",
     scenario: "Open funding",
+    guide: {
+      actor: "Any investor with a funded Stellar Testnet wallet",
+      goal: "Add a real Testnet USDC contribution to the open Kingston escrow.",
+      steps: [
+        "Open Freighter on Testnet and use an account with XLM for fees plus Circle Testnet USDC.",
+        "Connect Freighter, enter an amount no larger than the remaining capacity shown on-chain, then click Sign and fund.",
+        "Approve the complete transaction in Freighter and wait for the confirmed transaction result.",
+        "Refresh the ledger and verify that both Funded and Escrow balance increased by the same amount.",
+      ],
+      expectedResult:
+        "The contribution is attributed to the signing investor. At the exact target, funding closes and the state becomes Fully funded.",
+    },
     startup: "GB6SZQEQMUF3D3VRMZAHLBMUUVGLRP42MSJK4LIDQFJGXBF2XHKTNRSC",
     fundManager: FADJIAH,
     releaseAuthority: RELEASE_AUTHORITY,
@@ -141,6 +173,18 @@ export const KORI_DEMO_DEALS = [
     deploymentTransaction:
       "268b5570e5b120ca44a82fbb9486cbe1ecf64f7fe3e035843989b77e40a0ae37",
     scenario: "Deadline refund",
+    guide: {
+      actor: "Any caller; funds always return to the original investor",
+      goal: "Demonstrate the public timeout safety path after an underfunded deal expires.",
+      steps: [
+        "Connect any Stellar Testnet wallet; the caller does not need to be the original investor.",
+        "Keep or select the original contributor address shown in the refund card.",
+        "Click Open refunds if the state is not yet Refunds open, then approve the transaction in Freighter.",
+        "Click Return contribution and confirm that the escrow sends only that investor's recorded contribution back.",
+      ],
+      expectedResult:
+        "The deal becomes Refunds open, then Refunded after all recorded contributions are returned without administrator discretion.",
+    },
     startup: "GBLGQLHVEFZUSXGMALCE65MYEL3YJHJY2C3MYI6R7NQGOESPPO7HJFXB",
     fundManager: FADJIAH,
     releaseAuthority: RELEASE_AUTHORITY,

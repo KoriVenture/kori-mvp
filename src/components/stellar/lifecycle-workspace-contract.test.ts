@@ -15,6 +15,9 @@ const client = source("src/lib/stellar/client.ts");
 test("the workspace exposes all three real Testnet deals", () => {
   assert.match(workspace, /KORI_DEMO_DEALS\.map/);
   assert.match(workspace, /setSelectedDealId/);
+  assert.match(workspace, /SCENARIO TO RUN/);
+  assert.match(workspace, /deal\.guide\.steps\.map/);
+  assert.match(workspace, /stellar-action-hint/);
   assert.doesNotMatch(workspace, /89\.4%|\$2,840,000|82\.6%/);
 });
 

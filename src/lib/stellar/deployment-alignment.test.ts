@@ -81,4 +81,12 @@ test("all three frontend deals match the committed Testnet manifest", () => {
     KORI_MVP_RELEASE_SIGNERS.map(({ address, weight }) => ({ publicKey: address, weight })),
     manifest.releasePolicy.signers.map(({ publicKey, weight }) => ({ publicKey, weight })),
   );
+  const releaseSignerAddresses = new Set(
+    manifest.releasePolicy.signers.map(({ publicKey }) => publicKey),
+  );
+  for (const deal of manifest.deals) {
+    assert.notEqual(deal.startup, deal.fundManager);
+    assert.notEqual(deal.startup, deal.releaseAuthority);
+    assert.equal(releaseSignerAddresses.has(deal.startup), false);
+  }
 });

@@ -2,7 +2,8 @@
   "schemaVersion": 1,
   "environment": "stellar-testnet",
   "purpose": "Kori V1 three-deal application demonstration",
-  "deployedAtUtc": "2026-09-05",
+  "deployedAtUtc": "2026-09-06",
+  "verifiedAtLedger": 4526523,
   "networkPassphrase": "Test SDF Network ; September 2015",
   "wasmSha256": "c997029a0f411837ad0f09b48b390b84ec4a40cc98df3173ec122971b9b09263",
   "asset": {
@@ -45,16 +46,16 @@
   "deals": [
     {
       "id": "kigali-transport",
-      "contractId": "CC3XSKZRZU773NVC7XXO2FVKN3GGPD63OX3BBWAOQCFJYKMUTNONHHGL",
-      "startup": "GDTMTVD7IMBV5MVYDA42KM7R4DZXOPNKH6Y7RUKJN3DXNSOBUS6CKEUQ",
+      "contractId": "CBFWI4HBRQUXCARAADDGIYK355CQB3LUGC5EBX5LSC4EVWTRWYO2OJTV",
+      "startup": "GDOZZLZU7I4P7CFPNE46PB6ZLLDBSIHJEIWLNCEXHGLBR5BYZ6KNNCDN",
       "fundManager": "GB3ON5BVTZWFAECLLXY53AHJV63SNOXDXKATZ4RSOLOSVNANY3ECDNGP",
       "releaseAuthority": "GD2TZUYYRP2RN5KOWN2NFNVSHYZR26UYHA2ADEF5BYDSI3BAKVHOY7RB",
       "targetAmountBaseUnits": "50000000",
       "fundingDeadline": 1789856000,
       "releaseDeadline": 1790460800,
-      "deploymentTransaction": "747335d4c96bd670449d0b516c722205174b7f5492b94b24bfd72f397351a177",
+      "deploymentTransaction": "787b112e43a3de89cac92d1ebddf5716087a409b7665ece19be4d325bc63c01a",
       "bootstrapTransactions": [
-        "6647468dbc7351409bc531f2c0d24aea8a335476aca2e5625b890519793d6200"
+        "bb2f788853048fb5c017c5156a9b8bb43e0b4fb8d3427905cd9ec7cf3f9b1be6"
       ],
       "bootstrapState": "Funded"
     },

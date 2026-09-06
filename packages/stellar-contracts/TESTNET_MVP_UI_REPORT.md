@@ -1,6 +1,6 @@
 # Kori V1 UI and Testnet verification
 
-Verified on `2026-09-05` against Stellar Testnet. This report covers the
+Verified on `2026-09-06` against Stellar Testnet. This report covers the
 three-SPV application slice; the earlier adversarial contract campaign remains
 in [`TESTNET_ASSURANCE_REPORT.md`](./TESTNET_ASSURANCE_REPORT.md).
 
@@ -15,7 +15,7 @@ is ultimately enforced by the Stellar G-account.
 
 | SPV | Contract | Live state | Accounted / SAC balance |
 | --- | --- | --- | --- |
-| Kigali | [`CC3X…HHGL`](https://stellar.expert/explorer/testnet/contract/CC3XSKZRZU773NVC7XXO2FVKN3GGPD63OX3BBWAOQCFJYKMUTNONHHGL) | `Funded` | 5 / 5 USDC |
+| Kigali | [`CBFW…OJTV`](https://stellar.expert/explorer/testnet/contract/CBFWI4HBRQUXCARAADDGIYK355CQB3LUGC5EBX5LSC4EVWTRWYO2OJTV) | `Funded` | 5 / 5 USDC |
 | Kingston | [`CDIO…T75W`](https://stellar.expert/explorer/testnet/contract/CDIO5OOUS53NHT4IO6IVZDDK5VILKAKPTCVWFQDFPDYJSWIYESLOT75W) | `FundingOpen` | 1 / 1 USDC held; 5 USDC target |
 | Accra | [`CAVX…SBQY`](https://stellar.expert/explorer/testnet/contract/CAVXSTQ53IEPBQMTPXQHPWE56KYHRK3VTOPHYT5DR4ZRCZUP7I4SSBQY) | `FundingOpen`, funding deadline elapsed | 1 / 1 USDC held; refund trigger intentionally pending |
 
@@ -30,8 +30,8 @@ balances. Accra remains `FundingOpen` until any wallet submits `open_refunds` or
 - Optimized Wasm SHA-256:
   `c997029a0f411837ad0f09b48b390b84ec4a40cc98df3173ec122971b9b09263`.
 - Kigali deploy/fund transactions:
-  [`747335…a177`](https://stellar.expert/explorer/testnet/tx/747335d4c96bd670449d0b516c722205174b7f5492b94b24bfd72f397351a177),
-  [`664746…6200`](https://stellar.expert/explorer/testnet/tx/6647468dbc7351409bc531f2c0d24aea8a335476aca2e5625b890519793d6200).
+  [`787b11…c01a`](https://stellar.expert/explorer/testnet/tx/787b112e43a3de89cac92d1ebddf5716087a409b7665ece19be4d325bc63c01a),
+  [`bb2f78…b1be6`](https://stellar.expert/explorer/testnet/tx/bb2f788853048fb5c017c5156a9b8bb43e0b4fb8d3427905cd9ec7cf3f9b1be6).
 - Kingston deploy/fund transactions:
   [`13c4d7…a797`](https://stellar.expert/explorer/testnet/tx/13c4d7ecaa71686d9c09b6c085bd7ba2a805c556fb4c3042fbea526052f6a797),
   [`95d43c…5f35`](https://stellar.expert/explorer/testnet/tx/95d43cb98e4fd1ee14e37a1cf5998215397eac460e02b7e2bd6b16b0ae275f35).
@@ -40,6 +40,8 @@ balances. Accra remains `FundingOpen` until any wallet submits `open_refunds` or
   [`785b75…722f`](https://stellar.expert/explorer/testnet/tx/785b7516b57eba385479b3263a3a9c684323be141c33ed075a85df952798722f).
 - Full constructor data and weighted-account configuration transactions:
   [`deployments/testnet-mvp-ui-v1.json`](./deployments/testnet-mvp-ui-v1.json).
+- Kigali uses a dedicated startup account, distinct from the Fund Manager,
+  release authority, and all release signers.
 
 ## Application checks
 
@@ -60,7 +62,7 @@ balances. Accra remains `FundingOpen` until any wallet submits `open_refunds` or
   imports, invalid dates/fields, count limits, and aggregate size limits.
 
 Run results are recorded by the pull request CI/local verification. The
-expected local baseline is 23 Rust contract tests and 38 Next/client tests,
+expected local baseline is 23 Rust contract tests and 53 Next/client tests,
 plus passing TypeScript, ESLint with no errors, production build, Cargo fmt,
 Clippy, Rustdoc, and optimized Wasm build.
 

@@ -345,8 +345,8 @@ packages/stellar-contracts/README.md
 Use `deployments/testnet-v1.json` and `TESTNET_ASSURANCE_REPORT.md` for verified
 Testnet claims, Soroban source and tests for enforced behavior, and the PRD for
 accepted product intent. The FigJam board is a visual reference, not deployment
-evidence. Historical EVM, Sepolia, MetaMask, and Safe material does not define
-the active blockchain implementation.
+evidence. Only the Stellar/Soroban reference tree defines the active blockchain
+implementation.
 
 No private signing key belongs in the active reference tree. Any historically
 exposed Testnet fixture is permanently compromised and must never be reused.

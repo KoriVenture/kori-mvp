@@ -16,7 +16,6 @@ export default defineConfig([
     "out/**",
     "build/**",
     "**/target/**",
-    "packages/contracts/**",
     "next-env.d.ts",
   ]),
 ]);

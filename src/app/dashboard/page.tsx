@@ -19,7 +19,7 @@ export default async function Page({
   const supabase = await createClient();
   const auth = await supabase.auth.getUser();
 
-  if (auth.error || !auth.data.user) redirect("/join");
+  if (auth.error || !auth.data.user) redirect("/login");
 
   const userId = auth.data.user.id;
   const [profileResult, investorResult, founderResult] = await Promise.all([
@@ -40,7 +40,9 @@ export default async function Page({
       .maybeSingle(),
   ]);
 
-  if (profileResult.error || !profileResult.data) redirect("/join");
+  if (profileResult.error || !profileResult.data) {
+    redirect("/onboarding/investor");
+  }
 
   const roles = Array.isArray(profileResult.data.roles)
     ? (profileResult.data.roles as string[])
@@ -53,6 +55,19 @@ export default async function Page({
   const founderComplete =
     roles.includes("founder") &&
     founderResult.data?.onboarding_status === "completed";
+  const admin = roles.includes("admin");
+
+  if (requested === "admin" && admin) {
+    return (
+      <InvestorDashboardView
+        profile={profileResult.data}
+        investor={investorResult.data}
+        persona="Kori Operator"
+        profileRole="admin"
+        profileRoles={roles}
+      />
+    );
+  }
 
   if (requested === "founder" && roles.includes("founder")) {
     if (!founderComplete) redirect("/onboarding/founder");
@@ -62,6 +77,7 @@ export default async function Page({
         investor={investorResult.data}
         persona="Startup Founder"
         profileRole="founder"
+        profileRoles={roles}
       />
     );
   }
@@ -72,6 +88,7 @@ export default async function Page({
       <InvestorDashboardView
         profile={profileResult.data}
         investor={investorResult.data}
+        profileRoles={roles}
       />
     );
   }
@@ -81,6 +98,7 @@ export default async function Page({
       <InvestorDashboardView
         profile={profileResult.data}
         investor={investorResult.data}
+        profileRoles={roles}
       />
     );
   }
@@ -92,11 +110,23 @@ export default async function Page({
         investor={investorResult.data}
         persona="Startup Founder"
         profileRole="founder"
+        profileRoles={roles}
       />
     );
   }
 
   if (roles.includes("investor")) redirect("/onboarding/investor");
   if (roles.includes("founder")) redirect("/onboarding/founder");
+  if (admin) {
+    return (
+      <InvestorDashboardView
+        profile={profileResult.data}
+        investor={investorResult.data}
+        persona="Kori Operator"
+        profileRole="admin"
+        profileRoles={roles}
+      />
+    );
+  }
   redirect("/profile");
 }
